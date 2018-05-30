@@ -1,0 +1,5 @@
+.vagrant
+vendor/*
+!vendor/vendor.json
+main
+messages/messages.pb.go

@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package messages;
+
+// The greeting service definition.
+service NetworkControl {
+  // Sends a greeting
+  rpc Ping (PingRequest) returns (PingReply) {}
+  // rpc AddPort (AddPortRequest) returns(OVSReply) {}
+  // rpc DelPort (DelPortRequest) returns(OVSReply) {}
+  // rpc AddFlow (AddFlowRequest) returns(OVSReply) {}
+  // rpc DelFlow (DelFlowRequest) returns(OVSReply) {}
+}
+
+// The request message containing the user's name.
+message PingRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message PingReply {
+  string message = 1;
+}
+
+message OVSReply {
+  string message = 1;
+}
+
+message AddPortRequest {
+    string bridgeName = 1;
+    string ifaceName = 2;
+}
+
+message DelPortRequest {
+    string bridgeName = 1;
+    string ifaceName = 2;
+}
+
+message AddFlowRequest {
+    string bridgeName = 1;
+    string flowString = 2;
+}
+
+message DelFlowRequest {
+    string bridgeName = 1;
+    string flowString = 2;
+}
