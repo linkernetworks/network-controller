@@ -2,28 +2,36 @@ syntax = "proto3";
 
 package messages;
 
-// The greeting service definition.
+// The network control service definition.
 service NetworkControl {
-  // Sends a greeting
-  rpc Ping (PingRequest) returns (PingReply) {}
-  // rpc AddPort (AddPortRequest) returns(OVSReply) {}
-  // rpc DelPort (DelPortRequest) returns(OVSReply) {}
-  // rpc AddFlow (AddFlowRequest) returns(OVSReply) {}
-  // rpc DelFlow (DelFlowRequest) returns(OVSReply) {}
+  rpc Echo (EchoRequest) returns (EchoResponse) {}
+  rpc Ping (PingRequest) returns (PingResponse) {}
+  rpc AddPort (AddPortRequest) returns(OVSResponse) {}
+  rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
+  // rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
+  // rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
 }
 
-// The request message containing the user's name.
+message EchoRequest {
+  string word = 1;
+}
+
+message EchoResponse {
+  string word = 1;
+}
+
 message PingRequest {
-  string name = 1;
+  string ping = 1;
 }
 
-// The response message containing the greetings
-message PingReply {
-  string message = 1;
+message PingResponse {
+  string pong = 1;
 }
 
-message OVSReply {
-  string message = 1;
+message OVSResponse {
+  string type = 1;
+  bool success = 2;
+  string reason = 3;
 }
 
 message AddPortRequest {
@@ -31,7 +39,7 @@ message AddPortRequest {
     string ifaceName = 2;
 }
 
-message DelPortRequest {
+message DeletePortRequest {
     string bridgeName = 1;
     string ifaceName = 2;
 }
@@ -41,7 +49,7 @@ message AddFlowRequest {
     string flowString = 2;
 }
 
-message DelFlowRequest {
+message DeleteFlowRequest {
     string bridgeName = 1;
     string flowString = 2;
 }
