@@ -2,4 +2,6 @@
 vendor/*
 !vendor/vendor.json
 main
+network-controller-server
+network-controller-client
 messages/messages.pb.go

@@ -8,6 +8,7 @@ import (
 
 // ovs-vsctl --may-exist add-br ovsbr0
 func AddBridge(bridgeName string) error {
+	c := ovs.New(ovs.Sudo())
 	if err := c.VSwitch.AddBridge(bridgeName); err != nil {
 		return fmt.Errorf("failed to add bridge: %v", err)
 	}
