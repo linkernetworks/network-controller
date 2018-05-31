@@ -5,3 +5,4 @@ main
 network-controller-server
 network-controller-client
 messages/messages.pb.go
+coverage.txt
