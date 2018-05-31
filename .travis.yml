@@ -1,22 +1,30 @@
 language: go
 sudo: true
+
+#refer to https://github.com/pseudomuto/protoc-gen-doc/blob/master/.travis.yml
+env:
+ global:
+    - PROTOC_RELEASE="https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip"
+    - PROTOC_TARGET="${HOME}/protoc"
+    - PATH="${PROTOC_TARGET}/bin:${PATH}"
+    - secure: Tbet2rxD8QgjthAo+bxt41qbF2wUPTx0difGK5p4yQISK/njTuT5cqcxnOa4GIbyKtNtx0EgGnyVcQJiQkmZiF6Sabf0mtqU/CQ4PmVV76e9bHwA/CrTtudibMn16ozxuuxvhNxFOMQEhwcQOkW93M/Q9FZUEw9/CGpRGFfSzuA=
+
 go: 
      - 1.9.x
 
-notifications:
-    email:
-        recipients: 
-            - hwchiu@linkernetworks.com
-            - cwlin@linkernetworks.com
-        on_success: change
 before_install:
     - sudo apt-get install -y git build-essential openvswitch-switch
     - go get -u github.com/kardianos/govendor
     - go get -u github.com/pierrre/gotestcover
-    - make pb
-install: 
     - govendor sync
+    - if [ ! -d "${PROTOC_TARGET}" ]; then curl -fsSL "$PROTOC_RELEASE" > "${PROTOC_TARGET}.zip"; fi
+    - if [ -f "${PROTOC_TARGET}.zip" ]; then unzip "${PROTOC_TARGET}.zip" -d "${PROTOC_TARGET}"; fi
+    - go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+
 script:
-    - sudo -E env PATH=$PATH TEST_OVS=1 gotestcover -coverprofile=coverage.txt -covermode=atomic ./...
+    - sudo -E env PATH=$PATH TEST_OVS=1 gotestcover -coverprofile=coverage.txt -covermode=atomic ./ovs
 after_success:
     - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false
