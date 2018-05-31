@@ -8,6 +8,21 @@ import (
 	"testing"
 )
 
+var ovsFile = "/usr/bin/ovs-vsctl"
+
+func changeVSCtl(t *testing.T) os.FileMode {
+	info, err := os.Stat(ovsFile)
+	assert.NoError(t, err)
+
+	err = os.Chmod(ovsFile, 0666)
+	assert.NoError(t, err)
+	return info.Mode()
+}
+
+func resetVSCtl(mode os.FileMode) {
+	os.Chmod(ovsFile, mode)
+}
+
 func TestAddBridge(t *testing.T) {
 	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
 		t.SkipNow()
@@ -25,16 +40,10 @@ func TestAddBridgeFail(t *testing.T) {
 		t.SkipNow()
 	}
 
-	ovsFile := "/usr/bin/ovs-vsctl"
-	info, err := os.Stat(ovsFile)
-	assert.NoError(t, err)
-
-	err = os.Chmod(ovsFile, 0666)
-	defer os.Chmod(ovsFile, info.Mode())
-	assert.NoError(t, err)
-
+	mode := changeVSCtl(t)
+	defer resetVSCtl(mode)
 	bridgeName := "bridge0"
-	err = AddBridge(bridgeName)
+	err := AddBridge(bridgeName)
 	assert.Error(t, err)
 	c := ovs.New(ovs.Sudo())
 	defer c.VSwitch.DeleteBridge(bridgeName)
@@ -67,4 +76,15 @@ func TestAddDelPort(t *testing.T) {
 	_, err = c.VSwitch.PortToBridge(linkName)
 	assert.Error(t, err)
 
+}
+
+func TestAddDelPortFail(t *testing.T) {
+	mode := changeVSCtl(t)
+	defer resetVSCtl(mode)
+
+	bridgeName := "bridge0"
+	err := AddPort(bridgeName, "0")
+	assert.Error(t, err)
+	err = DeletePort(bridgeName, "0")
+	assert.Error(t, err)
 }

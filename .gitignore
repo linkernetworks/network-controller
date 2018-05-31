@@ -1,3 +1,4 @@
+*.swp
 .vagrant
 vendor/*
 !vendor/vendor.json
