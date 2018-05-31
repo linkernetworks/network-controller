@@ -6,4 +6,4 @@ network-controller-server
 network-controller-client
 messages/messages.pb.go
 coverage.txt
-.vagrant
+ubuntu-xenial-16.04-cloudimg-console.log
