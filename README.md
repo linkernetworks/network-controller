@@ -1,4 +1,4 @@
-# network-controller
+# network-controller [![Build Status](https://travis-ci.org/linkernetworks/network-controller.svg?branch=master)](https://travis-ci.org/linkernetworks/network-controller)
 
 ## Development
 
