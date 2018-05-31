@@ -32,3 +32,11 @@ func DeletePort(bridgeName, ifName string) error {
 	}
 	return nil
 }
+
+func AddFlow(bridgeName string, flow *ovs.Flow) error {
+	c := ovs.New(ovs.Sudo())
+	if err := c.OpenFlow.AddFlow(bridgeName, flow); err != nil {
+	    return fmt.Errorf("failed to add port: %v", err)
+	}
+	return nil
+}
