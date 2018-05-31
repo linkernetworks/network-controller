@@ -14,7 +14,7 @@ func TestAddBridge(t *testing.T) {
 
 	bridgeName := "bridge0"
 	err := AddBridge(bridgeName)
+	assert.NoError(t, err)
 	c := ovs.New(ovs.Sudo())
 	defer c.VSwitch.DeleteBridge(bridgeName)
-	assert.NoError(t, err)
 }
