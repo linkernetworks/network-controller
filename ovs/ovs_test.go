@@ -3,11 +3,9 @@ package ovs
 import (
 	"github.com/digitalocean/go-openvswitch/ovs"
 	"github.com/stretchr/testify/assert"
-  "github.com/linkernetworks/network-controller/utils"
 
 	"os"
 	"testing"
-	"encoding/json"
 )
 
 func TestAddBridge(t *testing.T) {
@@ -23,19 +21,46 @@ func TestAddBridge(t *testing.T) {
 }
 
 func TestAddFlow(t *testing.T) {
-  if _, ok := os.LookupEnv("TEST_OVS"); !ok {
+	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
 		t.SkipNow()
 	}
 
-  bridgeName := "ovs-eth0"
-  flowString := `
-    {
-      "cookie": 1,
-      "actions": ["normal"]
-    }`
-  var flow map[string]interface{}
-  err :=  json.Unmarshal([]byte(flowString), &flow)
+	bridgeName := "bridge0"
+	err := AddBridge(bridgeName)
 	assert.NoError(t, err)
-  err = AddFlow(bridgeName, utils.ConvertOVSFlow(flow))
+
+	flowString := "cookie=1, actions=NORMAL"
+	err = AddFlow(bridgeName, flowString)
 	assert.NoError(t, err)
+
+	c := ovs.New(ovs.Sudo())
+	flows, err := c.OpenFlow.DumpFlows(bridgeName)
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(flows))
+
+	defer c.VSwitch.DeleteBridge(bridgeName)
+}
+
+func TestDeleteFlows(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
+		t.SkipNow()
+	}
+
+	bridgeName := "bridge0"
+	err := AddBridge(bridgeName)
+	assert.NoError(t, err)
+
+	flowString := "cookie=1, actions=NORMAL"
+	err = AddFlow(bridgeName, flowString)
+	assert.NoError(t, err)
+
+	err = DeleteFlows(bridgeName, flowString)
+	assert.NoError(t, err)
+
+	c := ovs.New(ovs.Sudo())
+	flows, err := c.OpenFlow.DumpFlows(bridgeName)
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(flows))
+
+	defer c.VSwitch.DeleteBridge(bridgeName)
 }

@@ -3,11 +3,9 @@ package main
 import (
 	"log"
 	"net"
-	"encoding/json"
 
 	pb "github.com/linkernetworks/network-controller/messages"
 	"github.com/linkernetworks/network-controller/ovs"
-  "github.com/linkernetworks/network-controller/utils"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -51,17 +49,22 @@ func (s *server) DeletePort(ctx context.Context, req *pb.DeletePortRequest) (*pb
 }
 
 func (s *server) AddFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSResponse, error) {
-  var flow map[string]interface{}
-  if err :=  json.Unmarshal([]byte(req.FlowString), &flow); err != nil {
-    if err := ovs.AddFlow(req.BridgeName, utils.ConvertOVSFlow(flow)); err != nil {
-	  	return &pb.OVSResponse{
-	  		Success: false, Reason: err.Error(),
-	  	}, err
-	  }
-  }
+	if err := ovs.AddFlow(req.BridgeName, req.FlowString); err != nil {
+		return &pb.OVSResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
 	return &pb.OVSResponse{Success: true}, nil
 }
 
+func (s *server) DeleteFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSResponse, error) {
+	if err := ovs.DeleteFlows(req.BridgeName, req.FlowString); err != nil {
+		return &pb.OVSResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+	return &pb.OVSResponse{Success: true}, nil
+}
 
 func main() {
 	lis, err := net.Listen("tcp", port)
