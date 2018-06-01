@@ -48,6 +48,24 @@ func (s *server) DeletePort(ctx context.Context, req *pb.DeletePortRequest) (*pb
 	return &pb.OVSResponse{Success: true}, nil
 }
 
+func (s *server) AddFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSResponse, error) {
+	if err := ovs.AddFlow(req.BridgeName, req.FlowString); err != nil {
+		return &pb.OVSResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+	return &pb.OVSResponse{Success: true}, nil
+}
+
+func (s *server) DeleteFlow(ctx context.Context, req *pb.DeleteFlowRequest) (*pb.OVSResponse, error) {
+	if err := ovs.DeleteFlows(req.BridgeName, req.FlowString); err != nil {
+		return &pb.OVSResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+	return &pb.OVSResponse{Success: true}, nil
+}
+
 func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {

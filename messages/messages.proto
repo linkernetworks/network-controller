@@ -8,8 +8,8 @@ service NetworkControl {
   rpc Ping (PingRequest) returns (PingResponse) {}
   rpc AddPort (AddPortRequest) returns(OVSResponse) {}
   rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
-  // rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
-  // rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
+  rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
+  rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
 }
 
 message EchoRequest {
