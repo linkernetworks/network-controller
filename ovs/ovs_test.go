@@ -1,7 +1,6 @@
 package ovs
 
 import (
-	"github.com/digitalocean/go-openvswitch/ovs"
 	"github.com/stretchr/testify/assert"
 
 	"os"
@@ -15,9 +14,39 @@ func TestAddBridge(t *testing.T) {
 
 	bridgeName := "bridge0"
 	err := AddBridge(bridgeName)
+	defer DeleteBridge(bridgeName)
 	assert.NoError(t, err)
-	c := ovs.New(ovs.Sudo())
-	defer c.VSwitch.DeleteBridge(bridgeName)
+
+	bridges, err := ListBridges()
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(bridges))
+}
+
+func TestDeleteBridge(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
+		t.SkipNow()
+	}
+
+	bridgeName := "bridge0"
+	err := AddBridge(bridgeName)
+	assert.NoError(t, err)
+
+	err = DeleteBridge(bridgeName)
+	assert.NoError(t, err)
+
+	bridges, err := ListBridges()
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(bridges))
+}
+
+func TestListBridges(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
+		t.SkipNow()
+	}
+
+	bridges, err := ListBridges()
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(bridges))
 }
 
 func TestAddFlow(t *testing.T) {
@@ -27,18 +56,16 @@ func TestAddFlow(t *testing.T) {
 
 	bridgeName := "bridge0"
 	err := AddBridge(bridgeName)
+	defer DeleteBridge(bridgeName)
 	assert.NoError(t, err)
 
 	flowString := "cookie=1, actions=NORMAL"
 	err = AddFlow(bridgeName, flowString)
 	assert.NoError(t, err)
 
-	c := ovs.New(ovs.Sudo())
-	flows, err := c.OpenFlow.DumpFlows(bridgeName)
+	flows, err := DumpFlows(bridgeName)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(flows))
-
-	defer c.VSwitch.DeleteBridge(bridgeName)
 }
 
 func TestDeleteFlows(t *testing.T) {
@@ -48,6 +75,7 @@ func TestDeleteFlows(t *testing.T) {
 
 	bridgeName := "bridge0"
 	err := AddBridge(bridgeName)
+	defer DeleteBridge(bridgeName)
 	assert.NoError(t, err)
 
 	flowString := "cookie=1, actions=NORMAL"
@@ -57,10 +85,22 @@ func TestDeleteFlows(t *testing.T) {
 	err = DeleteFlows(bridgeName, flowString)
 	assert.NoError(t, err)
 
-	c := ovs.New(ovs.Sudo())
-	flows, err := c.OpenFlow.DumpFlows(bridgeName)
+	flows, err := DumpFlows(bridgeName)
 	assert.NoError(t, err)
 	assert.Equal(t, 0, len(flows))
+}
 
-	defer c.VSwitch.DeleteBridge(bridgeName)
+func TestDumpFlows(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
+		t.SkipNow()
+	}
+
+	bridgeName := "bridge0"
+	err := AddBridge(bridgeName)
+	defer DeleteBridge(bridgeName)
+	assert.NoError(t, err)
+
+	flows, err := DumpFlows(bridgeName)
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(flows))
 }

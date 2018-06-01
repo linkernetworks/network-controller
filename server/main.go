@@ -57,7 +57,7 @@ func (s *server) AddFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSRe
 	return &pb.OVSResponse{Success: true}, nil
 }
 
-func (s *server) DeleteFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSResponse, error) {
+func (s *server) DeleteFlow(ctx context.Context, req *pb.DeleteFlowRequest) (*pb.OVSResponse, error) {
 	if err := ovs.DeleteFlows(req.BridgeName, req.FlowString); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
