@@ -2,7 +2,6 @@ package ovs
 
 import (
 	"github.com/stretchr/testify/assert"
-
 	"os"
 	"testing"
 )
@@ -31,12 +30,12 @@ func TestDeleteBridge(t *testing.T) {
 	err := AddBridge(bridgeName)
 	assert.NoError(t, err)
 
-	err = DeleteBridge(bridgeName)
-	assert.NoError(t, err)
-
 	bridges, err := ListBridges()
 	assert.NoError(t, err)
-	assert.Equal(t, 0, len(bridges))
+	assert.Equal(t, 1, len(bridges))
+
+	err = DeleteBridge(bridgeName)
+	assert.NoError(t, err)
 }
 
 func TestListBridges(t *testing.T) {
