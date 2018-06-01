@@ -1,9 +1,10 @@
 package ovs
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAddBridge(t *testing.T) {
@@ -43,9 +44,8 @@ func TestListBridges(t *testing.T) {
 		t.SkipNow()
 	}
 
-	bridges, err := ListBridges()
+	_, err := ListBridges()
 	assert.NoError(t, err)
-	assert.Equal(t, 0, len(bridges))
 }
 
 func TestAddFlow(t *testing.T) {
