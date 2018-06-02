@@ -36,4 +36,7 @@ clean:
 	-rm -f client/${BINARY}-*
 	-rm -f server/${BINARY}-*
 
+test:
+	sudo -E env PATH=$$PATH TEST_OVS=1 go test -v ./ovs
+
 .PHONY: server client clean
