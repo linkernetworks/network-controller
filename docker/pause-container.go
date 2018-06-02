@@ -8,10 +8,10 @@ import (
 )
 
 func FindK8SPauseContainerID(containers []types.Container, PodName, Namespace, PodUUID string) (string, error) {
+	// ex: k8s_POD_myinit_default_05ab36d8-65aa-11e8-b35e-42010af00248_0
+	pattern := fmt.Sprintf("k8s_POD_%s_%s_%s_\\d+", PodName, Namespace, PodUUID)
+	r, err := regexp.Compile(pattern)
 	for _, container := range containers {
-		// ex: k8s_POD_myinit_default_05ab36d8-65aa-11e8-b35e-42010af00248_0
-		pattern := fmt.Sprintf("k8s_POD_%s_%s_%s_\\d+", PodName, Namespace, PodUUID)
-		r, err := regexp.Compile(pattern)
 		if err != nil {
 			return "", err
 		}
