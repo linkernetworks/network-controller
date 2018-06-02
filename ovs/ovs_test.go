@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"testing"
 
+	"github.com/digitalocean/go-openvswitch/ovs"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -164,6 +165,9 @@ func TestAddDelPort(t *testing.T) {
 }
 
 func TestAddDelPortFail(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
+		t.SkipNow()
+	}
 	mode := changeVSCtl(t)
 	defer resetVSCtl(mode)
 
