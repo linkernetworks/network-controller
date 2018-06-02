@@ -1,4 +1,4 @@
-package ovs
+package openvswitch
 
 import (
 	"os"

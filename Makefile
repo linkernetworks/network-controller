@@ -37,6 +37,6 @@ clean:
 	-rm -f server/${BINARY}-*
 
 test:
-	sudo -E env PATH=$$PATH TEST_OVS=1 go test -v ./ovs ./docker
+	sudo -E env PATH=$$PATH TEST_OVS=1 go test -v ./openvswitch ./docker
 
 .PHONY: server client test clean
