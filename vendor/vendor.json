@@ -105,6 +105,12 @@
 			"revisionTime": "2017-09-28T21:45:39Z"
 		},
 		{
+			"checksumSHA1": "oEpUpU8ASfBWIRGesd9fBG1ar40=",
+			"path": "github.com/Microsoft/go-winio",
+			"revision": "ab35fc04b6365e8fcb18e6e9e41ea4a02b10b175",
+			"revisionTime": "2018-05-01T17:05:46Z"
+		},
+		{
 			"checksumSHA1": "CSPbwbyzqA6sfORicn4HFtIhF/c=",
 			"path": "github.com/davecgh/go-spew/spew",
 			"revision": "8991bc29aa16c548c550c7ff78260e27b9ab7c73",
@@ -115,6 +121,30 @@
 			"path": "github.com/digitalocean/go-openvswitch/ovs",
 			"revision": "cbff56fd2fff5f5d2f804016d428f8189c2bad11",
 			"revisionTime": "2018-05-24T14:42:07Z"
+		},
+		{
+			"checksumSHA1": "Gj+xR1VgFKKmFXYOJMnAczC3Znk=",
+			"path": "github.com/docker/distribution/digestset",
+			"revision": "f0cc927784781fa395c06317c58dea2841ece3a9",
+			"revisionTime": "2018-05-22T17:56:53Z"
+		},
+		{
+			"checksumSHA1": "2Fe4D6PGaVE2he4fUeenLmhC1lE=",
+			"path": "github.com/docker/distribution/reference",
+			"revision": "f0cc927784781fa395c06317c58dea2841ece3a9",
+			"revisionTime": "2018-05-22T17:56:53Z"
+		},
+		{
+			"checksumSHA1": "jUfDG3VQsA2UZHvvIXncgiddpYA=",
+			"path": "github.com/docker/go-connections/sockets",
+			"revision": "7395e3f8aa162843a74ed6d48e79627d9792ac55",
+			"revisionTime": "2018-02-28T14:10:15Z"
+		},
+		{
+			"checksumSHA1": "KGILLnJybU/+xWJu8rgM4CpYT2M=",
+			"path": "github.com/docker/go-connections/tlsconfig",
+			"revision": "7395e3f8aa162843a74ed6d48e79627d9792ac55",
+			"revisionTime": "2018-02-28T14:10:15Z"
 		},
 		{
 			"checksumSHA1": "8e94vVGc8ssfxcpgDSGLmp1hRJM=",
@@ -153,6 +183,18 @@
 			"revisionTime": "2018-05-22T22:42:51Z"
 		},
 		{
+			"checksumSHA1": "VnkNO/q6ZVTYCd/F7nmHosHC5a4=",
+			"path": "github.com/opencontainers/go-digest",
+			"revision": "c9281466c8b2f606084ac71339773efd177436e7",
+			"revisionTime": "2018-04-30T19:00:53Z"
+		},
+		{
+			"checksumSHA1": "ljd3FhYRJ91cLZz3wsH9BQQ2JbA=",
+			"path": "github.com/pkg/errors",
+			"revision": "816c9085562cd7ee03e7f8188a1cfd942858cded",
+			"revisionTime": "2018-03-11T21:45:15Z"
+		},
+		{
 			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
@@ -169,6 +211,12 @@
 			"path": "golang.org/x/net/context",
 			"revision": "dfa909b99c79129e1100513e5cd36307665e5723",
 			"revisionTime": "2018-05-23T21:06:46Z"
+		},
+		{
+			"checksumSHA1": "WHc3uByvGaMcnSoI21fhzYgbOgg=",
+			"path": "golang.org/x/net/context/ctxhttp",
+			"revision": "1e491301e022f8f977054da4c2d852decd59571f",
+			"revisionTime": "2018-05-30T06:29:46Z"
 		},
 		{
 			"checksumSHA1": "c3H2wB/3tGrw6VqCnlye+kSdoXU=",
@@ -195,10 +243,22 @@
 			"revisionTime": "2018-05-23T21:06:46Z"
 		},
 		{
+			"checksumSHA1": "W+3cWL5KjepzF1XvyMSBUYfa8x8=",
+			"path": "golang.org/x/net/internal/socks",
+			"revision": "1e491301e022f8f977054da4c2d852decd59571f",
+			"revisionTime": "2018-05-30T06:29:46Z"
+		},
+		{
 			"checksumSHA1": "UxahDzW2v4mf/+aFxruuupaoIwo=",
 			"path": "golang.org/x/net/internal/timeseries",
 			"revision": "dfa909b99c79129e1100513e5cd36307665e5723",
 			"revisionTime": "2018-05-23T21:06:46Z"
+		},
+		{
+			"checksumSHA1": "UrFs0T7kkYsUxJG5bsJt7KB8ejI=",
+			"path": "golang.org/x/net/proxy",
+			"revision": "1e491301e022f8f977054da4c2d852decd59571f",
+			"revisionTime": "2018-05-30T06:29:46Z"
 		},
 		{
 			"checksumSHA1": "rJn3m/27kO+2IU6KCCZ74Miby+8=",
@@ -207,12 +267,18 @@
 			"revisionTime": "2018-05-23T21:06:46Z"
 		},
 		{
+			"checksumSHA1": "m5QCvoZ2KaoLTG9VWjYNonM08b8=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "c11f84a56e43e20a78cee75a7c034031ecf57d1f",
+			"revisionTime": "2018-05-25T13:55:20Z"
+		},
+		{
 			"checksumSHA1": "CbpjEkkOeh0fdM/V8xKDdI0AA88=",
 			"path": "golang.org/x/text/secure/bidirule",
 			"revision": "5c1cf69b5978e5a34c5f9ba09a83e56acc4b7877",
 			"revisionTime": "2018-05-10T04:57:31Z"
 		},
-        {
+		{
 			"checksumSHA1": "ziMb9+ANGRJSSIuxYdRbA+cDRBQ=",
 			"path": "golang.org/x/text/transform",
 			"revision": "5c1cf69b5978e5a34c5f9ba09a83e56acc4b7877",
