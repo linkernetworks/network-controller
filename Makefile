@@ -33,9 +33,7 @@ client:
 	cd - >/dev/null
 
 vet:
-	-cd ${BUILD_DIR}; \
-	go vet ./... > ${VET_REPORT} 2>&1 ; \
-	cd - >/dev/null
+	go vet ./... > ${VET_REPORT} 2>&1 ; 
 
 clean:
 	-rm -f messages/messages.pb.go
