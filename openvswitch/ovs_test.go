@@ -84,7 +84,7 @@ func TestAddFlow(t *testing.T) {
 	assert.Equal(t, 1, len(flows))
 }
 
-func TestDeleteFlows(t *testing.T) {
+func TestDeleteFlow(t *testing.T) {
 	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
 		t.SkipNow()
 	}
@@ -98,7 +98,7 @@ func TestDeleteFlows(t *testing.T) {
 	err = AddFlow(bridgeName, flowString)
 	assert.NoError(t, err)
 
-	err = DeleteFlows(bridgeName, flowString)
+	err = DeleteFlow(bridgeName, flowString)
 	assert.NoError(t, err)
 
 	flows, err := DumpFlows(bridgeName)
@@ -182,7 +182,7 @@ func TestFlowOperationsFail(t *testing.T) {
 	bridgeName := "br0"
 	err := AddFlow(bridgeName, "")
 	assert.Error(t, err)
-	err = DeleteFlows(bridgeName, "")
+	err = DeleteFlow(bridgeName, "")
 	assert.Error(t, err)
 	flows, err := DumpFlows(bridgeName)
 	assert.Error(t, err)
