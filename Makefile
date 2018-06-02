@@ -36,7 +36,7 @@ clean:
 	-rm -f client/${BINARY}-*
 	-rm -f server/${BINARY}-*
 
-test: pb
+test: pb client server
 	go clean -testcache 
 	sudo -E env PATH=$$PATH TEST_OVS=1 go test -v ./...
 

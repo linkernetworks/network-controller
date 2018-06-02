@@ -5,7 +5,7 @@ import (
 	"net"
 
 	pb "github.com/linkernetworks/network-controller/messages"
-	"github.com/linkernetworks/network-controller/ovs"
+	ovs "github.com/linkernetworks/network-controller/openvswitch"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
