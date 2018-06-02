@@ -1,5 +1,7 @@
 language: go
 sudo: true
+services:
+  - docker
 
 #refer to https://github.com/pseudomuto/protoc-gen-doc/blob/master/.travis.yml
 env:
@@ -16,13 +18,13 @@ before_install:
     - sudo apt-get install -y git build-essential openvswitch-switch
     - go get -u github.com/kardianos/govendor
     - go get -u github.com/pierrre/gotestcover
-    - govendor sync
+    - govendor sync -v
     - if [ ! -d "${PROTOC_TARGET}" ]; then curl -fsSL "$PROTOC_RELEASE" > "${PROTOC_TARGET}.zip"; fi
     - if [ -f "${PROTOC_TARGET}.zip" ]; then unzip "${PROTOC_TARGET}.zip" -d "${PROTOC_TARGET}"; fi
     - go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 
 script:
-    - sudo -E env PATH=$PATH TEST_OVS=1 gotestcover -coverprofile=coverage.txt -covermode=atomic ./ovs
+    - sudo -E env PATH=$PATH TEST_OVS=1 gotestcover -coverprofile=coverage.txt -covermode=atomic ./ovs ./docker
 after_success:
     - bash <(curl -s https://codecov.io/bash)
 

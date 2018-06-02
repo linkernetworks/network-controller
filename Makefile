@@ -37,6 +37,6 @@ clean:
 	-rm -f server/${BINARY}-*
 
 test:
-	sudo -E env PATH=$$PATH TEST_OVS=1 go test -v ./ovs
+	sudo -E env PATH=$$PATH TEST_OVS=1 go test -v ./ovs ./docker
 
-.PHONY: server client clean
+.PHONY: server client test clean
