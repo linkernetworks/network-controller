@@ -84,7 +84,7 @@ func TestAddFlow(t *testing.T) {
 	assert.Equal(t, 1, len(flows))
 }
 
-func TestDeleteFlows(t *testing.T) {
+func TestDeleteFlow(t *testing.T) {
 	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
 		t.SkipNow()
 	}
@@ -98,7 +98,7 @@ func TestDeleteFlows(t *testing.T) {
 	err = AddFlow(bridgeName, flowString)
 	assert.NoError(t, err)
 
-	err = DeleteFlows(bridgeName, flowString)
+	err = DeleteFlow(bridgeName, flowString)
 	assert.NoError(t, err)
 
 	flows, err := DumpFlows(bridgeName)
@@ -156,11 +156,37 @@ func TestAddDelPort(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, br, bridgeName)
 
+	ports, err := ListPorts(bridgeName)
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(ports))
+
 	err = DeletePort(bridgeName, linkName)
 	assert.NoError(t, err)
 
 	_, err = c.VSwitch.PortToBridge(linkName)
 	assert.Error(t, err)
+}
+
+func TestListPortsFail(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
+		t.SkipNow()
+	}
+
+	bridgeName := "br0"
+	ports, err := ListPorts(bridgeName)
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(ports))
+}
+
+func TestFlowOperationsFail(t *testing.T) {
+	bridgeName := "br0"
+	err := AddFlow(bridgeName, "")
+	assert.Error(t, err)
+	err = DeleteFlow(bridgeName, "")
+	assert.Error(t, err)
+	flows, err := DumpFlows(bridgeName)
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(flows))
 
 }
 

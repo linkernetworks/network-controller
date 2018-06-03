@@ -74,7 +74,7 @@ func AddFlow(bridgeName string, flowString string) error {
 }
 
 // ovs-ofctl del-flow br0 "flow"
-func DeleteFlows(bridgeName string, flowString string) error {
+func DeleteFlow(bridgeName string, flowString string) error {
 	flow := &ovs.Flow{}
 	flow.UnmarshalText([]byte(flowString))
 	c := ovs.New(ovs.Sudo())

@@ -5,7 +5,7 @@ import (
 	"net"
 
 	pb "github.com/linkernetworks/network-controller/messages"
-	"github.com/linkernetworks/network-controller/ovs"
+	ovs "github.com/linkernetworks/network-controller/openvswitch"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -58,7 +58,7 @@ func (s *server) AddFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSRe
 }
 
 func (s *server) DeleteFlow(ctx context.Context, req *pb.DeleteFlowRequest) (*pb.OVSResponse, error) {
-	if err := ovs.DeleteFlows(req.BridgeName, req.FlowString); err != nil {
+	if err := ovs.DeleteFlow(req.BridgeName, req.FlowString); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
 		}, err
