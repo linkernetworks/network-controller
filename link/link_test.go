@@ -56,3 +56,28 @@ func TestSetupVeth(t *testing.T) {
 	assert.NoError(t, err)
 	defer netlink.LinkDel(hostVeth)
 }
+
+func TestInvalidSetupVeth(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_VETH"); !ok {
+		t.SkipNow()
+	}
+	contIfName := "invalid-test-net0"
+	hostVethName := "invalid-test-ovs-0"
+
+	// Create a network namespace
+	netns, err := testutils.NewNS()
+	assert.NoError(t, err)
+
+	err = netns.Do(func(hostNS ns.NetNS) error {
+		// create the veth pair in the container and move host end into host netns
+		hostVeth, containerVeth, err := SetupVeth(contIfName, hostVethName, 1500, hostNS)
+		assert.Error(t, err)
+
+		assert.Nil(t, containerVeth)
+		assert.Nil(t, hostVeth)
+		return nil
+	})
+	hostVeth, err := netlink.LinkByName(hostVethName)
+	assert.Error(t, err)
+	assert.Nil(t, hostVeth)
+}
