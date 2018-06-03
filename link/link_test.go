@@ -7,6 +7,7 @@ import (
 	"github.com/containernetworking/plugins/pkg/ns"
 	"github.com/containernetworking/plugins/pkg/testutils"
 	"github.com/stretchr/testify/assert"
+	"github.com/vishvananda/netlink"
 )
 
 func TestmakeVethPair(t *testing.T) {
