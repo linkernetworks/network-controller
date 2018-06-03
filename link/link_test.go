@@ -15,11 +15,11 @@ func TestmakeVethPair(t *testing.T) {
 		t.SkipNow()
 	}
 	contVeth, err := makeVethPair("test-veth-ns1", "test-ovs-1", 1500)
+	defer netlink.LinkDel(contVeth)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "test-veth-ns1", contVeth.Attrs().Name)
 	assert.Equal(t, 1500, contVeth.Attrs().MTU)
-	defer netlink.LinkDel(contVeth)
 }
 
 func TestInvalidmakeVethPair(t *testing.T) {
@@ -29,7 +29,7 @@ func TestInvalidmakeVethPair(t *testing.T) {
 	contVeth, err := makeVethPair("invalid-test-veth-ns1", "invalid-test-ovs-1", -1800)
 	// Err: numerical result out of range
 	assert.Error(t, err)
-	defer netlink.LinkDel(contVeth)
+	assert.Nil(t, contVeth)
 }
 
 func TestSetupVeth(t *testing.T) {
