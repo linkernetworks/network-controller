@@ -70,14 +70,8 @@ func TestInvalidSetupVeth(t *testing.T) {
 
 	err = netns.Do(func(hostNS ns.NetNS) error {
 		// create the veth pair in the container and move host end into host netns
-		hostVeth, containerVeth, err := SetupVeth(contIfName, hostVethName, 1500, hostNS)
+		_, _, err := SetupVeth(contIfName, hostVethName, -1500, hostNS)
 		assert.Error(t, err)
-
-		assert.Nil(t, containerVeth)
-		assert.Nil(t, hostVeth)
 		return nil
 	})
-	hostVeth, err := netlink.LinkByName(hostVethName)
-	assert.Error(t, err)
-	assert.Nil(t, hostVeth)
 }
