@@ -3,6 +3,9 @@ package main
 import (
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
 	pb "github.com/linkernetworks/network-controller/messages"
 	ovs "github.com/linkernetworks/network-controller/openvswitch"
@@ -78,4 +81,21 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+
+	// Stop all listener by catching interrupt signal
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc, os.Interrupt, syscall.SIGTERM)
+	go func(c chan os.Signal, lis net.Listener, s *grpc.Server) {
+		sig := <-c
+		log.Printf("caught signal: %s", sig.String())
+
+		log.Printf("stopping tcp listener...")
+		lis.Close()
+
+		log.Printf("stopping grpc server...")
+		s.Stop()
+
+		log.Printf("all listener are stopped successfully")
+		os.Exit(0)
+	}(sigc, lis, s)
 }
