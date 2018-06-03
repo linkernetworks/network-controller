@@ -1,6 +1,7 @@
 # Makefile templete reference
 # https://gist.github.com/turtlemonvh/38bd3d73e61769767c35931d8c70ccb4
 BINARY = network-controller
+VET_REPORT = vet.report
 
 VERSION?=?
 COMMIT=$(shell git rev-parse HEAD)
@@ -16,7 +17,7 @@ BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 LDFLAGS = -ldflags "-X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT} -X main.BRANCH=${BRANCH}"
 
 # Build the project
-all: clean pb client server
+all: clean vet pb client server
 
 pb:
 	protoc ./messages/messages.proto --go_out=plugins=grpc:.
@@ -31,13 +32,17 @@ client:
 	go build ${LDFLAGS} -o ${BINARY}-client . ; \
 	cd - >/dev/null
 
+vet:
+	go vet ./... > ${VET_REPORT} 2>&1 ; 
+
 clean:
 	-rm -f messages/messages.pb.go
 	-rm -f client/${BINARY}-*
 	-rm -f server/${BINARY}-*
+	-rm -f ${VET_REPORT}
 
 test: pb client server
 	go clean -testcache 
 	sudo -E env PATH=$$PATH TEST_OVS=1 go test -v ./...
 
-.PHONY: server client test clean
+.PHONY: server client vet test clean
