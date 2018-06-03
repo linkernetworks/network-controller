@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMakeVethPair(t *testing.T) {
+func TestmakeVethPair(t *testing.T) {
 	if _, ok := os.LookupEnv("TEST_VETH"); !ok {
 		t.SkipNow()
 	}
@@ -18,6 +18,15 @@ func TestMakeVethPair(t *testing.T) {
 
 	assert.Equal(t, "test-veth-ns1", contVeth.Attrs().Name)
 	assert.Equal(t, 1500, contVeth.Attrs().MTU)
+}
+
+func TestInvalidmakeVethPair(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_VETH"); !ok {
+		t.SkipNow()
+	}
+	_, err := makeVethPair("test-veth-ns1", "test-ovs-1", -1800)
+	// Err: numerical result out of range
+	assert.Error(t, err)
 }
 
 func TestSetupVeth(t *testing.T) {
