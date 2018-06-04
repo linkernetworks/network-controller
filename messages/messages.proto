@@ -53,3 +53,27 @@ message DeleteFlowRequest {
     string bridgeName = 1;
     string flowString = 2;
 }
+
+message FindNetworkNamespacePathRequest {
+    string podName = 1;
+    string namespace = 2;
+    string podUUID = 3;
+}
+
+message FindNetworkNamespacePathResponse {
+    string path = 1;
+    bool success = 2;
+    string reason = 3;
+}
+
+message ConnectBridgeRequest {
+    string path = 1;
+    string podUUID = 2;
+    string containerVethName = 3;
+    string bridgeName = 4;
+}
+
+message ConnectBridgeResponse {
+  bool success = 1;
+  string reason = 2;
+}
