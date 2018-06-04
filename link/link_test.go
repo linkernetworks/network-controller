@@ -10,7 +10,7 @@ import (
 	"github.com/vishvananda/netlink"
 )
 
-func TestmakeVethPair(t *testing.T) {
+func TestMakeVethPair(t *testing.T) {
 	if _, ok := os.LookupEnv("TEST_VETH"); !ok {
 		t.SkipNow()
 	}
