@@ -10,6 +10,8 @@ service NetworkControl {
   rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
   rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
   rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
+  rpc FindNetworkNamespacePath (FindNetworkNamespacePathRequest) returns(FindNetworkNamespacePathResponse) {}
+  rpc ConnectBridge (ConnectBridgeRequest) returns (ConnectBridgeResponse) {}
 }
 
 message EchoRequest {
