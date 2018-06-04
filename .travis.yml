@@ -11,7 +11,7 @@ env:
     - PATH="${PROTOC_TARGET}/bin:${PATH}"
     - secure: Tbet2rxD8QgjthAo+bxt41qbF2wUPTx0difGK5p4yQISK/njTuT5cqcxnOa4GIbyKtNtx0EgGnyVcQJiQkmZiF6Sabf0mtqU/CQ4PmVV76e9bHwA/CrTtudibMn16ozxuuxvhNxFOMQEhwcQOkW93M/Q9FZUEw9/CGpRGFfSzuA=
 
-go: 
+go:
      - 1.9.x
 
 before_install:
@@ -25,7 +25,7 @@ before_install:
     - make pb
 
 script:
-    - sudo -E env PATH=$PATH TEST_OVS=1 gotestcover -coverprofile=coverage.txt -covermode=atomic ./...
+    - sudo -E env PATH=$PATH TEST_OVS=1 TEST_VETH=1 gotestcover -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)

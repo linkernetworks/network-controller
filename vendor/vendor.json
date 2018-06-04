@@ -111,6 +111,48 @@
 			"revisionTime": "2018-05-01T17:05:46Z"
 		},
 		{
+			"checksumSHA1": "O7JSpVlZNZIiiI6pspfw/HmzW1g=",
+			"path": "github.com/containernetworking/cni/pkg/skel",
+			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
+			"revisionTime": "2018-05-31T18:41:59Z"
+		},
+		{
+			"checksumSHA1": "kyeaxrxhMl3XETXxYfjP5dUeMYY=",
+			"path": "github.com/containernetworking/cni/pkg/types",
+			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
+			"revisionTime": "2018-05-31T18:41:59Z"
+		},
+		{
+			"checksumSHA1": "lmLYXYR/twmBu+6U678QNF+BQlQ=",
+			"path": "github.com/containernetworking/cni/pkg/types/020",
+			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
+			"revisionTime": "2018-05-31T18:41:59Z"
+		},
+		{
+			"checksumSHA1": "pvYIWkqkUeXBuO38Um+v9lQ882M=",
+			"path": "github.com/containernetworking/cni/pkg/types/current",
+			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
+			"revisionTime": "2018-05-31T18:41:59Z"
+		},
+		{
+			"checksumSHA1": "HPTtMjgVZDO6r4AdtKHP45m1z48=",
+			"path": "github.com/containernetworking/cni/pkg/version",
+			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
+			"revisionTime": "2018-05-31T18:41:59Z"
+		},
+		{
+			"checksumSHA1": "ZM0SnLIE5+Clczod2Md8mVGMz/M=",
+			"path": "github.com/containernetworking/plugins/pkg/ns",
+			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
+			"revisionTime": "2018-05-16T15:54:47Z"
+		},
+		{
+			"checksumSHA1": "dn8XMvhoQkyw+nfwGc2F/0FbqvM=",
+			"path": "github.com/containernetworking/plugins/pkg/testutils",
+			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
+			"revisionTime": "2018-05-16T15:54:47Z"
+		},
+		{
 			"checksumSHA1": "CSPbwbyzqA6sfORicn4HFtIhF/c=",
 			"path": "github.com/davecgh/go-spew/spew",
 			"revision": "8991bc29aa16c548c550c7ff78260e27b9ab7c73",
@@ -237,6 +279,24 @@
 			"revisionTime": "2018-03-14T08:05:35Z"
 		},
 		{
+			"checksumSHA1": "sZaLgMMf+AKwGE8mMvwdDCpHsQA=",
+			"path": "github.com/vishvananda/netlink",
+			"revision": "7c0b5944a3036fc8dc9f4cbf2f5c76dedd29af8b",
+			"revisionTime": "2018-04-08T13:56:38Z"
+		},
+		{
+			"checksumSHA1": "wN69Ln5aaBlq9NHYjowdyOAhbTQ=",
+			"path": "github.com/vishvananda/netlink/nl",
+			"revision": "7c0b5944a3036fc8dc9f4cbf2f5c76dedd29af8b",
+			"revisionTime": "2018-04-08T13:56:38Z"
+		},
+		{
+			"checksumSHA1": "qf37dJzNS2iXycH62ukEw+cleZY=",
+			"path": "github.com/vishvananda/netns",
+			"revision": "be1fbeda19366dea804f00efff2dd73a1642fdcc",
+			"revisionTime": "2017-11-10T22:28:10Z"
+		},
+		{
 			"checksumSHA1": "GtamqiJoL7PGHsN454AoffBFMa8=",
 			"path": "golang.org/x/net/context",
 			"revision": "1e491301e022f8f977054da4c2d852decd59571f",
@@ -295,6 +355,12 @@
 			"path": "golang.org/x/net/trace",
 			"revision": "1e491301e022f8f977054da4c2d852decd59571f",
 			"revisionTime": "2018-05-30T06:29:46Z"
+		},
+		{
+			"checksumSHA1": "VUb+SqeoloAw1A2Jz9IzkDNs06c=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "c11f84a56e43e20a78cee75a7c034031ecf57d1f",
+			"revisionTime": "2018-05-25T13:55:20Z"
 		},
 		{
 			"checksumSHA1": "m5QCvoZ2KaoLTG9VWjYNonM08b8=",
