@@ -32,7 +32,7 @@ client:
 	go build ${LDFLAGS} -o ${BINARY}-client . ; \
 	cd - >/dev/null
 
-vet:
+vet: pb
 	go vet ./... > ${VET_REPORT} 2>&1 ; 
 
 clean:

@@ -25,6 +25,7 @@ before_install:
     - make pb
 
 script:
+    - go vet ./...
     - sudo -E env PATH=$PATH TEST_OVS=1 TEST_VETH=1 gotestcover -coverprofile=coverage.txt -covermode=atomic ./...
 
 after_success:
