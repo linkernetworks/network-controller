@@ -19,7 +19,9 @@ import (
 func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetworkNamespacePathRequest) (*pb.FindNetworkNamespacePathResponse, error) {
 	cli, err := docker.New()
 	if err != nil {
-		return nil, err
+		return &pb.FindNetworkNamespacePathResponse{
+			Success: false, Reason: err.Error(),
+		}, err
 	}
 
 	containers, err := cli.ListContainer()
