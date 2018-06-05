@@ -5,7 +5,6 @@ import (
 
 	pb "github.com/linkernetworks/network-controller/messages"
 
-	ovs "github.com/linkernetworks/network-controller/openvswitch"
 	"golang.org/x/net/context"
 )
 
@@ -21,7 +20,7 @@ func (s *server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingRespons
 }
 
 func (s *server) AddPort(ctx context.Context, req *pb.AddPortRequest) (*pb.OVSResponse, error) {
-	if err := ovs.AddPort(req.BridgeName, req.IfaceName); err != nil {
+	if err := s.OVS.AddPort(req.BridgeName, req.IfaceName); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
 		}, err
@@ -30,7 +29,7 @@ func (s *server) AddPort(ctx context.Context, req *pb.AddPortRequest) (*pb.OVSRe
 }
 
 func (s *server) DeletePort(ctx context.Context, req *pb.DeletePortRequest) (*pb.OVSResponse, error) {
-	if err := ovs.DeletePort(req.BridgeName, req.IfaceName); err != nil {
+	if err := s.OVS.DeletePort(req.BridgeName, req.IfaceName); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
 		}, err
@@ -39,7 +38,7 @@ func (s *server) DeletePort(ctx context.Context, req *pb.DeletePortRequest) (*pb
 }
 
 func (s *server) AddFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSResponse, error) {
-	if err := ovs.AddFlow(req.BridgeName, req.FlowString); err != nil {
+	if err := s.OVS.AddFlow(req.BridgeName, req.FlowString); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
 		}, err
@@ -48,7 +47,7 @@ func (s *server) AddFlow(ctx context.Context, req *pb.AddFlowRequest) (*pb.OVSRe
 }
 
 func (s *server) DeleteFlow(ctx context.Context, req *pb.DeleteFlowRequest) (*pb.OVSResponse, error) {
-	if err := ovs.DeleteFlow(req.BridgeName, req.FlowString); err != nil {
+	if err := s.OVS.DeleteFlow(req.BridgeName, req.FlowString); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
 		}, err

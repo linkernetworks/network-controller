@@ -6,90 +6,95 @@ import (
 	"github.com/digitalocean/go-openvswitch/ovs"
 )
 
-// ovs-vsctl --may-exist add-br ovsbr0
-func AddBridge(bridgeName string) error {
-	c := ovs.New(ovs.Sudo())
-	if err := c.VSwitch.AddBridge(bridgeName); err != nil {
-		return fmt.Errorf("failed to add bridge: %v", err)
+type OVSManager struct {
+	Client *ovs.Client
+}
+
+func New() *OVSManager {
+	return &OVSManager{
+		Client: ovs.New(ovs.Sudo()),
+	}
+}
+
+func (o *OVSManager) CreateBridge(bridgeName string) error {
+	if err := o.Client.VSwitch.AddBridge(bridgeName); err != nil {
+		return fmt.Errorf("Failed to add bridge %s: %v", bridgeName, err)
+	}
+
+	return nil
+}
+
+func (o *OVSManager) DeleteBridge(bridgeName string) error {
+	if err := o.Client.VSwitch.DeleteBridge(bridgeName); err != nil {
+		return fmt.Errorf("Failed to delete bridge %s: %v", bridgeName, err)
 	}
 	return nil
 }
 
-// ovs-vsctl del-br ovsbr0
-func DeleteBridge(bridgeName string) error {
-	c := ovs.New(ovs.Sudo())
-	if err := c.VSwitch.DeleteBridge(bridgeName); err != nil {
-		return fmt.Errorf("failed to delete bridge: %v", err)
-	}
-	return nil
-}
-
-// ovs-vsctl list-br
-func ListBridges() ([]string, error) {
-	c := ovs.New(ovs.Sudo())
-	bridges, err := c.VSwitch.ListBridges()
+func (o *OVSManager) ListBridges() ([]string, error) {
+	bridges, err := o.Client.VSwitch.ListBridges()
 	if err != nil {
-		return bridges, fmt.Errorf("failed to list bridges: %v", err)
+		return bridges, fmt.Errorf("Failed to list bridges: %v", err)
+	}
+
+	//FIXME remove this after the upstream has fix the problem
+	if len(bridges) == 1 && bridges[0] == "" {
+		return []string{}, nil
 	}
 	return bridges, nil
 }
 
 // ovs-vsctl add-port br0 eth0
-func AddPort(bridgeName, ifName string) error {
-	c := ovs.New(ovs.Sudo())
-	if err := c.VSwitch.AddPort(bridgeName, ifName); err != nil {
-		return fmt.Errorf("failed to add port: %v", err)
+func (o *OVSManager) AddPort(bridgeName, ifName string) error {
+	if err := o.Client.VSwitch.AddPort(bridgeName, ifName); err != nil {
+		return fmt.Errorf("Failed to add port: %s on %s: %v", ifName, bridgeName, err)
 	}
 	return nil
 }
 
-// ovs-vsctl del-port br0 eth0
-func DeletePort(bridgeName, ifName string) error {
-	c := ovs.New(ovs.Sudo())
-	if err := c.VSwitch.DeletePort(bridgeName, ifName); err != nil {
-		return fmt.Errorf("failed to delete port: %v", err)
+func (o *OVSManager) DeletePort(bridgeName, ifName string) error {
+	if err := o.Client.VSwitch.DeletePort(bridgeName, ifName); err != nil {
+		return fmt.Errorf("Failed to delete port: %s on %s: %v", ifName, bridgeName, err)
 	}
 	return nil
 }
 
-// ovs-vsctl list-ports br0
-func ListPorts(bridgeName string) ([]string, error) {
-	c := ovs.New(ovs.Sudo())
-	ports, err := c.VSwitch.ListPorts(bridgeName)
+func (o *OVSManager) ListPorts(bridgeName string) ([]string, error) {
+	ports, err := o.Client.VSwitch.ListPorts(bridgeName)
 	if err != nil {
-		return ports, fmt.Errorf("failed to list ports: %v", err)
+		return ports, fmt.Errorf("Failed to list ports of bridge %s: %v", bridgeName, err)
+	}
+
+	//FIXME remove this after the upstream has fix the problem
+	if len(ports) == 1 && ports[0] == "" {
+		return []string{}, nil
 	}
 	return ports, nil
 }
 
-// ovs-ofctl add-flow br0 "flow"
-func AddFlow(bridgeName string, flowString string) error {
-	flow := &ovs.Flow{}
-	flow.UnmarshalText([]byte(flowString))
-	c := ovs.New(ovs.Sudo())
-	if err := c.OpenFlow.AddFlow(bridgeName, flow); err != nil {
-		return fmt.Errorf("failed to add flow: %v", err)
+func (o *OVSManager) AddFlow(bridgeName, flow string) error {
+	f := &ovs.Flow{}
+	f.UnmarshalText([]byte(flow))
+	if err := o.Client.OpenFlow.AddFlow(bridgeName, f); err != nil {
+		return fmt.Errorf("Failed to add flow:%s into %s, %v", flow, bridgeName, err)
 	}
 	return nil
 }
 
 // ovs-ofctl del-flow br0 "flow"
-func DeleteFlow(bridgeName string, flowString string) error {
-	flow := &ovs.Flow{}
-	flow.UnmarshalText([]byte(flowString))
-	c := ovs.New(ovs.Sudo())
-	if err := c.OpenFlow.DelFlows(bridgeName, flow.MatchFlow()); err != nil {
-		return fmt.Errorf("failed to delete flows: %v", err)
+func (o *OVSManager) DeleteFlow(bridgeName, flow string) error {
+	f := &ovs.Flow{}
+	f.UnmarshalText([]byte(flow))
+	if err := o.Client.OpenFlow.DelFlows(bridgeName, f.MatchFlow()); err != nil {
+		return fmt.Errorf("Failed to delete flows: %s on %s :%v", flow, bridgeName, err)
 	}
 	return nil
 }
 
-// ovs-ofctl dump-flows br0
-func DumpFlows(bridgeName string) ([]*ovs.Flow, error) {
-	c := ovs.New(ovs.Sudo())
-	flows, err := c.OpenFlow.DumpFlows(bridgeName)
+func (o *OVSManager) DumpFlows(bridgeName string) ([]*ovs.Flow, error) {
+	flows, err := o.Client.OpenFlow.DumpFlows(bridgeName)
 	if err != nil {
-		return flows, fmt.Errorf("failed to dump flows: %v", err)
+		return flows, fmt.Errorf("Failed to dump flows: %v", err)
 	}
 	return flows, nil
 }
