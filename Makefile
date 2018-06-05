@@ -43,6 +43,6 @@ clean:
 
 test: pb client server
 	go clean -testcache
-	sudo -E env PATH=$$PATH TEST_OVS=1 TEST_VETH go test -v ./...
+	sudo -E env PATH=$$PATH TEST_OVS=1 TEST_VETH=1 go test -v ./...
 
 .PHONY: server client vet test clean

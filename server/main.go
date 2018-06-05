@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	pb "github.com/linkernetworks/network-controller/messages"
+	ovs "github.com/linkernetworks/network-controller/openvswitch"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,7 +19,9 @@ const (
 )
 
 // server is used to implement messages.NetworkServer.
-type server struct{}
+type server struct {
+	OVS *ovs.OVSManager
+}
 
 func main() {
 	lis, err := net.Listen("tcp", port)
@@ -26,7 +29,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterNetworkControlServer(s, &server{})
+	pb.RegisterNetworkControlServer(s, &server{OVS: ovs.New()})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {

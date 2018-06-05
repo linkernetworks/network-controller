@@ -74,4 +74,5 @@ func TestInvalidSetupVeth(t *testing.T) {
 		assert.Error(t, err)
 		return nil
 	})
+	assert.NoError(t, err)
 }

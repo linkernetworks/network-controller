@@ -4,7 +4,6 @@ import (
 	"runtime"
 
 	pb "github.com/linkernetworks/network-controller/messages"
-	ovs "github.com/linkernetworks/network-controller/openvswitch"
 	"github.com/linkernetworks/network-controller/utils"
 
 	"github.com/containernetworking/plugins/pkg/ns"
@@ -63,7 +62,7 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 		}, err
 	}
 
-	if err := ovs.AddPort(req.BridgeName, hostVethName); err != nil {
+	if err := s.OVS.AddPort(req.BridgeName, hostVethName); err != nil {
 		return &pb.ConnectBridgeResponse{
 			Success: false, Reason: err.Error(),
 		}, err
