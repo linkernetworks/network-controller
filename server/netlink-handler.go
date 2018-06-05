@@ -26,6 +26,11 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 			Success: false, Reason: err.Error(),
 		}, err
 	}
+	if containerID == "" {
+		return &pb.FindNetworkNamespacePathResponse{
+			Success: false, Reason: "ContainerID is empty.",
+		}, err
+	}
 
 	containerInfo, err := docker.InspectContainer(containerID)
 	if err != nil {
