@@ -3,6 +3,7 @@ package main
 import (
 	"runtime"
 
+	client "docker.io/go-docker"
 	pb "github.com/linkernetworks/network-controller/messages"
 	"github.com/linkernetworks/network-controller/utils"
 
@@ -13,7 +14,12 @@ import (
 )
 
 func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetworkNamespacePathRequest) (*pb.FindNetworkNamespacePathResponse, error) {
-	containers, err := docker.ListContainer()
+	cli, err := client.NewEnvClient()
+	if err != nil {
+		return nil, err
+	}
+
+	containers, err := docker.ListContainer(cli)
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
@@ -32,7 +38,7 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 		}, err
 	}
 
-	containerInfo, err := docker.InspectContainer(containerID)
+	containerInfo, err := docker.InspectContainer(cli, containerID)
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
