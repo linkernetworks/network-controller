@@ -114,6 +114,10 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 		}
 
 		_, ipv4Net, err := net.ParseCIDR(req.IP)
+		if err != nil {
+			return err
+		}
+
 		gatewayAddr, _, err := net.ParseCIDR(req.Gateway)
 		if err != nil {
 			return err
