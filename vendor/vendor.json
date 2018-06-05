@@ -111,6 +111,12 @@
 			"revisionTime": "2018-05-01T17:05:46Z"
 		},
 		{
+			"checksumSHA1": "xfbSHE1o4bpf2Ei6bLf60N7iR9Q=",
+			"path": "github.com/containernetworking/cni/pkg/invoke",
+			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
+			"revisionTime": "2018-05-31T18:41:59Z"
+		},
+		{
 			"checksumSHA1": "O7JSpVlZNZIiiI6pspfw/HmzW1g=",
 			"path": "github.com/containernetworking/cni/pkg/skel",
 			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
@@ -141,6 +147,18 @@
 			"revisionTime": "2018-05-31T18:41:59Z"
 		},
 		{
+			"checksumSHA1": "sHP4Pnt1kftYMGDZttlz3bvFK2k=",
+			"path": "github.com/containernetworking/plugins/pkg/ip",
+			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
+			"revisionTime": "2018-05-16T15:54:47Z"
+		},
+		{
+			"checksumSHA1": "s/z1JO9VhL/ftdsZfkg24vxZJvM=",
+			"path": "github.com/containernetworking/plugins/pkg/ipam",
+			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
+			"revisionTime": "2018-05-16T15:54:47Z"
+		},
+		{
 			"checksumSHA1": "ZM0SnLIE5+Clczod2Md8mVGMz/M=",
 			"path": "github.com/containernetworking/plugins/pkg/ns",
 			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
@@ -151,6 +169,24 @@
 			"path": "github.com/containernetworking/plugins/pkg/testutils",
 			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
 			"revisionTime": "2018-05-16T15:54:47Z"
+		},
+		{
+			"checksumSHA1": "rUAk+nce6eDIWtYo/QYIoqlTfrY=",
+			"path": "github.com/containernetworking/plugins/pkg/utils/hwaddr",
+			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
+			"revisionTime": "2018-05-16T15:54:47Z"
+		},
+		{
+			"checksumSHA1": "eVojiWsh48y175NN7Newtb9lmxQ=",
+			"path": "github.com/containernetworking/plugins/pkg/utils/sysctl",
+			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
+			"revisionTime": "2018-05-16T15:54:47Z"
+		},
+		{
+			"checksumSHA1": "XThyw/FZ+eIbebe6zQrpJuIxHgw=",
+			"path": "github.com/coreos/go-iptables/iptables",
+			"revision": "b5b1876b170881a8259f036445ee89c8669db386",
+			"revisionTime": "2018-02-21T14:29:34Z"
 		},
 		{
 			"checksumSHA1": "CSPbwbyzqA6sfORicn4HFtIhF/c=",
@@ -271,6 +307,12 @@
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
 			"revisionTime": "2016-01-10T10:55:54Z"
+		},
+		{
+			"checksumSHA1": "7Fqh2nZs8wQCD0AYGsqfLodWHAk=",
+			"path": "github.com/safchain/ethtool",
+			"revision": "6e3f4faa84e1d8d48afec75ed064cf3611d3f8bf",
+			"revisionTime": "2018-05-04T15:00:54Z"
 		},
 		{
 			"checksumSHA1": "6LwXZI7kXm1C0h4Ui0Y52p9uQhk=",

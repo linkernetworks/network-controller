@@ -1,11 +1,15 @@
 package main
 
 import (
+	"net"
 	"runtime"
 
 	pb "github.com/linkernetworks/network-controller/messages"
 	"github.com/linkernetworks/network-controller/utils"
 
+	"github.com/containernetworking/cni/pkg/types"
+	"github.com/containernetworking/cni/pkg/types/current"
+	"github.com/containernetworking/plugins/pkg/ipam"
 	"github.com/containernetworking/plugins/pkg/ns"
 	"github.com/linkernetworks/network-controller/docker"
 	"github.com/linkernetworks/network-controller/link"
@@ -74,4 +78,51 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 	}
 
 	return &pb.ConnectBridgeResponse{Success: true}, nil
+}
+
+func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceRequest) (*pb.ConfigureIfaceResponse, error) {
+	runtime.LockOSThread()
+	netns, err := ns.GetNS(req.Path)
+	if err != nil {
+		return &pb.ConfigureIfaceResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+
+	err = netns.Do(func(_ ns.NetNS) error {
+		result := &current.Result{}
+		result.Interfaces = []*current.Interface{{Name: req.ContainerVethName}}
+
+		ipv4, err := types.ParseCIDR(req.IP)
+		if err != nil {
+			return err
+		}
+		result.IPs = []*current.IPConfig{
+			{
+				Version:   "4",
+				Interface: current.Int(0),
+				Address:   *ipv4,
+				Gateway:   net.ParseIP(req.Gateway),
+			},
+		}
+
+		_, ipv4Net, err := net.ParseCIDR(req.IP)
+		gatewayAddr, _, err := net.ParseCIDR(req.Gateway)
+		if err != nil {
+			return err
+		}
+		result.Routes = []*types.Route{{Dst: *ipv4Net, GW: gatewayAddr}}
+
+		if err := ipam.ConfigureIface(req.ContainerVethName, result); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return &pb.ConfigureIfaceResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+
+	return &pb.ConfigureIfaceResponse{Success: true}, nil
 }
