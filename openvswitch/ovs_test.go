@@ -13,9 +13,11 @@ var ovsFile = "/usr/bin/ovs-vsctl"
 var o *OVSManager
 
 func TestMain(m *testing.M) {
-	o = New()
-	retCode := m.Run()
-	os.Exit(retCode)
+	if _, ok := os.LookupEnv("TEST_OVS"); ok {
+		o = New()
+		retCode := m.Run()
+		os.Exit(retCode)
+	}
 }
 
 func changeVSCtl(t *testing.T) os.FileMode {
@@ -32,10 +34,6 @@ func resetVSCtl(mode os.FileMode) {
 }
 
 func TestBridgeOperations(t *testing.T) {
-	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
-		t.SkipNow()
-	}
-
 	bridges, err := o.ListBridges()
 	assert.NoError(t, err)
 	assert.Equal(t, 0, len(bridges))
@@ -57,10 +55,6 @@ func TestBridgeOperations(t *testing.T) {
 }
 
 func TestBridgeOperationsFail(t *testing.T) {
-	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
-		t.SkipNow()
-	}
-
 	mode := changeVSCtl(t)
 	defer resetVSCtl(mode)
 
@@ -79,10 +73,6 @@ func TestBridgeOperationsFail(t *testing.T) {
 }
 
 func TestAddDelPort(t *testing.T) {
-	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
-		t.SkipNow()
-	}
-
 	bridgeName := "br0"
 	err := o.CreateBridge(bridgeName)
 	defer o.DeleteBridge(bridgeName)
@@ -108,10 +98,6 @@ func TestAddDelPort(t *testing.T) {
 }
 
 func TestListPortsFail(t *testing.T) {
-	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
-		t.SkipNow()
-	}
-
 	bridgeName := "br0"
 	ports, err := o.ListPorts(bridgeName)
 	assert.Error(t, err)
@@ -133,10 +119,6 @@ func TestAddDelPortFail(t *testing.T) {
 }
 
 func TestFlowOperation(t *testing.T) {
-	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
-		t.SkipNow()
-	}
-
 	bridgeName := "br0"
 	err := o.CreateBridge(bridgeName)
 	defer o.DeleteBridge(bridgeName)
@@ -159,6 +141,7 @@ func TestFlowOperation(t *testing.T) {
 }
 
 func TestFlowOperationsFail(t *testing.T) {
+
 	bridgeName := "br0"
 	err := o.AddFlow(bridgeName, "")
 	assert.Error(t, err)
