@@ -1,12 +1,10 @@
 package docker
 
 import (
-	"context"
 	"io"
 	"os"
 	"testing"
 
-	client "docker.io/go-docker"
 	"docker.io/go-docker/api/types"
 	"docker.io/go-docker/api/types/container"
 
@@ -36,38 +34,42 @@ func TestGetSandboxKey(t *testing.T) {
 }
 
 func TestListContainer(t *testing.T) {
-	cli, err := client.NewEnvClient()
+	cli, err := New()
 	assert.NoError(t, err)
 
 	image := "alpine"
+
+	//Current Number of container
 	currentLength := 0
-	c, err := ListContainer(cli)
+	c, err := cli.ListContainer()
 	assert.NoError(t, err)
 	currentLength = len(c)
 
-	ctx := context.Background()
-	r, err := cli.ImagePull(ctx, image, types.ImagePullOptions{})
+	//Image Pull
+	r, err := cli.Client.ImagePull(cli.Context, image, types.ImagePullOptions{})
 	assert.NoError(t, err)
 	io.Copy(os.Stdout, r)
 
-	resp, err := cli.ContainerCreate(ctx, &container.Config{
+	//Create Container
+	resp, err := cli.Client.ContainerCreate(cli.Context, &container.Config{
 		Image: image,
 		Cmd:   []string{"tail", "-f", "/etc/hosts"},
 		Tty:   false,
 	}, nil, nil, "")
+	defer cli.Client.ContainerRemove(cli.Context, resp.ID, types.ContainerRemoveOptions{Force: true})
 	assert.NoError(t, err)
 
-	err = cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{})
+	//Start the container
+	err = cli.Client.ContainerStart(cli.Context, resp.ID, types.ContainerStartOptions{})
 	assert.NoError(t, err)
 
-	json, err := InspectContainer(cli, resp.ID)
+	//Inspect
+	json, err := cli.InspectContainer(resp.ID)
 	assert.NoError(t, err)
 	assert.Equal(t, image, json.Config.Image)
 
-	c, err = ListContainer(cli)
+	//The number of container should be original + 1
+	c, err = cli.ListContainer()
 	assert.NoError(t, err)
 	assert.Equal(t, currentLength+1, len(c))
-
-	err = cli.ContainerRemove(ctx, resp.ID, types.ContainerRemoveOptions{Force: true})
-	assert.NoError(t, err)
 }
