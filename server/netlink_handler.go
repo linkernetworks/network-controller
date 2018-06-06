@@ -19,7 +19,9 @@ import (
 func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetworkNamespacePathRequest) (*pb.FindNetworkNamespacePathResponse, error) {
 	cli, err := docker.New()
 	if err != nil {
-		return nil, err
+		return &pb.FindNetworkNamespacePathResponse{
+			Success: false, Reason: err.Error(),
+		}, err
 	}
 
 	containers, err := cli.ListContainer()
@@ -112,6 +114,10 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 		}
 
 		_, ipv4Net, err := net.ParseCIDR(req.IP)
+		if err != nil {
+			return err
+		}
+
 		gatewayAddr, _, err := net.ParseCIDR(req.Gateway)
 		if err != nil {
 			return err

@@ -16,6 +16,7 @@ func New() *OVSManager {
 	}
 }
 
+// ovs-vsctl add-br br0
 func (o *OVSManager) CreateBridge(bridgeName string) error {
 	if err := o.Client.VSwitch.AddBridge(bridgeName); err != nil {
 		return fmt.Errorf("Failed to add bridge %s: %v", bridgeName, err)
@@ -24,6 +25,7 @@ func (o *OVSManager) CreateBridge(bridgeName string) error {
 	return nil
 }
 
+// ovs-vsctl del-br br0
 func (o *OVSManager) DeleteBridge(bridgeName string) error {
 	if err := o.Client.VSwitch.DeleteBridge(bridgeName); err != nil {
 		return fmt.Errorf("Failed to delete bridge %s: %v", bridgeName, err)
@@ -31,6 +33,7 @@ func (o *OVSManager) DeleteBridge(bridgeName string) error {
 	return nil
 }
 
+// ovs-vsctl list-br
 func (o *OVSManager) ListBridges() ([]string, error) {
 	bridges, err := o.Client.VSwitch.ListBridges()
 	if err != nil {
@@ -52,6 +55,7 @@ func (o *OVSManager) AddPort(bridgeName, ifName string) error {
 	return nil
 }
 
+// ovs-vsctl del-port br0 eth0
 func (o *OVSManager) DeletePort(bridgeName, ifName string) error {
 	if err := o.Client.VSwitch.DeletePort(bridgeName, ifName); err != nil {
 		return fmt.Errorf("Failed to delete port: %s on %s: %v", ifName, bridgeName, err)
@@ -59,6 +63,7 @@ func (o *OVSManager) DeletePort(bridgeName, ifName string) error {
 	return nil
 }
 
+// ovs-vsctl list-ports
 func (o *OVSManager) ListPorts(bridgeName string) ([]string, error) {
 	ports, err := o.Client.VSwitch.ListPorts(bridgeName)
 	if err != nil {
@@ -72,6 +77,7 @@ func (o *OVSManager) ListPorts(bridgeName string) ([]string, error) {
 	return ports, nil
 }
 
+// ovs-ofctl add-flow br0 "flow"
 func (o *OVSManager) AddFlow(bridgeName, flow string) error {
 	f := &ovs.Flow{}
 	f.UnmarshalText([]byte(flow))
@@ -91,6 +97,7 @@ func (o *OVSManager) DeleteFlow(bridgeName, flow string) error {
 	return nil
 }
 
+// ovs-ofctl dump-flows br0
 func (o *OVSManager) DumpFlows(bridgeName string) ([]*ovs.Flow, error) {
 	flows, err := o.Client.OpenFlow.DumpFlows(bridgeName)
 	if err != nil {
