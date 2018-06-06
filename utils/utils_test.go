@@ -7,6 +7,6 @@ import (
 )
 
 func TestGenerateVethName(t *testing.T) {
-	o := GenerateVethName("12345678")
-	assert.Equal(t, "vethef797c81", o)
+	o := GenerateVethName("12345678", "12345678")
+	assert.Equal(t, "veth33cdbc38", o)
 }
