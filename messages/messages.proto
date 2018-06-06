@@ -12,6 +12,7 @@ service NetworkControl {
   rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
   rpc FindNetworkNamespacePath (FindNetworkNamespacePathRequest) returns(FindNetworkNamespacePathResponse) {}
   rpc ConnectBridge (ConnectBridgeRequest) returns (ConnectBridgeResponse) {}
+  rpc ConfigureIface (ConfigureIfaceRequest) returns (ConfigureIfaceResponse) {}
 }
 
 message EchoRequest {

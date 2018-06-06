@@ -65,7 +65,7 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 		}, err
 	}
 
-	hostVethName := utils.GenerateVethName(req.PodUUID)
+	hostVethName := utils.GenerateVethName(req.PodUUID, req.ContainerVethName)
 	err = netns.Do(func(hostNS ns.NetNS) error {
 		if _, _, err := link.SetupVeth(req.ContainerVethName, hostVethName, 1500, hostNS); err != nil {
 			return err
