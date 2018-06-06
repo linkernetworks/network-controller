@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
-	"log"
-	"os"
-	"time"
-
 	pb "github.com/linkernetworks/network-controller/messages"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"log"
+	"os"
+	"strings"
+	"time"
 )
 
 func main() {
@@ -42,6 +42,7 @@ func main() {
 	pod_namespace = os.Getenv("MY_POD_NAMESPACE")
 	pod_uuid = os.Getenv("MY_POD_UUID")
 	pod_vethname = os.Getenv("MY_POD_VETH_NAME")
+	pod_veth_list := strings.Split(pod_vethname, ",")
 	pod_bridgename = os.Getenv("MY_POD_BRIDGE_NAME")
 
 	if pod_name == "" || pod_namespace == "" || pod_uuid == "" || pod_vethname == "" || pod_bridgename == "" {
@@ -53,17 +54,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("There is something wrong with find network namespace pathpart.\n %v", err)
 	}
-	if n.Success == true {
+	if n.Success {
 		log.Printf("The path is %s.", n.Path)
 		// Let's connect bridge
-		b, err := c.ConnectBridge(ctx, &pb.ConnectBridgeRequest{Path: n.Path, PodUUID: pod_uuid, ContainerVethName: pod_vethname, BridgeName: pod_bridgename})
-		if err != nil {
-			log.Fatalf("There is something wrong with connect bridge: %v", err)
-		}
-		if b.Success == true {
-			log.Printf("Connecting bridge is sussessful. The reason is %s.", b.Reason)
-		} else {
-			log.Printf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
+		for i := range pod_veth_list {
+			log.Println(pod_veth_list[i])
+			b, err := c.ConnectBridge(ctx, &pb.ConnectBridgeRequest{Path: n.Path, PodUUID: pod_uuid, ContainerVethName: string(pod_veth_list[i]), BridgeName: pod_bridgename})
+			if err != nil {
+				log.Fatalf("There is something wrong with connect bridge: %v", err)
+			}
+			if b.Success {
+				log.Printf("Connecting bridge is sussessful. The reason is %s.", b.Reason)
+			} else {
+				log.Printf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
+			}
 		}
 	} else {
 		log.Printf("It's not success. The reason is %s.", n.Reason)

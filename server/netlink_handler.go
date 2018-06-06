@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net"
-	"runtime"
-
 	pb "github.com/linkernetworks/network-controller/messages"
 	"github.com/linkernetworks/network-controller/utils"
+	"log"
+	"net"
+	"runtime"
 
 	"github.com/containernetworking/cni/pkg/types"
 	"github.com/containernetworking/cni/pkg/types/current"
@@ -25,14 +25,20 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 	}
 
 	containers, err := cli.ListContainer()
+	log.Println("in FindNetworkNamespacePath function: containers")
+	log.Println(containers)
 	if err != nil {
+		log.Println(err)
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
 		}, err
 	}
 
 	containerID, err := docker.FindK8SPauseContainerID(containers, req.PodName, req.Namespace, req.PodUUID)
+	log.Println("in FindNetworkNamespacePath function: containerID")
+	log.Println(containerID)
 	if err != nil {
+		log.Println(err)
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
 		}, err
@@ -44,7 +50,10 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 	}
 
 	containerInfo, err := cli.InspectContainer(containerID)
+	log.Println("in FindNetworkNamespacePath function: containerID")
+	log.Println(containerInfo)
 	if err != nil {
+		log.Println(err)
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
 		}, err

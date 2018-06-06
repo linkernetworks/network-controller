@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+  initContainers:
+  - name: init-network-client
+    image: sufuf3/clientbusybox:v0.1.8
+    command: ['./network-controller-client']
+    env:
+    - name: MY_POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: MY_POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: MY_POD_UUID
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.uid
+    - name: MY_POD_VETH_NAME
+      value: "veth3,veth4"
+    - name: MY_POD_BRIDGE_NAME
+      value: "ovsbr2"
+    volumeMounts:
+    - mountPath: /tmp/grpc.sock
+      name: grpc-socket
+  volumes:
+  - name: grpc-socket
+    hostPath:
+      path: /tmp/grpc.sock

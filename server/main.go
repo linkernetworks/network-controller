@@ -17,7 +17,8 @@ import (
 )
 
 const (
-	port = ":50051"
+	unixsock = "/tmp/grpc.sock"
+	//port = ":50051"
 )
 
 // server is used to implement messages.NetworkServer.
