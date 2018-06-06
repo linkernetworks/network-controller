@@ -124,10 +124,7 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 		}
 		result.Routes = []*types.Route{{Dst: *ipv4Net, GW: gatewayAddr}}
 
-		if err := ipam.ConfigureIface(req.ContainerVethName, result); err != nil {
-			return err
-		}
-		return nil
+		return ipam.ConfigureIface(req.ContainerVethName, result)
 	})
 	if err != nil {
 		return &pb.ConfigureIfaceResponse{
