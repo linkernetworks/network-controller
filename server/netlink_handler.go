@@ -118,11 +118,10 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 			return err
 		}
 
-		gatewayAddr, _, err := net.ParseCIDR(req.Gateway)
-		if err != nil {
-			return err
-		}
-		result.Routes = []*types.Route{{Dst: *ipv4Net, GW: gatewayAddr}}
+		result.Routes = []*types.Route{{
+			Dst: *ipv4Net,
+			GW:  net.ParseIP(req.Gateway),
+		}}
 
 		return ipam.ConfigureIface(req.ContainerVethName, result)
 	})
