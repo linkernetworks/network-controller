@@ -16,6 +16,18 @@ BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 # Setup the -ldflags option for go build here, interpolate the variable values
 LDFLAGS = -ldflags "-X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT} -X main.BRANCH=${BRANCH}"
 
+DOCKER_PATH="$(shell which docker)"
+OVS_PATH="$(shell which ovs-vsctl)"
+
+ifneq ($(DOCKER_PATH),"")
+TEST_DOCKER=TEST_DOCKER=1
+endif
+
+ifneq ($(OVS_PATH),"")
+TEST_DOCKER=TEST_OVS=1
+endif
+
+
 # Build the project
 all: clean vet pb client server
 
@@ -43,6 +55,6 @@ clean:
 
 test: pb client server
 	go clean -testcache
-	sudo -E env PATH=$$PATH TEST_OVS=1 TEST_VETH=1 go test -v ./...
+	sudo -E env PATH=$$PATH TEST_VETH=1 $(TEST_OVS) $(TEST_DOCKER) go test -v ./...
 
 .PHONY: server client vet test clean
