@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: network-controller-server-unix
+  namespace: vortex
+spec:
+  selector:
+    matchLabels:
+      name: network-controller-server-unix
+  template:
+    metadata:
+      labels:
+        name: network-controller-server-unix
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: network-controller-server-unix
+        image: linker/net-controller-server:latest
+        securityContext:
+          privileged: true
+        command: ["./network-controller-server"]
+        args: ["-unix=/tmp/vortex.sock"]
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+        - mountPath: /tmp/
+          name: grpc-sock
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: grpc-sock
+        hostPath:
+          path: /tmp/
+      hostNetwork: true
