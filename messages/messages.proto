@@ -10,6 +10,9 @@ service NetworkControl {
   rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
   rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
   rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
+  rpc DumpFlows (DumpFlowsRequest) returns(DumpFlowsResponse) {}
+  rpc DumpPorts (DumpPortsRequest) returns(DumpPortsResponse) {}
+  rpc DumpPort (DumpPortRequest) returns(DumpPortResponse) {}
   rpc FindNetworkNamespacePath (FindNetworkNamespacePathRequest) returns(FindNetworkNamespacePathResponse) {}
   rpc ConnectBridge (ConnectBridgeRequest) returns (ConnectBridgeResponse) {}
 }
@@ -54,6 +57,37 @@ message AddFlowRequest {
 message DeleteFlowRequest {
   string bridgeName = 1;
   string flowString = 2;
+}
+
+message DumpFlowsRequest {
+  string bridgeName = 1;
+}
+
+message DumpFlowsResponse {
+  repeated bytes flows = 1;
+  bool success = 2;
+  string reason = 3;
+}
+
+message DumpPortsRequest {
+  string bridgeName = 1;
+}
+
+message DumpPortsResponse {
+  repeated bytes ports = 1;
+  bool success = 2;
+  string reason = 3;
+}
+
+message DumpPortRequest {
+  string bridgeName = 1;
+  string portName = 2;
+}
+
+message DumpPortResponse {
+  bytes port = 1;
+  bool success = 2;
+  string reason = 3;
 }
 
 message FindNetworkNamespacePathRequest {
