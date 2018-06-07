@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"time"
 
@@ -9,13 +10,16 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	address = "localhost:50051"
-)
-
 func main() {
+	var serverAddr string
+	flag.StringVar(&serverAddr, "server", "", "target server address, [ip:port] for TCP or unix://[path] for UNIX")
+	flag.Parse()
+
+	if serverAddr == "" {
+		log.Fatalf("You should use the -server to specify the server address, 0.0.0.0:50051 for TCP and unix:///tmp/xxx.sock for UNIX")
+	}
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(serverAddr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
