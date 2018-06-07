@@ -56,9 +56,6 @@ func main() {
 	pb.RegisterNetworkControlServer(s, &server{OVS: ovs.New()})
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
 
 	// Stop all listener by catching interrupt signal
 	sigc := make(chan os.Signal, 1)
@@ -73,7 +70,15 @@ func main() {
 		log.Printf("stopping grpc server...")
 		s.Stop()
 
+		if unixPath != "" {
+			os.RemoveAll(unixPath)
+		}
 		log.Printf("all listener are stopped successfully")
 		os.Exit(0)
 	}(sigc, lis, s)
+
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+
 }
