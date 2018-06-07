@@ -105,6 +105,10 @@
 			"revisionTime": "2017-09-28T21:45:39Z"
 		},
 		{
+			"path": "fetch",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "oEpUpU8ASfBWIRGesd9fBG1ar40=",
 			"path": "github.com/Microsoft/go-winio",
 			"revision": "ab35fc04b6365e8fcb18e6e9e41ea4a02b10b175",
@@ -123,10 +127,12 @@
 			"revisionTime": "2018-05-31T18:41:59Z"
 		},
 		{
-			"checksumSHA1": "kyeaxrxhMl3XETXxYfjP5dUeMYY=",
+			"checksumSHA1": "Sfdjk2zzDd0npAjZdULWjWoKVkQ=",
 			"path": "github.com/containernetworking/cni/pkg/types",
-			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
-			"revisionTime": "2018-05-31T18:41:59Z"
+			"revision": "a7885cb6f8ab03fba07852ded351e4f5e7a112bf",
+			"revisionTime": "2017-07-28T13:30:50Z",
+			"version": "=v0.6.0",
+			"versionExact": "v0.6.0"
 		},
 		{
 			"checksumSHA1": "lmLYXYR/twmBu+6U678QNF+BQlQ=",
@@ -135,10 +141,12 @@
 			"revisionTime": "2018-05-31T18:41:59Z"
 		},
 		{
-			"checksumSHA1": "pvYIWkqkUeXBuO38Um+v9lQ882M=",
+			"checksumSHA1": "r6qX7lyz4pweijiXjWMcxvm4wQQ=",
 			"path": "github.com/containernetworking/cni/pkg/types/current",
-			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
-			"revisionTime": "2018-05-31T18:41:59Z"
+			"revision": "a7885cb6f8ab03fba07852ded351e4f5e7a112bf",
+			"revisionTime": "2017-07-28T13:30:50Z",
+			"version": "=v0.6.0",
+			"versionExact": "v0.6.0"
 		},
 		{
 			"checksumSHA1": "HPTtMjgVZDO6r4AdtKHP45m1z48=",
@@ -149,38 +157,38 @@
 		{
 			"checksumSHA1": "sHP4Pnt1kftYMGDZttlz3bvFK2k=",
 			"path": "github.com/containernetworking/plugins/pkg/ip",
-			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
-			"revisionTime": "2018-05-16T15:54:47Z"
+			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
+			"revisionTime": "2018-06-06T15:10:04Z"
 		},
 		{
 			"checksumSHA1": "s/z1JO9VhL/ftdsZfkg24vxZJvM=",
 			"path": "github.com/containernetworking/plugins/pkg/ipam",
-			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
-			"revisionTime": "2018-05-16T15:54:47Z"
+			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
+			"revisionTime": "2018-06-06T15:10:04Z"
 		},
 		{
 			"checksumSHA1": "ZM0SnLIE5+Clczod2Md8mVGMz/M=",
 			"path": "github.com/containernetworking/plugins/pkg/ns",
-			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
-			"revisionTime": "2018-05-16T15:54:47Z"
+			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
+			"revisionTime": "2018-06-06T15:10:04Z"
 		},
 		{
 			"checksumSHA1": "dn8XMvhoQkyw+nfwGc2F/0FbqvM=",
 			"path": "github.com/containernetworking/plugins/pkg/testutils",
-			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
-			"revisionTime": "2018-05-16T15:54:47Z"
+			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
+			"revisionTime": "2018-06-06T15:10:04Z"
 		},
 		{
 			"checksumSHA1": "rUAk+nce6eDIWtYo/QYIoqlTfrY=",
 			"path": "github.com/containernetworking/plugins/pkg/utils/hwaddr",
-			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
-			"revisionTime": "2018-05-16T15:54:47Z"
+			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
+			"revisionTime": "2018-06-06T15:10:04Z"
 		},
 		{
 			"checksumSHA1": "eVojiWsh48y175NN7Newtb9lmxQ=",
 			"path": "github.com/containernetworking/plugins/pkg/utils/sysctl",
-			"revision": "1d973f59d2a546a77994b1a17e537757dc0acb85",
-			"revisionTime": "2018-05-16T15:54:47Z"
+			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
+			"revisionTime": "2018-06-06T15:10:04Z"
 		},
 		{
 			"checksumSHA1": "XThyw/FZ+eIbebe6zQrpJuIxHgw=",
@@ -401,8 +409,8 @@
 		{
 			"checksumSHA1": "VUb+SqeoloAw1A2Jz9IzkDNs06c=",
 			"path": "golang.org/x/sys/unix",
-			"revision": "c11f84a56e43e20a78cee75a7c034031ecf57d1f",
-			"revisionTime": "2018-05-25T13:55:20Z"
+			"revision": "9527bec2660bd847c050fda93a0f0c6dee0800bb",
+			"revisionTime": "2018-06-06T19:45:53Z"
 		},
 		{
 			"checksumSHA1": "m5QCvoZ2KaoLTG9VWjYNonM08b8=",
