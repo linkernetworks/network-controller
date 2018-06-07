@@ -22,18 +22,18 @@ all: clean vet pb client server
 pb:
 	protoc ./messages/messages.proto --go_out=plugins=grpc:.
 
-server:
+server: pb
 	cd ${BUILD_DIR}/server; \
 	go build ${LDFLAGS} -o ${BINARY}-server . ; \
 	cd - >/dev/null
 
-client:
+client: pb
 	cd ${BUILD_DIR}/client; \
 	go build ${LDFLAGS} -o ${BINARY}-client . ; \
 	cd - >/dev/null
 
 vet: pb
-	go vet ./... > ${VET_REPORT} 2>&1 ; 
+	go vet ./... > ${VET_REPORT} 2>&1 ;
 
 clean:
 	-rm -f messages/messages.pb.go
