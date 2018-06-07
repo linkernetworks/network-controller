@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net"
 	"os"
@@ -24,10 +25,33 @@ type server struct {
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	var tcpAddr string
+	var unixPath string
+	flag.StringVar(&tcpAddr, "tcp", "", "Run as a TCP server and listen on target address")
+	flag.StringVar(&unixPath, "unix", "", "Run as a UNIX server and listen on target path")
+
+	flag.Parse()
+
+	if tcpAddr == "" && unixPath == "" {
+		log.Fatalf("You must use the one method(-tcp/-unix) to decide how the server listen to")
+	}
+
+	if tcpAddr != "" && unixPath != "" {
+		log.Fatalf("You should only choose one method to listen to")
+	}
+
+	var lis net.Listener
+	var err error
+	if tcpAddr != "" {
+		lis, err = net.Listen("tcp", tcpAddr)
+	} else {
+		lis, err = net.Listen("unix", unixPath)
+	}
+
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
 	s := grpc.NewServer()
 	pb.RegisterNetworkControlServer(s, &server{OVS: ovs.New()})
 	// Register reflection service on gRPC server.
