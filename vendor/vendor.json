@@ -121,6 +121,12 @@
 			"revisionTime": "2018-05-31T18:41:59Z"
 		},
 		{
+			"checksumSHA1": "O7JSpVlZNZIiiI6pspfw/HmzW1g=",
+			"path": "github.com/containernetworking/cni/pkg/skel",
+			"revision": "86431d5c16064ec0ce3c215297f5bbf7112fbbde",
+			"revisionTime": "2018-05-31T18:41:59Z"
+		},
+		{
 			"checksumSHA1": "Sfdjk2zzDd0npAjZdULWjWoKVkQ=",
 			"path": "github.com/containernetworking/cni/pkg/types",
 			"revision": "a7885cb6f8ab03fba07852ded351e4f5e7a112bf",
@@ -163,6 +169,12 @@
 		{
 			"checksumSHA1": "ZM0SnLIE5+Clczod2Md8mVGMz/M=",
 			"path": "github.com/containernetworking/plugins/pkg/ns",
+			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
+			"revisionTime": "2018-06-06T15:10:04Z"
+		},
+		{
+			"checksumSHA1": "dn8XMvhoQkyw+nfwGc2F/0FbqvM=",
+			"path": "github.com/containernetworking/plugins/pkg/testutils",
 			"revision": "2b8b1ac0af4568e928d96ccc5f47b075416eeabd",
 			"revisionTime": "2018-06-06T15:10:04Z"
 		},
