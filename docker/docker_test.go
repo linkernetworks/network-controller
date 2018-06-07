@@ -34,6 +34,9 @@ func TestGetSandboxKey(t *testing.T) {
 }
 
 func TestListContainer(t *testing.T) {
+	if _, ok := os.LookupEnv("TEST_DOCKER"); !ok {
+		t.Skip()
+	}
 	cli, err := New()
 	assert.NoError(t, err)
 
