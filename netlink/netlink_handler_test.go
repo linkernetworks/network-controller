@@ -62,6 +62,9 @@ func TestRemoveVethFromOVS(t *testing.T) {
 	//Case 2, masterIndex and PartentIndex is 0, need to remove from ovs
 	ret = RemoveVethFromOVS(nl)
 	assert.Equal(t, false, ret)
+	//Remove again, it should do nothing
+	ret = RemoveVethFromOVS(nl)
+	assert.Equal(t, false, ret)
 
 	ports, err = o.ListPorts(bridgeName)
 	assert.NoError(t, err)

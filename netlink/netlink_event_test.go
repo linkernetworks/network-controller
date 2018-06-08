@@ -17,7 +17,12 @@ func TestNetlinkEventTrack(t *testing.T) {
 		return false
 	}
 
+	var stopHandler = func(lu netlink.LinkUpdate) bool {
+		return true
+	}
+
 	tracker.AddDeletedLinkHandler(handler)
+	tracker.AddDeletedLinkHandler(stopHandler)
 
 	hName := "test0"
 	cName := "test0_peer"
