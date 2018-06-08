@@ -20,7 +20,7 @@ func TestMain(m *testing.M) {
 	}
 }
 
-func TestBridgeOperations(t *testing.T) {
+func TestRemoveVethFromOVS(t *testing.T) {
 	bridges, err := o.ListBridges()
 	assert.NoError(t, err)
 	assert.Equal(t, 0, len(bridges))

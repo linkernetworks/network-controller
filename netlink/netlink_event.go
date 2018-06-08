@@ -51,7 +51,6 @@ func (nl *NlEventHandler) TrackNetlink() error {
 			return nil
 		}
 	}
-	return nil
 }
 
 func (nl *NlEventHandler) Stop() {
