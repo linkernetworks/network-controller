@@ -175,3 +175,12 @@ func TestDumpPorts(t *testing.T) {
 	err = o.DeletePort(bridgeName, hName)
 	assert.NoError(t, err)
 }
+
+func TestDumpPortsFail(t *testing.T) {
+	bridgeName := "br0"
+	_, err := o.DumpPorts(bridgeName)
+	assert.Error(t, err)
+
+	_, err = o.DumpPort(bridgeName, "")
+	assert.Error(t, err)
+}
