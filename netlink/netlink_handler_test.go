@@ -55,13 +55,13 @@ func TestBridgeOperations(t *testing.T) {
 	}
 
 	//case 1. not a orphn veth (don't do anthing)
-	err = RemoveVethFromOVS(nl)
-	assert.NoError(t, err)
+	ret := RemoveVethFromOVS(nl)
+	assert.Equal(t, false, ret)
 
 	nl.Link.Attrs().MasterIndex = 0
 	//Case 2, masterIndex and PartentIndex is 0, need to remove from ovs
-	err = RemoveVethFromOVS(nl)
-	assert.NoError(t, err)
+	ret = RemoveVethFromOVS(nl)
+	assert.Equal(t, false, ret)
 
 	ports, err = o.ListPorts(bridgeName)
 	assert.NoError(t, err)
