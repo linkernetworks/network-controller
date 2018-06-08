@@ -4,7 +4,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/vishvananda/netlink"
 )
 
@@ -22,7 +22,7 @@ func TestNetlinkEventTrack(t *testing.T) {
 	hName := "test0"
 	cName := "test0_peer"
 	err := exec.Command("ip", "link", "add", hName, "type", "veth", "peer", "name", cName).Run()
-	assert.NoError(t, err)
+	require.NoError(t, err, "You should have the permission to create the veth to test the netlink")
 
 	go tracker.TrackNetlink()
 

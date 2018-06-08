@@ -34,7 +34,6 @@ func (nl *NlEventHandler) TrackNetlink() error {
 	for {
 		select {
 		case c := <-data:
-			log.Println("Type", c.Header.Type)
 			switch c.Header.Type {
 			case unix.RTM_DELLINK:
 				for _, v := range nl.LinkDeleteHandler {
@@ -52,6 +51,7 @@ func (nl *NlEventHandler) TrackNetlink() error {
 			return nil
 		}
 	}
+	return nil
 }
 
 func (nl *NlEventHandler) Stop() {
@@ -59,7 +59,5 @@ func (nl *NlEventHandler) Stop() {
 		return
 	}
 	log.Println("Stop the netlink event tracker")
-	var e struct{}
-	nl.stop <- e
 	close(nl.stop)
 }

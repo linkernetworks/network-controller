@@ -329,6 +329,12 @@
 			"revisionTime": "2018-03-14T08:05:35Z"
 		},
 		{
+			"checksumSHA1": "KqYmXUcuGwsvBL6XVsQnXsFb3LI=",
+			"path": "github.com/stretchr/testify/require",
+			"revision": "c679ae2cc0cb27ec3293fea7e254e47386f05d69",
+			"revisionTime": "2018-03-14T08:05:35Z"
+		},
+		{
 			"checksumSHA1": "sZaLgMMf+AKwGE8mMvwdDCpHsQA=",
 			"path": "github.com/vishvananda/netlink",
 			"revision": "7c0b5944a3036fc8dc9f4cbf2f5c76dedd29af8b",
