@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/binary"
 	"log"
 
 	pb "github.com/linkernetworks/network-controller/messages"
@@ -53,4 +55,78 @@ func (s *server) DeleteFlow(ctx context.Context, req *pb.DeleteFlowRequest) (*pb
 		}, err
 	}
 	return &pb.OVSResponse{Success: true}, nil
+}
+
+func (s *server) DumpFlows(ctx context.Context, req *pb.DumpFlowsRequest) (*pb.DumpFlowsResponse, error) {
+	flows, err := s.OVS.DumpFlows(req.BridgeName)
+	if err != nil {
+		return &pb.DumpFlowsResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+
+	flowsBytes := make([][]byte, len(flows))
+	for _, flow := range flows {
+		bytes, err := flow.MarshalText()
+		if err != nil {
+			return &pb.DumpFlowsResponse{
+				Success: false, Reason: err.Error(),
+			}, err
+		}
+
+		flowsBytes = append(flowsBytes, bytes)
+	}
+
+	return &pb.DumpFlowsResponse{
+		Success: true,
+		Flows:   flowsBytes,
+	}, nil
+}
+
+func (s *server) DumpPorts(ctx context.Context, req *pb.DumpPortsRequest) (*pb.DumpPortsResponse, error) {
+	ports, err := s.OVS.DumpPorts(req.BridgeName)
+	if err != nil {
+		return &pb.DumpPortsResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+
+	portsBytes := make([][]byte, len(ports))
+	for _, port := range ports {
+
+		buf := &bytes.Buffer{}
+		if err := binary.Write(buf, binary.BigEndian, port); err != nil {
+			return &pb.DumpPortsResponse{
+				Success: false, Reason: err.Error(),
+			}, err
+		}
+
+		portsBytes = append(portsBytes, buf.Bytes())
+	}
+
+	return &pb.DumpPortsResponse{
+		Success: true,
+		Ports:   portsBytes,
+	}, nil
+}
+
+func (s *server) DumpPort(ctx context.Context, req *pb.DumpPortRequest) (*pb.DumpPortResponse, error) {
+	port, err := s.OVS.DumpPort(req.BridgeName, req.PortName)
+	if err != nil {
+		return &pb.DumpPortResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+
+	buf := &bytes.Buffer{}
+	if err := binary.Write(buf, binary.BigEndian, port); err != nil {
+		return &pb.DumpPortResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+
+	return &pb.DumpPortResponse{
+		Success: true,
+		Port:    buf.Bytes(),
+	}, nil
 }

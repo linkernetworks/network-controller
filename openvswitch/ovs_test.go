@@ -141,7 +141,6 @@ func TestFlowOperation(t *testing.T) {
 }
 
 func TestFlowOperationsFail(t *testing.T) {
-
 	bridgeName := "br0"
 	err := o.AddFlow(bridgeName, "")
 	assert.Error(t, err)
@@ -150,4 +149,38 @@ func TestFlowOperationsFail(t *testing.T) {
 	flows, err := o.DumpFlows(bridgeName)
 	assert.Error(t, err)
 	assert.Equal(t, 0, len(flows))
+}
+
+func TestDumpPorts(t *testing.T) {
+	bridgeName := "br0"
+	err := o.CreateBridge(bridgeName)
+	defer o.DeleteBridge(bridgeName)
+
+	hName := "test0"
+	cName := "test0_peer"
+	err = exec.Command("ip", "link", "add", hName, "type", "veth", "peer", "name", cName).Run()
+	assert.NoError(t, err)
+	defer exec.Command("ip", "link", "del", hName).Output()
+	err = o.AddPort(bridgeName, hName)
+	assert.NoError(t, err)
+
+	ports, err := o.DumpPorts(bridgeName)
+	assert.NoError(t, err)
+	assert.Equal(t, uint64(0x0), ports[0].Received.Packets)
+
+	port, err := o.DumpPort(bridgeName, hName)
+	assert.NoError(t, err)
+	assert.Equal(t, uint64(0x0), port.Received.Packets)
+
+	err = o.DeletePort(bridgeName, hName)
+	assert.NoError(t, err)
+}
+
+func TestDumpPortsFail(t *testing.T) {
+	bridgeName := "br0"
+	_, err := o.DumpPorts(bridgeName)
+	assert.Error(t, err)
+
+	_, err = o.DumpPort(bridgeName, "")
+	assert.Error(t, err)
 }
