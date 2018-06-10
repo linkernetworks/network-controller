@@ -1,4 +1,4 @@
-package netlinkEvent
+package nl
 
 import (
 	"os/exec"

@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	pb "github.com/linkernetworks/network-controller/messages"
-	nl "github.com/linkernetworks/network-controller/netlink"
+	"github.com/linkernetworks/network-controller/nl"
 	ovs "github.com/linkernetworks/network-controller/openvswitch"
 
 	"google.golang.org/grpc"

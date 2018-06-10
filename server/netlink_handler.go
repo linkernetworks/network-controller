@@ -12,7 +12,7 @@ import (
 	"github.com/containernetworking/plugins/pkg/ipam"
 	"github.com/containernetworking/plugins/pkg/ns"
 	"github.com/linkernetworks/network-controller/docker"
-	"github.com/linkernetworks/network-controller/link"
+	"github.com/linkernetworks/network-controller/nl"
 	"golang.org/x/net/context"
 )
 
@@ -67,7 +67,7 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 
 	hostVethName := utils.GenerateVethName(req.PodUUID, req.ContainerVethName)
 	err = netns.Do(func(hostNS ns.NetNS) error {
-		if _, _, err := link.SetupVeth(req.ContainerVethName, hostVethName, 1500, hostNS); err != nil {
+		if _, _, err := nl.SetupVeth(req.ContainerVethName, hostVethName, 1500, hostNS); err != nil {
 			return err
 		}
 		return nil

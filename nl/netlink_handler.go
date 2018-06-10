@@ -1,4 +1,4 @@
-package netlinkEvent
+package nl
 
 import (
 	ovs "github.com/linkernetworks/network-controller/openvswitch"
