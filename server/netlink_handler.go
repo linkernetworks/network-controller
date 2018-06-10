@@ -1,11 +1,12 @@
 package main
 
 import (
-	pb "github.com/linkernetworks/network-controller/messages"
-	"github.com/linkernetworks/network-controller/utils"
 	"log"
 	"net"
 	"runtime"
+
+	pb "github.com/linkernetworks/network-controller/messages"
+	"github.com/linkernetworks/network-controller/utils"
 
 	"github.com/containernetworking/cni/pkg/types"
 	"github.com/containernetworking/cni/pkg/types/current"

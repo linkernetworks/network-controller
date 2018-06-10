@@ -16,11 +16,6 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	unixsock = "/tmp/grpc.sock"
-	//port = ":50051"
-)
-
 // server is used to implement messages.NetworkServer.
 type server struct {
 	OVS *ovs.OVSManager

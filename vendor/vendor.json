@@ -621,10 +621,6 @@
 			"path": "google.golang.org/grpc/transport",
 			"revision": "130c87fa0d80a54981a03665782970fd73bc5de8",
 			"revisionTime": "2018-06-01T22:33:31Z"
-		},
-		{
-			"path": "https://github.com/jessevdk/go-flags",
-			"revision": ""
 		}
 	],
 	"rootPath": "github.com/linkernetworks/network-controller"

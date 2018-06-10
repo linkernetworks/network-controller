@@ -1,13 +1,14 @@
 package main
 
 import (
+	"log"
+	"os"
+	"time"
+
 	"github.com/jessevdk/go-flags"
 	pb "github.com/linkernetworks/network-controller/messages"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"log"
-	"os"
-	"time"
 )
 
 type PodOptions struct {
