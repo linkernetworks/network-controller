@@ -32,7 +32,7 @@ func main() {
 	var nlEventTracker bool
 	flag.StringVar(&tcpAddr, "tcp", "", "Run as a TCP server and listen on target address")
 	flag.StringVar(&unixPath, "unix", "", "Run as a UNIX server and listen on target path")
-	flag.BoolVar(&nlEventTracker, "nl", false, "Run as a Netlink Event Tracker")
+	flag.BoolVar(&nlEventTracker, "netlink-gc", false, "Run as a netlink event tracker for garbage collection")
 
 	flag.Parse()
 

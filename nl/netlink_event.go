@@ -57,7 +57,6 @@ func (nl *NlEventHandler) Stop() {
 	if nl.stop == nil {
 		return
 	}
-	log.Println("Stop the netlink event tracker")
 	close(nl.stop)
 	nl.stop = nil
 }
