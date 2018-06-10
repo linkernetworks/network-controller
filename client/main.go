@@ -1,7 +1,7 @@
 package main
 
 import (
-	"flag"
+	"github.com/jessevdk/go-flags"
 	pb "github.com/linkernetworks/network-controller/messages"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -11,16 +11,46 @@ import (
 	"time"
 )
 
-func main() {
-	var serverAddr string
-	flag.StringVar(&serverAddr, "server", "", "target server address, [ip:port] for TCP or unix://[path] for UNIX")
-	flag.Parse()
+type InterfaceOptions struct {
+	IP      string `short:"i" long:"ip" description:"The ip address of the interface, should be CIDR form"`
+	Gateway string `short:"g" long:"gw" description:"The gateway of the inteface subnet"`
+	VLAN    *int   `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
+}
 
-	if serverAddr == "" {
-		log.Fatalf("You should use the -server to specify the server address, 0.0.0.0:50051 for TCP and unix:///tmp/xxx.sock for UNIX")
+type ConnectOptions struct {
+	Bridge    string `short:"b" long:"bridge" description:"Target bridge name" required:"true"`
+	Interface string `short:"n" long:"nic" description:"The interface name in the container" required:"true"`
+}
+
+type ClientOptions struct {
+	Server    string           `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
+	Connect   ConnectOptions   `group:"ConnectOptions"`
+	Interface InterfaceOptions `group:"InterfaceOptions" `
+}
+
+var options ClientOptions
+
+var parser = flags.NewParser(&options, flags.Default)
+
+/*
+!
+-> -b: bridgeName
+-> -n: interface name in the container
+-> -v: vlanTag
+-> -i: ip subnet
+-> -g: gateway address of the routing rules
+
+*/
+
+func main() {
+	//flag.Parse()
+	if _, err := parser.Parse(); err != nil {
+		parser.WriteHelp(os.Stderr)
+		os.Exit(1)
 	}
+
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(serverAddr, grpc.WithInsecure())
+	conn, err := grpc.Dial(options.Server, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -72,11 +102,4 @@ func main() {
 	} else {
 		log.Printf("It's not success. The reason is %s.", n.Reason)
 	}
-
-	// ping
-	r, err := c.Ping(ctx, &pb.PingRequest{Ping: "PING"})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Printf("Got: %s", r.Pong)
 }
