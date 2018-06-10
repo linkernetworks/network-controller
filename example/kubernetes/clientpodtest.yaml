@@ -11,29 +11,26 @@ spec:
     command: ['sh', '-c', 'echo The app is running! && sleep 3600']
   initContainers:
   - name: init-network-client
-    image: sufuf3/clientbusybox:v0.1.8
-    command: ['./network-controller-client']
+    image: hwchiu/network-controller:latest
+    command: ["/go/bin/client"]
+    args: ["-s", "unix:///tmp/grpc.sock", "-b", "br100", "-n", "eth100"]
     env:
-    - name: MY_POD_NAME
+    - name: POD_NAME
       valueFrom:
         fieldRef:
           fieldPath: metadata.name
-    - name: MY_POD_NAMESPACE
+    - name: POD_NAMESPACE
       valueFrom:
         fieldRef:
           fieldPath: metadata.namespace
-    - name: MY_POD_UUID
+    - name: POD_UUID
       valueFrom:
         fieldRef:
           fieldPath: metadata.uid
-    - name: MY_POD_VETH_NAME
-      value: "veth3,veth4"
-    - name: MY_POD_BRIDGE_NAME
-      value: "ovsbr2"
     volumeMounts:
     - mountPath: /tmp/grpc.sock
       name: grpc-socket
   volumes:
   - name: grpc-socket
     hostPath:
-      path: /tmp/grpc.sock
+      path: /tmp/a.sock

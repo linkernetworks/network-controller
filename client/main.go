@@ -12,9 +12,9 @@ import (
 )
 
 type PodOptions struct {
-	Name string `long:"pName" description:"The Pod Name, can set by environement variable" env:"MY_POD_NAME" required:"true"`
-	NS   string `long:"pNS" description:"The namespace of the Pod, can set by environement variable" env:"MY_POD_NAMESPACE" required:"true"`
-	UUID string `long:"pUUID" description:"The UUID of the Pod, can set by environement variable" env:"MY_POD_UUID" required:"true"`
+	Name string `long:"pName" description:"The Pod Name, can set by environement variable" env:"POD_NAME" required:"true"`
+	NS   string `long:"pNS" description:"The namespace of the Pod, can set by environement variable" env:"POD_NAMESPACE" required:"true"`
+	UUID string `long:"pUUID" description:"The UUID of the Pod, can set by environement variable" env:"POD_UUID" required:"true"`
 }
 
 type InterfaceOptions struct {
