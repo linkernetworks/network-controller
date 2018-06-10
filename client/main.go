@@ -7,9 +7,14 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"os"
-	"strings"
 	"time"
 )
+
+type PodOptions struct {
+	Name string `long:"pName" description:"The Pod Name, can set by environement variable" env:"MY_POD_NAME" required:"true"`
+	NS   string `long:"pNS" description:"The namespace of the Pod, can set by environement variable" env:"MY_POD_NAMESPACE" required:"true"`
+	UUID string `long:"pUUID" description:"The UUID of the Pod, can set by environement variable" env:"MY_POD_UUID" required:"true"`
+}
 
 type InterfaceOptions struct {
 	IP      string `short:"i" long:"ip" description:"The ip address of the interface, should be CIDR form"`
@@ -26,21 +31,11 @@ type ClientOptions struct {
 	Server    string           `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
 	Connect   ConnectOptions   `group:"ConnectOptions"`
 	Interface InterfaceOptions `group:"InterfaceOptions" `
+	Pod       PodOptions       `group:"InterfaceOptions" `
 }
 
 var options ClientOptions
-
 var parser = flags.NewParser(&options, flags.Default)
-
-/*
-!
--> -b: bridgeName
--> -n: interface name in the container
--> -v: vlanTag
--> -i: ip subnet
--> -g: gateway address of the routing rules
-
-*/
 
 func main() {
 	//flag.Parse()
@@ -55,51 +50,39 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewNetworkControlClient(conn)
 
+	c := pb.NewNetworkControlClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	// get env value, include pod name, namespace, pod uuid, pod veth Name, bridge name
-	// These are env values test case
-	// os.Setenv("MY_POD_NAME", "pod1")
-	// os.Setenv("MY_POD_NAMESPACE", "ns1")
-	// os.Setenv("MY_POD_UUID", "1111")
-	// os.Setenv("MY_POD_VETH_NAME", "veth1")
-	// os.Setenv("MY_POD_BRIDGE_NAME", "br2")
-	var pod_name, pod_namespace, pod_uuid, pod_vethname, pod_bridgename string
-	pod_name = os.Getenv("MY_POD_NAME")
-	pod_namespace = os.Getenv("MY_POD_NAMESPACE")
-	pod_uuid = os.Getenv("MY_POD_UUID")
-	pod_vethname = os.Getenv("MY_POD_VETH_NAME")
-	pod_veth_list := strings.Split(pod_vethname, ",")
-	pod_bridgename = os.Getenv("MY_POD_BRIDGE_NAME")
-
-	if pod_name == "" || pod_namespace == "" || pod_uuid == "" || pod_vethname == "" || pod_bridgename == "" {
-		log.Fatalf("The environment variables setup fault.")
-	}
-	log.Println(pod_name, pod_namespace, pod_uuid)
+	log.Println(options.Pod.Name, options.Pod.NS, options.Pod.UUID)
 	// Find Network Namespace Path
-	n, err := c.FindNetworkNamespacePath(ctx, &pb.FindNetworkNamespacePathRequest{PodName: pod_name, Namespace: pod_namespace, PodUUID: pod_uuid})
+	n, err := c.FindNetworkNamespacePath(ctx, &pb.FindNetworkNamespacePathRequest{
+		PodName:   options.Pod.Name,
+		Namespace: options.Pod.NS,
+		PodUUID:   options.Pod.UUID})
 	if err != nil {
 		log.Fatalf("There is something wrong with find network namespace pathpart.\n %v", err)
 	}
-	if n.Success {
-		log.Printf("The path is %s.", n.Path)
-		// Let's connect bridge
-		for i := range pod_veth_list {
-			log.Println(pod_veth_list[i])
-			b, err := c.ConnectBridge(ctx, &pb.ConnectBridgeRequest{Path: n.Path, PodUUID: pod_uuid, ContainerVethName: string(pod_veth_list[i]), BridgeName: pod_bridgename})
-			if err != nil {
-				log.Fatalf("There is something wrong with connect bridge: %v", err)
-			}
-			if b.Success {
-				log.Printf("Connecting bridge is sussessful. The reason is %s.", b.Reason)
-			} else {
-				log.Printf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
-			}
-		}
-	} else {
+
+	if !n.Success {
 		log.Printf("It's not success. The reason is %s.", n.Reason)
+	}
+
+	log.Printf("The path is %s.", n.Path)
+	// Let's connect bridge
+	b, err := c.ConnectBridge(ctx, &pb.ConnectBridgeRequest{
+		Path:              n.Path,
+		PodUUID:           options.Pod.UUID,
+		ContainerVethName: options.Connect.Interface,
+		BridgeName:        options.Connect.Bridge})
+
+	if err != nil {
+		log.Fatalf("There is something wrong with connect bridge: %v", err)
+	}
+	if b.Success {
+		log.Printf("Connecting bridge is sussessful. The reason is %s.", b.Reason)
+	} else {
+		log.Printf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
 	}
 }
