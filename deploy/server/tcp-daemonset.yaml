@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: network-controller-server-tcp
+  namespace: vortex
+spec:
+  selector:
+    matchLabels:
+      name: network-controller-server-tcp
+  template:
+    metadata:
+      labels:
+        name: network-controller-server-tcp
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: network-controller-server-tcp
+        image: linker/net-controller-server:latest
+        securityContext:
+          privileged: true
+        command: ["./network-controller-server"]
+        args: ["-tcp=0.0.0.0:50051"]
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      hostNetwork: true
