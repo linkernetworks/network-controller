@@ -13,7 +13,7 @@ RUN govendor sync &&\
 RUN go install ./server/... ./client/...
 
 FROM alpine:3.7
-RUN apk add --no-cache ca-certificates openvswitch
+RUN apk add --no-cache ca-certificates openvswitch sudo
 WORKDIR /go/bin
 
 COPY --from=0 /go/bin /go/bin

@@ -47,15 +47,16 @@ func main() {
 	}
 
 	// Verify IP address
-	if utils.IsValidCIDR(options.Interface.IP) {
+	if options.Interface.IP != "" && utils.IsValidCIDR(options.Interface.IP) {
 		log.Fatalf("IP address is not correct: %s", options.Interface.IP)
 	}
 
 	// Verify gateway address
-	if utils.IsValidIP(options.Interface.Gateway) {
+	if options.Interface.Gateway != "" && utils.IsValidIP(options.Interface.Gateway) {
 		log.Fatalf("Gateway address is not correct: %s", options.Interface.Gateway)
 	}
 
+	log.Println("Start to connect to ", options.Server)
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(options.Server, grpc.WithInsecure())
 	if err != nil {
@@ -69,6 +70,7 @@ func main() {
 
 	log.Println(options.Pod.Name, options.Pod.NS, options.Pod.UUID)
 	// Find Network Namespace Path
+	log.Println("Try to find the network namespace path")
 	n, err := c.FindNetworkNamespacePath(ctx, &pb.FindNetworkNamespacePathRequest{
 		PodName:   options.Pod.Name,
 		Namespace: options.Pod.NS,
@@ -83,6 +85,7 @@ func main() {
 
 	log.Printf("The path is %s.", n.Path)
 	// Let's connect bridge
+	log.Println("Try to connect bridge", n.Path, options.Connect.Interface, options.Connect.Bridge)
 	b, err := c.ConnectBridge(ctx, &pb.ConnectBridgeRequest{
 		Path:              n.Path,
 		PodUUID:           options.Pod.UUID,

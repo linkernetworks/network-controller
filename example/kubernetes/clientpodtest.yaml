@@ -12,9 +12,9 @@ spec:
   initContainers:
   restartPolicy: Never
   - name: init-network-client
-    image: hwchiu/network-controller:latest
+    image: sdnvortex/network-controller:latest
     command: ["/go/bin/client"]
-    args: ["-s", "unix:///tmp/grpc.sock", "-b", "br100", "-n", "eth100"]
+    args: ["-s=unix:///tmp/vortex.sock", "-b=br100", "-n=eth100"]
     env:
     - name: POD_NAME
       valueFrom:
@@ -29,9 +29,10 @@ spec:
         fieldRef:
           fieldPath: metadata.uid
     volumeMounts:
-    - mountPath: /tmp/grpc.sock
+    - mountPath: /tmp/
       name: grpc-socket
+  restartPolicy: Never
   volumes:
   - name: grpc-socket
     hostPath:
-      path: /tmp/a.sock
+      path: /tmp/vortex/

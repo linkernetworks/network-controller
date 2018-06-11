@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: network-controller-server-unix
-  namespace: vortex
+  namespace: default
 spec:
   selector:
     matchLabels:
@@ -17,21 +17,22 @@ spec:
         effect: NoSchedule
       containers:
       - name: network-controller-server-unix
-        image: linker/net-controller-server:latest
+        image: sdnvortex/network-controller:latest
         securityContext:
           privileged: true
-        command: ["./network-controller-server"]
-        args: ["-unix=/tmp/vortex.sock"]
+        command: ["/go/bin/server"]
+        args: ["-unix=/tmp/vortex.sock", "-netlink-gc"]
         volumeMounts:
-        - mountPath: /var/run/docker.sock
+        - mountPath: /var/run:shared
           name: docker-sock
+          #          mountPropagation: Bidirectional
         - mountPath: /tmp/
           name: grpc-sock
       volumes:
       - name: docker-sock
         hostPath:
-          path: /var/run/docker.sock
+          path: /run
       - name: grpc-sock
         hostPath:
-          path: /tmp/
+          path: /tmp/vortex
       hostNetwork: true
