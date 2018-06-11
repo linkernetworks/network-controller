@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net"
 	"runtime"
 
@@ -26,20 +25,14 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 	}
 
 	containers, err := cli.ListContainer()
-	log.Println("in FindNetworkNamespacePath function: containers")
-	log.Println(containers)
 	if err != nil {
-		log.Println(err)
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
 		}, err
 	}
 
 	containerID, err := docker.FindK8SPauseContainerID(containers, req.PodName, req.Namespace, req.PodUUID)
-	log.Println("in FindNetworkNamespacePath function: containerID")
-	log.Println(containerID)
 	if err != nil {
-		log.Println(err)
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
 		}, err
@@ -51,10 +44,7 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 	}
 
 	containerInfo, err := cli.InspectContainer(containerID)
-	log.Println("in FindNetworkNamespacePath function: containerID")
-	log.Println(containerInfo)
 	if err != nil {
-		log.Println(err)
 		return &pb.FindNetworkNamespacePathResponse{
 			Success: false, Reason: err.Error(),
 		}, err

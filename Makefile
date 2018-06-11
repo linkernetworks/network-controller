@@ -57,11 +57,4 @@ test: pb client server
 	go clean -testcache
 	sudo -E env PATH=$$PATH TEST_VETH=1 $(TEST_OVS) $(TEST_DOCKER) go test -parallel=1 -v ./...
 
-Dockerfile: pb
-
-docker: Dockerfile
-	time sudo docker build \
-		--tag linker/net-controller\
-		.
-
 .PHONY: server client vet test clean

@@ -67,7 +67,7 @@ func main() {
 	}
 
 	if !n.Success {
-		log.Printf("It's not success. The reason is %s.", n.Reason)
+		log.Fatalf("Find network namespace path is fail. The reason is %s.", n.Reason)
 	}
 
 	log.Printf("The path is %s.", n.Path)
