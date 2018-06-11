@@ -1,5 +1,5 @@
 // Package link : fork from https://github.com/containernetworking/plugins/blob/master/pkg/ip/link_linux.go
-package link
+package nl
 
 import (
 	"fmt"

@@ -24,7 +24,7 @@ TEST_DOCKER=TEST_DOCKER=1
 endif
 
 ifneq ($(OVS_PATH),"")
-TEST_DOCKER=TEST_OVS=1
+TEST_OVS=TEST_OVS=1
 endif
 
 
@@ -55,6 +55,6 @@ clean:
 
 test: pb client server
 	go clean -testcache
-	sudo -E env PATH=$$PATH TEST_VETH=1 $(TEST_OVS) $(TEST_DOCKER) go test -v ./...
+	sudo -E env PATH=$$PATH TEST_VETH=1 $(TEST_OVS) $(TEST_DOCKER) go test -parallel=1 -v ./...
 
 .PHONY: server client vet test clean

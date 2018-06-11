@@ -1,4 +1,4 @@
-package link
+package nl
 
 import (
 	"os"
