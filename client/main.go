@@ -47,12 +47,12 @@ func main() {
 	}
 
 	// Verify IP address
-	if utils.VerifyIP(options.Interface.IP) {
+	if utils.IsValidCIDR(options.Interface.IP) {
 		log.Fatalf("IP address is not correct: %s", options.Interface.IP)
 	}
 
 	// Verify gateway address
-	if utils.VerifyCIDR(options.Interface.Gateway) {
+	if utils.IsValidIP(options.Interface.Gateway) {
 		log.Fatalf("Gateway address is not correct: %s", options.Interface.Gateway)
 	}
 

@@ -11,12 +11,12 @@ func TestGenerateVethName(t *testing.T) {
 	assert.Equal(t, "veth33cdbc38", o)
 }
 
-func TestVerifyIP(t *testing.T) {
-	o := VerifyIP("8.8.8.8")
+func TestIsValidIP(t *testing.T) {
+	o := IsValidIP("8.8.8.8")
 	assert.Equal(t, true, o)
 }
 
-func TestVerifyCIDR(t *testing.T) {
-	o := VerifyCIDR("10.0.0.1/24")
+func TestIsValidCIDR(t *testing.T) {
+	o := IsValidCIDR("10.0.0.1/24")
 	assert.Equal(t, true, o)
 }

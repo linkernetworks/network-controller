@@ -20,11 +20,11 @@ func GenerateVethName(podUUID, containerVethName string) string {
 	return fmt.Sprintf("veth%s", str[0:8])
 }
 
-func VerifyIP(str string) bool {
+func IsValidIP(str string) bool {
 	return net.ParseIP(str) != nil
 }
 
-func VerifyCIDR(str string) bool {
+func IsValidCIDR(str string) bool {
 	_, _, err := net.ParseCIDR(str)
 	return err == nil
 }
