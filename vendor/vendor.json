@@ -287,6 +287,12 @@
 			"revisionTime": "2018-05-22T22:42:51Z"
 		},
 		{
+			"checksumSHA1": "OH94abBdbmoVqyRqYBfgUT9N494=",
+			"path": "github.com/jessevdk/go-flags",
+			"revision": "1c38ed7ad0cc3d9e66649ac398c30e45f395c4eb",
+			"revisionTime": "2018-03-31T12:42:32Z"
+		},
+		{
 			"checksumSHA1": "VnkNO/q6ZVTYCd/F7nmHosHC5a4=",
 			"path": "github.com/opencontainers/go-digest",
 			"revision": "c9281466c8b2f606084ac71339773efd177436e7",

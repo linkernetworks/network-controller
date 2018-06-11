@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+  initContainers:
+  - name: init-network-client
+    image: hwchiu/network-controller:latest
+    command: ["/go/bin/client"]
+    args: ["-s", "unix:///tmp/grpc.sock", "-b", "br100", "-n", "eth100"]
+    env:
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: POD_UUID
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.uid
+    volumeMounts:
+    - mountPath: /tmp/grpc.sock
+      name: grpc-socket
+  volumes:
+  - name: grpc-socket
+    hostPath:
+      path: /tmp/a.sock
