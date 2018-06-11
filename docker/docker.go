@@ -31,16 +31,6 @@ func (c *Client) InspectContainer(containerID string) (types.ContainerJSON, erro
 	return c.Client.ContainerInspect(c.Context, containerID)
 }
 
-// ListContainer : docker ps -a <Container ID>
-func ListContainer(cli *docker.Client) ([]types.Container, error) {
-	return cli.ContainerList(context.Background(), types.ContainerListOptions{})
-}
-
-// InspectContainer : docker inspect <Container ID>
-func InspectContainer(cli *docker.Client, containerID string) (types.ContainerJSON, error) {
-	return cli.ContainerInspect(context.Background(), containerID)
-}
-
 // GetSandboxKey : docker inspect <Container ID> | grep -E 'SandboxKey|Id'
 func GetSandboxKey(containerInfo types.ContainerJSON) string {
 	return containerInfo.NetworkSettings.SandboxKey
