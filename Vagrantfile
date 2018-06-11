@@ -12,6 +12,11 @@ Vagrant.configure("2") do |config|
     # Env for proto
     PROTOC_RELEASE="https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip"
     PROTOC_TARGET="${HOME}/protoc"
+    # Install Docker
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    sudo apt-get update
+    sudo apt-get install -y docker-ce
     # Install Golang
     wget --quiet https://storage.googleapis.com/golang/go1.10.2.linux-amd64.tar.gz
     sudo tar -zxf go1.10.2.linux-amd64.tar.gz -C /usr/local/
