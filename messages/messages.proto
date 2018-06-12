@@ -118,8 +118,7 @@ message ConnectBridgeResponse {
 message ConfigureIfaceRequest {
   string path = 1;
   string IP = 2;
-  string gateway = 3;
-  string containerVethName = 4;
+  string containerVethName = 3;
 }
 
 message ConfigureIfaceResponse {
