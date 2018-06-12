@@ -30,9 +30,9 @@ spec:
           fieldPath: metadata.uid
     volumeMounts:
     - mountPath: /tmp/
-      name: grpc-socket
+      name: grpc-sock
   restartPolicy: Never
   volumes:
-  - name: grpc-socket
+  - name: grpc-sock
     hostPath:
       path: /tmp/vortex/
