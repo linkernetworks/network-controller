@@ -17,10 +17,10 @@ spec:
         effect: NoSchedule
       containers:
       - name: network-controller-server-tcp
-        image: linker/net-controller-server:latest
+        image: sdnvortex/network-controller:latest
         securityContext:
           privileged: true
-        command: ["./network-controller-server"]
+        command: ["/go/bin/server"]
         args: ["-tcp=0.0.0.0:50051"]
         volumeMounts:
         - mountPath: /var/run/docker.sock

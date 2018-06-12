@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net"
 	"runtime"
 
@@ -17,6 +18,7 @@ import (
 )
 
 func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetworkNamespacePathRequest) (*pb.FindNetworkNamespacePathResponse, error) {
+	log.Println("Start to Find Network")
 	cli, err := docker.New()
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
@@ -57,6 +59,7 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 }
 
 func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest) (*pb.ConnectBridgeResponse, error) {
+	log.Println("Start to Connect Bridge")
 	runtime.LockOSThread()
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
@@ -65,30 +68,38 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 		}, err
 	}
 
+	log.Println("Get the netns object success")
+
 	hostVethName := utils.GenerateVethName(req.PodUUID, req.ContainerVethName)
+	log.Println("The host veth name", hostVethName)
 	err = netns.Do(func(hostNS ns.NetNS) error {
 		if _, _, err := nl.SetupVeth(req.ContainerVethName, hostVethName, 1500, hostNS); err != nil {
 			return err
 		}
 		return nil
 	})
+	log.Println("Success setup veth")
 	if err != nil {
 		return &pb.ConnectBridgeResponse{
 			Success: false, Reason: err.Error(),
 		}, err
 	}
 
+	log.Println("Try to add port", hostVethName, " To ", req.BridgeName)
 	if err := s.OVS.AddPort(req.BridgeName, hostVethName); err != nil {
+		log.Println("Add port fail:", err, req.BridgeName, hostVethName)
 		return &pb.ConnectBridgeResponse{
 			Success: false, Reason: err.Error(),
 		}, err
 	}
 
+	log.Println("Add Port Success")
 	return &pb.ConnectBridgeResponse{Success: true}, nil
 }
 
 func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceRequest) (*pb.ConfigureIfaceResponse, error) {
 	runtime.LockOSThread()
+	log.Println("Start to configure interface")
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
 		return &pb.ConfigureIfaceResponse{

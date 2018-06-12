@@ -13,9 +13,9 @@ import (
 )
 
 type podOptions struct {
-	Name string `long:"pName" description:"The Pod Name, can set by environement variable" env:"POD_NAME" required:"true"`
-	NS   string `long:"pNS" description:"The namespace of the Pod, can set by environement variable" env:"POD_NAMESPACE" required:"true"`
-	UUID string `long:"pUUID" description:"The UUID of the Pod, can set by environement variable" env:"POD_UUID" required:"true"`
+	Name string `long:"podName" description:"The Pod Name, can set by environement variable" env:"POD_NAME" required:"true"`
+	NS   string `long:"podNS" description:"The namespace of the Pod, can set by environement variable" env:"POD_NAMESPACE" required:"true"`
+	UUID string `long:"podUUID" description:"The UUID of the Pod, can set by environement variable" env:"POD_UUID" required:"true"`
 }
 
 type interfaceOptions struct {
@@ -33,13 +33,14 @@ type clientOptions struct {
 	Server    string           `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
 	Connect   connectOptions   `group:"ConnectOptions"`
 	Interface interfaceOptions `group:"InterfaceOptions" `
-	Pod       podOptions       `group:"InterfaceOptions" `
+	Pod       podOptions       `group:"PodOptions" `
 }
 
 var options clientOptions
 var parser = flags.NewParser(&options, flags.Default)
 
 func main() {
+	var setIP bool
 	//flag.Parse()
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
@@ -47,15 +48,24 @@ func main() {
 	}
 
 	// Verify IP address
-	if utils.IsValidCIDR(options.Interface.IP) {
-		log.Fatalf("IP address is not correct: %s", options.Interface.IP)
+	if options.Interface.IP != "" && options.Interface.Gateway != "" {
+		setIP = true
+	} else {
+		log.Println("We don't have valid IP address/Gateway from the arguments, we won't set the IP/GW for", options.Connect.Interface)
 	}
 
-	// Verify gateway address
-	if utils.IsValidIP(options.Interface.Gateway) {
-		log.Fatalf("Gateway address is not correct: %s", options.Interface.Gateway)
+	if setIP {
+		if !utils.IsValidCIDR(options.Interface.IP) {
+			log.Fatalf("IP address is not correct: %s", options.Interface.IP)
+		}
+
+		// Verify gateway address
+		if !utils.IsValidIP(options.Interface.Gateway) {
+			log.Fatalf("Gateway address is not correct: %s", options.Interface.Gateway)
+		}
 	}
 
+	log.Println("Start to connect to ", options.Server)
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(options.Server, grpc.WithInsecure())
 	if err != nil {
@@ -69,6 +79,7 @@ func main() {
 
 	log.Println(options.Pod.Name, options.Pod.NS, options.Pod.UUID)
 	// Find Network Namespace Path
+	log.Println("Try to find the network namespace path")
 	n, err := c.FindNetworkNamespacePath(ctx, &pb.FindNetworkNamespacePathRequest{
 		PodName:   options.Pod.Name,
 		Namespace: options.Pod.NS,
@@ -83,6 +94,7 @@ func main() {
 
 	log.Printf("The path is %s.", n.Path)
 	// Let's connect bridge
+	log.Println("Try to connect bridge", n.Path, options.Connect.Interface, options.Connect.Bridge)
 	b, err := c.ConnectBridge(ctx, &pb.ConnectBridgeRequest{
 		Path:              n.Path,
 		PodUUID:           options.Pod.UUID,
