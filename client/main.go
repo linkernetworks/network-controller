@@ -11,31 +11,31 @@ import (
 	"google.golang.org/grpc"
 )
 
-type PodOptions struct {
+type podOptions struct {
 	Name string `long:"pName" description:"The Pod Name, can set by environement variable" env:"POD_NAME" required:"true"`
 	NS   string `long:"pNS" description:"The namespace of the Pod, can set by environement variable" env:"POD_NAMESPACE" required:"true"`
 	UUID string `long:"pUUID" description:"The UUID of the Pod, can set by environement variable" env:"POD_UUID" required:"true"`
 }
 
-type InterfaceOptions struct {
+type interfaceOptions struct {
 	IP      string `short:"i" long:"ip" description:"The ip address of the interface, should be CIDR form"`
 	Gateway string `short:"g" long:"gw" description:"The gateway of the inteface subnet"`
 	VLAN    *int   `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
 }
 
-type ConnectOptions struct {
+type connectOptions struct {
 	Bridge    string `short:"b" long:"bridge" description:"Target bridge name" required:"true"`
 	Interface string `short:"n" long:"nic" description:"The interface name in the container" required:"true"`
 }
 
-type ClientOptions struct {
+type clientOptions struct {
 	Server    string           `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
-	Connect   ConnectOptions   `group:"ConnectOptions"`
-	Interface InterfaceOptions `group:"InterfaceOptions" `
-	Pod       PodOptions       `group:"InterfaceOptions" `
+	Connect   connectOptions   `group:"ConnectOptions"`
+	Interface interfaceOptions `group:"InterfaceOptions" `
+	Pod       podOptions       `group:"InterfaceOptions" `
 }
 
-var options ClientOptions
+var options clientOptions
 var parser = flags.NewParser(&options, flags.Default)
 
 func main() {
