@@ -16,7 +16,17 @@ func TestIsValidIP(t *testing.T) {
 	assert.Equal(t, true, o)
 }
 
+func TestIsInValidIP(t *testing.T) {
+	o := IsValidIP("abcd.efgh.ijkl.mnop")
+	assert.Equal(t, false, o)
+}
+
 func TestIsValidCIDR(t *testing.T) {
 	o := IsValidCIDR("10.0.0.1/24")
 	assert.Equal(t, true, o)
+}
+
+func TestIsInValidCIDR(t *testing.T) {
+	o := IsValidCIDR("0.0.0.0")
+	assert.Equal(t, false, o)
 }
