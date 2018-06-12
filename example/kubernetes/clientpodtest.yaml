@@ -10,6 +10,7 @@ spec:
     image: busybox
     command: ['sh', '-c', 'echo The app is running! && sleep 3600']
   initContainers:
+  restartPolicy: Never
   - name: init-network-client
     image: hwchiu/network-controller:latest
     command: ["/go/bin/client"]
