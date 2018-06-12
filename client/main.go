@@ -31,9 +31,9 @@ type connectOptions struct {
 
 type clientOptions struct {
 	Server    string           `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
-	Connect   connectOptions   `group:"ConnectOptions"`
-	Interface interfaceOptions `group:"InterfaceOptions" `
-	Pod       podOptions       `group:"PodOptions" `
+	Connect   connectOptions   `group:"connectOptions"`
+	Interface interfaceOptions `group:"interfaceOptions" `
+	Pod       podOptions       `group:"podOptions" `
 }
 
 var options clientOptions
@@ -107,21 +107,26 @@ func main() {
 	if b.Success {
 		log.Printf("Connecting bridge is sussessful.")
 	} else {
-		log.Printf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
+		log.Fatalf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
 	}
 
-	i, err := c.ConfigureIface(ctx, &pb.ConfigureIfaceRequest{
-		Path:              n.Path,
-		IP:                options.Interface.IP,
-		Gateway:           options.Interface.Gateway,
-		ContainerVethName: options.Connect.Interface})
+	if setIP {
+		i, err := c.ConfigureIface(ctx, &pb.ConfigureIfaceRequest{
+			Path:              n.Path,
+			IP:                options.Interface.IP,
+			Gateway:           options.Interface.Gateway,
+			ContainerVethName: options.Connect.Interface})
 
-	if err != nil {
-		log.Fatalf("There is something wrong with setting configure interface: %v", err)
+		if err != nil {
+			log.Fatalf("There is something wrong with setting configure interface: %v", err)
+		}
+		if i.Success {
+			log.Printf("Set configure interface is sussessful.")
+		} else {
+			log.Fatalf("Set configure interface is not sussessful. The reason is %s.", i.Reason)
+		}
 	}
-	if i.Success {
-		log.Printf("Set configure interface is sussessful.")
-	} else {
-		log.Printf("Set configure interface is not sussessful. The reason is %s.", i.Reason)
-	}
+
+	log.Printf("network-controller client has completed all tasks")
+
 }
