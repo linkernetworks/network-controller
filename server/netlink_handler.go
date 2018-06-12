@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net"
 	"runtime"
 
 	pb "github.com/linkernetworks/network-controller/messages"
@@ -120,19 +119,8 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 				Version:   "4",
 				Interface: current.Int(0),
 				Address:   *ipv4,
-				Gateway:   net.ParseIP(req.Gateway),
 			},
 		}
-
-		_, ipv4Net, err := net.ParseCIDR(req.IP)
-		if err != nil {
-			return err
-		}
-
-		result.Routes = []*types.Route{{
-			Dst: *ipv4Net,
-			GW:  net.ParseIP(req.Gateway),
-		}}
 
 		return ipam.ConfigureIface(req.ContainerVethName, result)
 	})

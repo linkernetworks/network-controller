@@ -19,9 +19,10 @@ type podOptions struct {
 }
 
 type interfaceOptions struct {
-	IP      string `short:"i" long:"ip" description:"The ip address of the interface, should be CIDR form"`
-	Gateway string `short:"g" long:"gw" description:"The gateway of the inteface subnet"`
-	VLAN    *int   `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
+	IP string `short:"i" long:"ip" description:"The ip address of the interface, should be CIDR form"`
+	//FIXME we will support the static route in the furture
+	//Gateway string `short:"g" long:"gw" description:"The gateway of the inteface subnet"`
+	VLAN *int `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
 }
 
 type connectOptions struct {
@@ -48,20 +49,15 @@ func main() {
 	}
 
 	// Verify IP address
-	if options.Interface.IP != "" && options.Interface.Gateway != "" {
+	if options.Interface.IP != "" {
 		setIP = true
 	} else {
-		log.Println("We don't have valid IP address/Gateway from the arguments, we won't set the IP/GW for", options.Connect.Interface)
+		log.Println("We don't have valid IP address from the arguments, we won't set the IP for", options.Connect.Interface)
 	}
 
 	if setIP {
 		if !utils.IsValidCIDR(options.Interface.IP) {
 			log.Fatalf("IP address is not correct: %s", options.Interface.IP)
-		}
-
-		// Verify gateway address
-		if !utils.IsValidIP(options.Interface.Gateway) {
-			log.Fatalf("Gateway address is not correct: %s", options.Interface.Gateway)
 		}
 	}
 
@@ -114,7 +110,6 @@ func main() {
 		i, err := c.ConfigureIface(ctx, &pb.ConfigureIfaceRequest{
 			Path:              n.Path,
 			IP:                options.Interface.IP,
-			Gateway:           options.Interface.Gateway,
 			ContainerVethName: options.Connect.Interface})
 
 		if err != nil {
