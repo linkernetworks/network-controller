@@ -16,7 +16,7 @@ func TestIsValidIP(t *testing.T) {
 	assert.Equal(t, true, o)
 }
 
-func TestIsInValidIP(t *testing.T) {
+func TestIsInvalidIP(t *testing.T) {
 	o := IsValidIP("abcd.efgh.ijkl.mnop")
 	assert.Equal(t, false, o)
 }
@@ -26,7 +26,7 @@ func TestIsValidCIDR(t *testing.T) {
 	assert.Equal(t, true, o)
 }
 
-func TestIsInValidCIDR(t *testing.T) {
+func TestIsInvalidCIDR(t *testing.T) {
 	o := IsValidCIDR("0.0.0.0")
 	assert.Equal(t, false, o)
 }
