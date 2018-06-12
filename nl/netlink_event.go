@@ -8,10 +8,10 @@ import (
 
 type NlEventHandler struct {
 	stop              chan struct{}
-	LinkDeleteHandler []LinkReceiver
+	LinkDeleteHandler []linkReceiver
 }
 
-type LinkReceiver func(lu netlink.LinkUpdate) bool
+type linkReceiver func(lu netlink.LinkUpdate) bool
 
 func New() *NlEventHandler {
 	return &NlEventHandler{
@@ -19,7 +19,7 @@ func New() *NlEventHandler {
 	}
 }
 
-func (nl *NlEventHandler) AddDeletedLinkHandler(handler LinkReceiver) {
+func (nl *NlEventHandler) AddDeletedLinkHandler(handler linkReceiver) {
 	nl.LinkDeleteHandler = append(nl.LinkDeleteHandler, handler)
 }
 

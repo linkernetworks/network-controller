@@ -6,13 +6,11 @@ import (
 	"log"
 )
 
-/*
-	Remove the veth from the system.
-	We get the veth name from the netlink.LinkUpdate
-	and traverse all OpenvSwitches and try to remove the veth from its parent OVS
 
-	return true will stop the netlink server handler
-*/
+// RemoveVethFromOVS remove the veth from the ovs.
+// We get the veth name from the netlink.LinkUpdate
+// and traverse all OpenvSwitches and try to remove the veth from its parent OVS
+// return true will stop the netlink server handler
 func RemoveVethFromOVS(lu netlink.LinkUpdate) bool {
 	L := lu.Attrs()
 	if L.ParentIndex != 0 || L.MasterIndex != 0 {
