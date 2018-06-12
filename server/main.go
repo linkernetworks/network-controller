@@ -44,8 +44,11 @@ func main() {
 	var lis net.Listener
 	var err error
 	if tcpAddr != "" {
+		log.Println("Starting tcp gRPC server")
 		lis, err = net.Listen("tcp", tcpAddr)
 	} else {
+		syscall.Unlink(unixPath)
+		log.Println("Starting unix gRPC server")
 		lis, err = net.Listen("unix", unixPath)
 	}
 
