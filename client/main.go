@@ -105,8 +105,23 @@ func main() {
 		log.Fatalf("There is something wrong with connect bridge: %v", err)
 	}
 	if b.Success {
-		log.Printf("Connecting bridge is sussessful. The reason is %s.", b.Reason)
+		log.Printf("Connecting bridge is sussessful.")
 	} else {
 		log.Printf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
+	}
+
+	i, err := c.ConfigureIface(ctx, &pb.ConfigureIfaceRequest{
+		Path:              n.Path,
+		IP:                options.Interface.IP,
+		Gateway:           options.Interface.Gateway,
+		ContainerVethName: options.Connect.Interface})
+
+	if err != nil {
+		log.Fatalf("There is something wrong with setting configure interface: %v", err)
+	}
+	if i.Success {
+		log.Printf("Set configure interface is sussessful.")
+	} else {
+		log.Printf("Set configure interface is not sussessful. The reason is %s.", i.Reason)
 	}
 }
