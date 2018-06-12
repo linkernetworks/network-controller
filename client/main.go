@@ -5,8 +5,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/jessevdk/go-flags"
+	flags "github.com/jessevdk/go-flags"
 	pb "github.com/linkernetworks/network-controller/messages"
+	"github.com/linkernetworks/network-controller/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
@@ -43,6 +44,16 @@ func main() {
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
 		os.Exit(1)
+	}
+
+	// Verify IP address
+	if utils.IsValidCIDR(options.Interface.IP) {
+		log.Fatalf("IP address is not correct: %s", options.Interface.IP)
+	}
+
+	// Verify gateway address
+	if utils.IsValidIP(options.Interface.Gateway) {
+		log.Fatalf("Gateway address is not correct: %s", options.Interface.Gateway)
 	}
 
 	// Set up a connection to the server.
