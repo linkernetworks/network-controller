@@ -6,7 +6,6 @@ import (
 	"log"
 )
 
-
 // RemoveVethFromOVS remove the veth from the ovs.
 // We get the veth name from the netlink.LinkUpdate
 // and traverse all OpenvSwitches and try to remove the veth from its parent OVS
