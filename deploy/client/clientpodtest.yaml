@@ -14,7 +14,7 @@ spec:
   - name: init-network-client
     image: sdnvortex/network-controller:latest
     command: ["/go/bin/client"]
-    args: ["-s=unix:///tmp/vortex.sock", "-b=br100", "-n=eth100"]
+    args: ["-s=unix:///tmp/vortex.sock", "-b=br100", "-n=eth100", "-i=192.168.24.50/24"]
     env:
     - name: POD_NAME
       valueFrom:

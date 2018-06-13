@@ -28,5 +28,5 @@ spec:
       volumes:
       - name: docker-sock
         hostPath:
-          path: /var/run/docker.sock
+          path: /run/docker.sock
       hostNetwork: true
