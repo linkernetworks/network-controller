@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
     sudo apt-get update
-    sudo apt-get install -y docker-ce
+    sudo apt-get install docker-ce=17.03.2~ce-0~ubuntu-xenial
     # Install Golang
     wget --quiet https://storage.googleapis.com/golang/go1.10.2.linux-amd64.tar.gz
     sudo tar -zxf go1.10.2.linux-amd64.tar.gz -C /usr/local/
@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
     # setup golang dir
     mkdir -p /home/$USER/go/src
     rm -rf /home/$USER/go1.9.1.linux-amd64.tar.gz
-    # Download ovs CNI source
+    # Download network-controller source
     git clone https://github.com/linkernetworks/network-controller go/src/github.com/linkernetworks/network-controller
     go get -u github.com/kardianos/govendor
     cd ~/go/src/github.com/linkernetworks/network-controller
