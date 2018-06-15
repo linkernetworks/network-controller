@@ -16,7 +16,20 @@ Vagrant.configure("2") do |config|
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
     sudo apt-get update
-    sudo apt-get install docker-ce=17.03.2~ce-0~ubuntu-xenial
+    sudo apt-get install -y docker-ce=17.03.2~ce-0~ubuntu-xenial
+    # Install Kubernetes
+    sudo apt-get install -y apt-transport-https curl
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee --append /etc/apt/sources.list.d/kubernetes.list
+    sudo apt-get update
+    sudo apt-get install -y kubelet kubeadm kubectl
+    sudo swapoff -a
+    sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+    kubectl taint nodes --all node-role.kubernetes.io/master-
     # Install Golang
     wget --quiet https://storage.googleapis.com/golang/go1.10.2.linux-amd64.tar.gz
     sudo tar -zxf go1.10.2.linux-amd64.tar.gz -C /usr/local/
