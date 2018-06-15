@@ -17,6 +17,28 @@ make client
 make test
 ```
 
+### Develop with Vagrant
+1. Download repository
+```sh
+$ git clone https://github.com/linkernetworks/network-controller.git
+$ cd network-controller/
+```
+2. Run vagrant
+```sh
+$ vagrant up
+```
+3. Install vagrant-scp plugin
+```sh
+$ vagrant plugin install vagrant-scp
+```
+4. Get `~/.kube/config` from particular VM to Host Os
+```sh
+$ vagrant scp :~/.kube/config vagrant-config
+```
+5. Configure Access to vagrant Cluster
+> Please install `kubectl` before you begin.
+To be continue...
+
 ## Usage
 
 ### Run a Server
