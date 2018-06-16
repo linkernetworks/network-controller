@@ -3,10 +3,14 @@
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
-  config.vm.hostname = 'dev'
+  config.vm.hostname = 'network_controller-dev'
+  config.vm.define vm_name = 'network_controller'
+  config.vm.provision "file", source: "vagrant-docker.conf", destination: "/tmp/override.conf"
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
     set -e -x -u
+    sudo mkdir -p "/etc/systemd/system/docker.service.d/"
+    sudo cp "/tmp/override.conf" "/etc/systemd/system/docker.service.d/override.conf"
     sudo apt-get update
     sudo apt-get install -y vim git build-essential openvswitch-switch tcpdump unzip tig
     # Env for proto
@@ -24,7 +28,7 @@ Vagrant.configure("2") do |config|
     sudo apt-get update
     sudo apt-get install -y kubelet kubeadm kubectl
     sudo swapoff -a
-    sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+    sudo kubeadm init --apiserver-advertise-address=172.17.9.100 --pod-network-cidr=10.244.0.0/16
     mkdir -p $HOME/.kube
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
     sudo chown $(id -u):$(id -g) $HOME/.kube/config
@@ -53,6 +57,7 @@ Vagrant.configure("2") do |config|
     go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
   SHELL
 
+  config.vm.network :private_network, ip: "172.17.9.100"
   config.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--cpus", 2]
       v.customize ["modifyvm", :id, "--memory", 1024]
