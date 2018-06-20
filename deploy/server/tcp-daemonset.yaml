@@ -23,10 +23,21 @@ spec:
         command: ["/go/bin/server"]
         args: ["-tcp=0.0.0.0:50051"]
         volumeMounts:
+        - mountPath: /var/run/docker/netns:shared
+          name: docker-ns
+          #mountPropagation: Bidirectional
         - mountPath: /var/run/docker.sock
           name: docker-sock
+        - mountPath: /var/run/openvswitch/db.sock
+          name: ovs-sock
       volumes:
+      - name: docker-ns
+        hostPath:
+          path: /run/docker/netns
       - name: docker-sock
         hostPath:
           path: /run/docker.sock
+      - name: ovs-sock
+        hostPath:
+          path: /run/openvswitch/db.sock
       hostNetwork: true
