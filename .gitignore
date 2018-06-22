@@ -10,7 +10,6 @@
 .vagrant
 vendor/*
 !vendor/vendor.json
-messages/messages.pb.go
 
 # Test binary, build with `go test -c`
 *.test
