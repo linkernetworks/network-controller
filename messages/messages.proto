@@ -6,6 +6,8 @@ package messages;
 service NetworkControl {
   rpc Echo (EchoRequest) returns (EchoResponse) {}
   rpc Ping (PingRequest) returns (PingResponse) {}
+  rpc CreateBridge (CreateBridgeRequest) returns(OVSResponse) {}
+  rpc DeleteBridge (DeleteBridgeRequest) returns(OVSResponse) {}
   rpc AddPort (AddPortRequest) returns(OVSResponse) {}
   rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
   rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
@@ -38,6 +40,14 @@ message OVSResponse {
   string type = 1;
   bool success = 2;
   string reason = 3;
+}
+
+message CreateBridgeRequest {
+  string bridgeName = 1;
+}
+
+message DeleteBridgeRequest {
+  string bridgeName = 1;
 }
 
 message AddPortRequest {
