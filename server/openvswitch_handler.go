@@ -21,6 +21,24 @@ func (s *server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingRespons
 	return &pb.PingResponse{Pong: "PONG"}, nil
 }
 
+func (s *server) CreateBridge(ctx context.Context, req *pb.CreateBridgeRequest) (*pb.OVSResponse, error) {
+	if err := s.OVS.CreateBridge(req.BridgeName); err != nil {
+		return &pb.OVSResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+	return &pb.OVSResponse{Success: true}, nil
+}
+
+func (s *server) DeleteBridge(ctx context.Context, req *pb.DeleteBridgeRequest) (*pb.OVSResponse, error) {
+	if err := s.OVS.DeleteBridge(req.BridgeName); err != nil {
+		return &pb.OVSResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+	return &pb.OVSResponse{Success: true}, nil
+}
+
 func (s *server) AddPort(ctx context.Context, req *pb.AddPortRequest) (*pb.OVSResponse, error) {
 	if err := s.OVS.AddPort(req.BridgeName, req.IfaceName); err != nil {
 		return &pb.OVSResponse{
