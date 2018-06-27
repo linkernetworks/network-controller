@@ -69,14 +69,14 @@ message AddPortRequest {
 }
 
 message PortOptions {
- int32 tag = 1;
- string VLANMode = 2;
- repeated int32 trunk = 3;
+  int32 tag = 1;
+  string VLANMode = 2;
+  repeated int32 trunk = 3;
 }
 
 message SetPortRequest {
   string ifaceName = 1;
-  PortOptions portOptions = 2;
+  PortOptions options = 2;
 }
 
 message GetPortRequest {

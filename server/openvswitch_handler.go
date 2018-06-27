@@ -73,6 +73,7 @@ func (s *server) GetPort(ctx context.Context, req *pb.GetPortRequest) (*pb.GetPo
 	if portOptions.VLANMode != nil {
 		options.VLANMode = *portOptions.VLANMode
 	}
+	// convert response trunk data(int) to grpc message trunk format(int32)
 	for _, t := range portOptions.Trunk {
 		options.Trunk = append(options.Trunk, int32(t))
 	}
@@ -84,18 +85,19 @@ func (s *server) GetPort(ctx context.Context, req *pb.GetPortRequest) (*pb.GetPo
 
 func (s *server) SetPort(ctx context.Context, req *pb.SetPortRequest) (*pb.OVSResponse, error) {
 	portOptions := ovs.PortOptions{}
-	if req.PortOptions.VLANMode == "" {
+	if req.Options.VLANMode == "" {
 		// set with vlan tag
-		tag := int(req.PortOptions.Tag)
+		tag := int(req.Options.Tag)
 		portOptions.Tag = &tag
 		portOptions.VLANMode = nil
 		portOptions.Trunk = nil
 	} else {
 		// set with vlan trunk
 		portOptions.Tag = nil
-		VLANMode := req.PortOptions.VLANMode
+		VLANMode := req.Options.VLANMode
 		portOptions.VLANMode = &VLANMode
-		for _, t := range req.PortOptions.Trunk {
+		// convert grpc message trunk format(int32) to request trunk data(int)
+		for _, t := range req.Options.Trunk {
 			portOptions.Trunk = append(portOptions.Trunk, int(t))
 		}
 	}
