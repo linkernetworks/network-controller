@@ -44,11 +44,6 @@ func (o *OVSManager) ListBridges() ([]string, error) {
 	if err != nil {
 		return bridges, fmt.Errorf("Failed to list bridges: %v", err)
 	}
-
-	//FIXME remove this after the upstream has fix the problem
-	if len(bridges) == 1 && bridges[0] == "" {
-		return []string{}, nil
-	}
 	return bridges, nil
 }
 
@@ -98,11 +93,6 @@ func (o *OVSManager) ListPorts(bridgeName string) ([]string, error) {
 	ports, err := o.Client.VSwitch.ListPorts(bridgeName)
 	if err != nil {
 		return ports, fmt.Errorf("Failed to list ports of bridge %s: %v", bridgeName, err)
-	}
-
-	//FIXME remove this after the upstream has fix the problem
-	if len(ports) == 1 && ports[0] == "" {
-		return []string{}, nil
 	}
 	return ports, nil
 }

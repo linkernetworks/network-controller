@@ -122,7 +122,7 @@ func TestListPortsFail(t *testing.T) {
 	assert.Equal(t, 0, len(ports))
 }
 
-func TestAddDelPortFail(t *testing.T) {
+func TestAddSetDelPortFail(t *testing.T) {
 	if _, ok := os.LookupEnv("TEST_OVS"); !ok {
 		t.SkipNow()
 	}
@@ -131,6 +131,10 @@ func TestAddDelPortFail(t *testing.T) {
 
 	bridgeName := "br0"
 	err := o.AddPort(bridgeName, "0")
+	assert.Error(t, err)
+	err = o.SetPort("0", ovs.PortOptions{})
+	assert.Error(t, err)
+	_, err = o.GetPort("0")
 	assert.Error(t, err)
 	err = o.DeletePort(bridgeName, "0")
 	assert.Error(t, err)
