@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"testing"
 
+	"github.com/linkernetworks/go-openvswitch/ovs"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -74,7 +75,7 @@ func TestBridgeOperationsFail(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestAddDelPort(t *testing.T) {
+func TestAddSetDelPort(t *testing.T) {
 	bridgeName := "br0"
 	const dpTypeSystem = "system"
 	err := o.CreateBridge(bridgeName, dpTypeSystem)
@@ -87,6 +88,20 @@ func TestAddDelPort(t *testing.T) {
 	defer exec.Command("ip", "link", "del", hName).Output()
 	err = o.AddPort(bridgeName, hName)
 	assert.NoError(t, err)
+
+	VLANMode := "trunk"
+	portOptions := ovs.PortOptions{
+		Tag:      nil,
+		VLANMode: &VLANMode,
+		Trunk:    []int{1, 2, 3, 4, 5},
+	}
+	err = o.SetPort(hName, portOptions)
+	assert.NoError(t, err)
+
+	options, err := o.GetPort(hName)
+	assert.NoError(t, err)
+	assert.Equal(t, portOptions.VLANMode, options.VLANMode)
+	assert.Equal(t, len(portOptions.Trunk), len(options.Trunk))
 
 	ports, err := o.ListPorts(bridgeName)
 	assert.NoError(t, err)

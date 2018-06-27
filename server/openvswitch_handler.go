@@ -7,6 +7,7 @@ import (
 
 	pb "github.com/linkernetworks/network-controller/messages"
 
+	"github.com/linkernetworks/go-openvswitch/ovs"
 	"golang.org/x/net/context"
 )
 
@@ -50,6 +51,56 @@ func (s *server) AddDPDKPort(ctx context.Context, req *pb.AddPortRequest) (*pb.O
 
 func (s *server) AddPort(ctx context.Context, req *pb.AddPortRequest) (*pb.OVSResponse, error) {
 	if err := s.OVS.AddPort(req.BridgeName, req.IfaceName); err != nil {
+		return &pb.OVSResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+	return &pb.OVSResponse{Success: true}, nil
+}
+
+func (s *server) GetPort(ctx context.Context, req *pb.GetPortRequest) (*pb.GetPortResponse, error) {
+	portOptions, err := s.OVS.GetPort(req.IfaceName)
+	if err != nil {
+		return &pb.GetPortResponse{
+			Success: false, Reason: err.Error(),
+		}, err
+	}
+
+	options := &pb.PortOptions{}
+	if portOptions.Tag != nil {
+		options.Tag = int32(*portOptions.Tag)
+	}
+	if portOptions.VLANMode != nil {
+		options.VLANMode = *portOptions.VLANMode
+	}
+	for _, t := range portOptions.Trunk {
+		options.Trunk = append(options.Trunk, int32(t))
+	}
+	return &pb.GetPortResponse{
+		Success:     true,
+		PortOptions: options,
+	}, nil
+}
+
+func (s *server) SetPort(ctx context.Context, req *pb.SetPortRequest) (*pb.OVSResponse, error) {
+	portOptions := ovs.PortOptions{}
+	if req.PortOptions.VLANMode == "" {
+		// set with vlan tag
+		tag := int(req.PortOptions.Tag)
+		portOptions.Tag = &tag
+		portOptions.VLANMode = nil
+		portOptions.Trunk = nil
+	} else {
+		// set with vlan trunk
+		portOptions.Tag = nil
+		VLANMode := req.PortOptions.VLANMode
+		portOptions.VLANMode = &VLANMode
+		for _, t := range req.PortOptions.Trunk {
+			portOptions.Trunk = append(portOptions.Trunk, int(t))
+		}
+	}
+
+	if err := s.OVS.SetPort(req.IfaceName, portOptions); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
 		}, err

@@ -12,6 +12,8 @@ service NetworkControl {
 
   rpc AddPort (AddPortRequest) returns(OVSResponse) {}
   rpc AddDPDKPort (AddPortRequest) returns(OVSResponse) {}
+  rpc GetPort (GetPortRequest) returns(GetPortResponse) {}
+  rpc SetPort (SetPortRequest) returns(OVSResponse) {}
   rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
 
   rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
@@ -64,6 +66,28 @@ message AddPortRequest {
   string ifaceName = 2;
   // option message: only for dpdk usage
   string dpdkDevargs = 3;
+}
+
+message PortOptions {
+ int32 tag = 1;
+ string VLANMode = 2;
+ repeated int32 trunk = 3;
+}
+
+message SetPortRequest {
+  string ifaceName = 1;
+  PortOptions portOptions = 2;
+}
+
+message GetPortRequest {
+  string ifaceName = 1;
+  PortOptions portOptions = 2;
+}
+
+message GetPortResponse {
+  PortOptions portOptions = 1;
+  bool success = 2;
+  string reason = 3;
 }
 
 message DeletePortRequest {
