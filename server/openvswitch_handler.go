@@ -22,7 +22,7 @@ func (s *server) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingRespons
 }
 
 func (s *server) CreateBridge(ctx context.Context, req *pb.CreateBridgeRequest) (*pb.OVSResponse, error) {
-	if err := s.OVS.CreateBridge(req.BridgeName); err != nil {
+	if err := s.OVS.CreateBridge(req.BridgeName, req.DatapathType); err != nil {
 		return &pb.OVSResponse{
 			Success: false, Reason: err.Error(),
 		}, err
