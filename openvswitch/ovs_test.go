@@ -119,6 +119,8 @@ func TestAddDelPortFail(t *testing.T) {
 	assert.Error(t, err)
 	err = o.DeletePort(bridgeName, "0")
 	assert.Error(t, err)
+	err = o.AddDPDKPort(bridgeName, "1", "0000:00:08.0")
+	assert.Error(t, err)
 }
 
 func TestFlowOperation(t *testing.T) {
