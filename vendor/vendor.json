@@ -203,12 +203,6 @@
 			"revisionTime": "2018-02-21T22:46:20Z"
 		},
 		{
-			"checksumSHA1": "/E538NdfUtSThHj6Q097gFRsSD4=",
-			"path": "github.com/digitalocean/go-openvswitch/ovs",
-			"revision": "cbff56fd2fff5f5d2f804016d428f8189c2bad11",
-			"revisionTime": "2018-05-24T14:42:07Z"
-		},
-		{
 			"checksumSHA1": "Gj+xR1VgFKKmFXYOJMnAczC3Znk=",
 			"path": "github.com/docker/distribution/digestset",
 			"revision": "f0cc927784781fa395c06317c58dea2841ece3a9",
@@ -291,6 +285,12 @@
 			"path": "github.com/jessevdk/go-flags",
 			"revision": "1c38ed7ad0cc3d9e66649ac398c30e45f395c4eb",
 			"revisionTime": "2018-03-31T12:42:32Z"
+		},
+		{
+			"checksumSHA1": "BPTSX2pY4eNgqbQpbRt1V1DnkRM=",
+			"path": "github.com/linkernetworks/go-openvswitch/ovs",
+			"revision": "eab982908a30d98500ba243e022247947d9ca570",
+			"revisionTime": "2018-06-28T03:23:49Z"
 		},
 		{
 			"checksumSHA1": "VnkNO/q6ZVTYCd/F7nmHosHC5a4=",
