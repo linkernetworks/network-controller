@@ -3,7 +3,7 @@ package openvswitch
 import (
 	"fmt"
 
-	"github.com/digitalocean/go-openvswitch/ovs"
+	"github.com/linkernetworks/go-openvswitch/ovs"
 )
 
 // OVSManager : contains the client for control ovs-vsctl
