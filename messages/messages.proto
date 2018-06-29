@@ -44,6 +44,7 @@ message OVSResponse {
 
 message CreateBridgeRequest {
   string bridgeName = 1;
+  string datapathType = 2;
 }
 
 message DeleteBridgeRequest {

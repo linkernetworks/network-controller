@@ -26,7 +26,8 @@ func TestRemoveVethFromOVS(t *testing.T) {
 	assert.Equal(t, 0, len(bridges))
 
 	bridgeName := "br0"
-	err = o.CreateBridge(bridgeName)
+	const dpTypeSystem = "system"
+	err = o.CreateBridge(bridgeName, dpTypeSystem)
 	defer o.DeleteBridge(bridgeName)
 	assert.NoError(t, err)
 

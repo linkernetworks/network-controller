@@ -39,7 +39,8 @@ func TestBridgeOperations(t *testing.T) {
 	assert.Equal(t, 0, len(bridges))
 
 	bridgeName := "br0"
-	err = o.CreateBridge(bridgeName)
+	const dpTypeSystem = "system"
+	err = o.CreateBridge(bridgeName, dpTypeSystem)
 	assert.NoError(t, err)
 
 	bridges, err = o.ListBridges()
@@ -62,7 +63,8 @@ func TestBridgeOperationsFail(t *testing.T) {
 	assert.Error(t, err)
 
 	bridgeName := "br0"
-	err = o.CreateBridge(bridgeName)
+	const dpTypeSystem = "system"
+	err = o.CreateBridge(bridgeName, dpTypeSystem)
 	assert.Error(t, err)
 
 	_, err = o.ListBridges()
@@ -74,7 +76,8 @@ func TestBridgeOperationsFail(t *testing.T) {
 
 func TestAddDelPort(t *testing.T) {
 	bridgeName := "br0"
-	err := o.CreateBridge(bridgeName)
+	const dpTypeSystem = "system"
+	err := o.CreateBridge(bridgeName, dpTypeSystem)
 	defer o.DeleteBridge(bridgeName)
 
 	hName := "test0"
@@ -120,7 +123,8 @@ func TestAddDelPortFail(t *testing.T) {
 
 func TestFlowOperation(t *testing.T) {
 	bridgeName := "br0"
-	err := o.CreateBridge(bridgeName)
+	const dpTypeSystem = "system"
+	err := o.CreateBridge(bridgeName, dpTypeSystem)
 	defer o.DeleteBridge(bridgeName)
 	assert.NoError(t, err)
 
@@ -153,7 +157,8 @@ func TestFlowOperationsFail(t *testing.T) {
 
 func TestDumpPorts(t *testing.T) {
 	bridgeName := "br0"
-	err := o.CreateBridge(bridgeName)
+	const dpTypeSystem = "system"
+	err := o.CreateBridge(bridgeName, dpTypeSystem)
 	defer o.DeleteBridge(bridgeName)
 
 	hName := "test0"

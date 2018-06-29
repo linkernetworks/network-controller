@@ -18,12 +18,15 @@ func New() *OVSManager {
 	}
 }
 
-// CreateBridge : ovs-vsctl add-br br0
-func (o *OVSManager) CreateBridge(bridgeName string) error {
-	if err := o.Client.VSwitch.AddBridge(bridgeName); err != nil {
-		return fmt.Errorf("Failed to add bridge %s: %v", bridgeName, err)
+// CreateBridge
+// userspace datapath
+// ovs-vsctl add-br br0 -- set bridge br0 datapath_type=netdev
+// kernel datapath
+// ovs-vsctl add-br br1 -- set bridge br1 datapath_type=system
+func (o *OVSManager) CreateBridge(bridgeName, dpType string) error {
+	if err := o.Client.VSwitch.AddBridgeWithType(bridgeName, dpType); err != nil {
+		return fmt.Errorf("Failed to add bridge %s. Datapath type %s: %v", bridgeName, dpType, err)
 	}
-
 	return nil
 }
 
