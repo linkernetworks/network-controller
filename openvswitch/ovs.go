@@ -44,11 +44,6 @@ func (o *OVSManager) ListBridges() ([]string, error) {
 	if err != nil {
 		return bridges, fmt.Errorf("Failed to list bridges: %v", err)
 	}
-
-	//FIXME remove this after the upstream has fix the problem
-	if len(bridges) == 1 && bridges[0] == "" {
-		return []string{}, nil
-	}
 	return bridges, nil
 }
 
@@ -68,6 +63,23 @@ func (o *OVSManager) AddDPDKPort(bridgeName, ifName, dpdkDevargs string) error {
 	return nil
 }
 
+// GetPort : ovs-vsctl --format=json get port eth0 tag vlan_mode trunk
+func (o *OVSManager) GetPort(ifName string) (ovs.PortOptions, error) {
+	portOptions, err := o.Client.VSwitch.Get.Port(ifName)
+	if err != nil {
+		return ovs.PortOptions{}, fmt.Errorf("Failed to get port options: %v", err)
+	}
+	return portOptions, nil
+}
+
+// SetPort : ovs-vsctl --format=json set port eth0 vlan_mode=trunk trunk=1,2,3,4,5
+func (o *OVSManager) SetPort(ifName string, portOptions ovs.PortOptions) error {
+	if err := o.Client.VSwitch.Set.Port(ifName, portOptions); err != nil {
+		return fmt.Errorf("Failed to set port options: %v on %s: %v", portOptions, ifName, err)
+	}
+	return nil
+}
+
 // DeletePort : ovs-vsctl del-port br0 eth0
 func (o *OVSManager) DeletePort(bridgeName, ifName string) error {
 	if err := o.Client.VSwitch.DeletePort(bridgeName, ifName); err != nil {
@@ -81,11 +93,6 @@ func (o *OVSManager) ListPorts(bridgeName string) ([]string, error) {
 	ports, err := o.Client.VSwitch.ListPorts(bridgeName)
 	if err != nil {
 		return ports, fmt.Errorf("Failed to list ports of bridge %s: %v", bridgeName, err)
-	}
-
-	//FIXME remove this after the upstream has fix the problem
-	if len(ports) == 1 && ports[0] == "" {
-		return []string{}, nil
 	}
 	return ports, nil
 }
