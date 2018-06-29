@@ -6,17 +6,25 @@ package messages;
 service NetworkControl {
   rpc Echo (EchoRequest) returns (EchoResponse) {}
   rpc Ping (PingRequest) returns (PingResponse) {}
+
   rpc CreateBridge (CreateBridgeRequest) returns(OVSResponse) {}
   rpc DeleteBridge (DeleteBridgeRequest) returns(OVSResponse) {}
+
   rpc AddPort (AddPortRequest) returns(OVSResponse) {}
+  rpc AddDPDKPort (AddPortRequest) returns(OVSResponse) {}
   rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
+
   rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
   rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
   rpc DumpFlows (DumpFlowsRequest) returns(DumpFlowsResponse) {}
+
   rpc DumpPorts (DumpPortsRequest) returns(DumpPortsResponse) {}
   rpc DumpPort (DumpPortRequest) returns(DumpPortResponse) {}
+
   rpc FindNetworkNamespacePath (FindNetworkNamespacePathRequest) returns(FindNetworkNamespacePathResponse) {}
+
   rpc ConnectBridge (ConnectBridgeRequest) returns (ConnectBridgeResponse) {}
+
   rpc ConfigureIface (ConfigureIfaceRequest) returns (ConfigureIfaceResponse) {}
 }
 
@@ -54,6 +62,8 @@ message DeleteBridgeRequest {
 message AddPortRequest {
   string bridgeName = 1;
   string ifaceName = 2;
+  // option message: only for dpdk usage
+  string dpdkDevargs = 3;
 }
 
 message DeletePortRequest {

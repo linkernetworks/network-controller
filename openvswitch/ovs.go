@@ -60,6 +60,14 @@ func (o *OVSManager) AddPort(bridgeName, ifName string) error {
 	return nil
 }
 
+// AddDPDKPort : ovs-vsctl add-port br0 dpdk0 -- set Interface dpdk0 type=dpdk options:dpdk-devargs=0000:00:08.0
+func (o *OVSManager) AddDPDKPort(bridgeName, ifName, dpdkDevargs string) error {
+	if err := o.Client.VSwitch.AddDPDKPort(bridgeName, ifName, dpdkDevargs); err != nil {
+		return fmt.Errorf("Failed to add dpdk port: %s on %s dpdkDevargs: %s: %v", ifName, bridgeName, dpdkDevargs, err)
+	}
+	return nil
+}
+
 // DeletePort : ovs-vsctl del-port br0 eth0
 func (o *OVSManager) DeletePort(bridgeName, ifName string) error {
 	if err := o.Client.VSwitch.DeletePort(bridgeName, ifName); err != nil {
