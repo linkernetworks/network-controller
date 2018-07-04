@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: network-controller-server-tcp
-  namespace: vortex
+  namespace: default
 spec:
   selector:
     matchLabels:
