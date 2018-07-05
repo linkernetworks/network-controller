@@ -7,7 +7,6 @@
 *.dll
 *.so
 *.dylib
-.vagrant
 vendor/*
 !vendor/vendor.json
 
@@ -16,10 +15,6 @@ vendor/*
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-
-### Vagrant ###
-.vagrant/
-*.box
 
 ### Vim ###
 # swap
@@ -38,9 +33,7 @@ main
 network-controller-server
 network-controller-client
 coverage.txt
-ubuntu-xenial-16.04-cloudimg-console.log
 vet.report
-tmp/*
 *.log
 
 # End of https://www.gitignore.io/api/go,vim,vagrant
