@@ -58,27 +58,3 @@ test: pb client server
 	sudo -E env PATH=$$PATH TEST_VETH=1 $(TEST_OVS) $(TEST_DOCKER) go test -parallel=1 -v ./...
 
 .PHONY: server client vet test clean
-
-# Vagrant
-VAGRANT :=$(shell which vagrant)
-
-ifneq ($(VAGRAMT), "")
-VAGRANT_SCP := $(shell vagrant plugin list | grep vagrant-scp)
-endif
-
-vagrant:
-	@if [ "$(VAGRANT)" == "" ] ; then echo "You need to install the vagrant first"; exit 1; fi
-
-vagrant-scp: vagrant
-	@if [ "$(VAGRANT_SCP)" == "" ]; then vagrant plugin install vagrant-scp ;fi
-
-up: clean-tmp vagrant-scp
-	vagrant up
-	mkdir tmp
-	vagrant scp network_controller:/home/vagrant/.kube/config tmp/admin.conf
-
-clean-tmp:
-	rm -rf tmp
-
-vagrant-clean: clean-tmp
-	vagrant destroy -f
