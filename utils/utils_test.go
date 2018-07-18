@@ -35,3 +35,13 @@ func TestIsInvalidCIDR(t *testing.T) {
 	o := IsValidCIDR("0.0.0.0")
 	assert.Equal(t, false, o)
 }
+
+func TestIsValidVLAN(t *testing.T) {
+	o := IsValidVLANTag(42)
+	assert.Equal(t, true, o)
+}
+
+func TestIsInValidVLAN(t *testing.T) {
+	o := IsValidVLANTag(4096)
+	assert.Equal(t, false, o)
+}
