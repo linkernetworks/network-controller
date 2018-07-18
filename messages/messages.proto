@@ -31,6 +31,8 @@ service NetworkControl {
   rpc ConnectBridge (ConnectBridgeRequest) returns (Response) {}
 
   rpc ConfigureIface (ConfigureIfaceRequest) returns (Response) {}
+
+  rpc AddRoute (AddRouteRequest) returns (Response) {}
 }
 
 message EchoRequest {
@@ -156,4 +158,11 @@ message ConfigureIfaceRequest {
   string path = 1;
   string CIDR = 2;
   string containerVethName = 3;
+}
+
+message AddRouteRequest {
+  string path = 1;
+  string dstCIDR = 2;
+  string gwIP = 3;
+  string containerVethName = 4;
 }

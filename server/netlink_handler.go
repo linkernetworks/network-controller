@@ -166,3 +166,34 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 		Reason:  "",
 	}, nil
 }
+
+func (s *server) AddRoute(ctx context.Context, req *pb.AddRouteRequest) (*pb.Response, error) {
+	runtime.LockOSThread()
+	log.Println("Start to add route")
+	netns, err := ns.GetNS(req.Path)
+	if err != nil {
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
+		}, err
+	}
+
+	err = netns.Do(func(_ ns.NetNS) error {
+		dst, err := types.ParseCIDR(req.DstCIDR)
+		if err != nil {
+			return err
+		}
+		return nl.AddRoute(dst, req.GwIP, req.ContainerVethName)
+	})
+	if err != nil {
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
+		}, err
+	}
+
+	return &pb.Response{
+		Success: true,
+		Reason:  "",
+	}, nil
+}
