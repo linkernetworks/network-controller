@@ -68,7 +68,7 @@ func main() {
 
 	if setVLANAccessLink {
 		if !utils.IsValidVLANTag(*options.Interface.VLANTag) {
-			log.Fatalf("VLAN Tag is not correct: %s", options.Interface.VLANTag)
+			log.Fatalf("VLAN Tag is not correct: %d", *options.Interface.VLANTag)
 		}
 	}
 
