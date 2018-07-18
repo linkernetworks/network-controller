@@ -30,3 +30,11 @@ func IsValidCIDR(str string) bool {
 	_, _, err := net.ParseCIDR(str)
 	return err == nil
 }
+
+// IsValidVLANTag : Check VLAN tag is valided
+func IsValidVLANTag(tag int32) bool {
+	if tag < 0 || tag > 4095 {
+		return false
+	}
+	return true
+}

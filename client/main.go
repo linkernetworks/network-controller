@@ -6,6 +6,7 @@ import (
 	"time"
 
 	flags "github.com/jessevdk/go-flags"
+	"github.com/linkernetworks/network-controller/client/common"
 	pb "github.com/linkernetworks/network-controller/messages"
 	"github.com/linkernetworks/network-controller/utils"
 	"golang.org/x/net/context"
@@ -22,7 +23,7 @@ type interfaceOptions struct {
 	IP string `short:"i" long:"ip" description:"The ip address of the interface, should be CIDR form"`
 	//FIXME we will support the static route in the furture
 	//Gateway string `short:"g" long:"gw" description:"The gateway of the inteface subnet"`
-	VLAN *int `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
+	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
 }
 
 type connectOptions struct {
@@ -42,7 +43,7 @@ var parser = flags.NewParser(&options, flags.Default)
 
 func main() {
 	var setIP bool
-	//flag.Parse()
+	var setVLANAccessLink bool
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
 		os.Exit(1)
@@ -61,6 +62,16 @@ func main() {
 		}
 	}
 
+	if options.Interface.VLANTag != nil {
+		setVLANAccessLink = true
+	}
+
+	if setVLANAccessLink {
+		if !utils.IsValidVLANTag(*options.Interface.VLANTag) {
+			log.Fatalf("VLAN Tag is not correct: %s", options.Interface.VLANTag)
+		}
+	}
+
 	log.Println("Start to connect to ", options.Server)
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(options.Server, grpc.WithInsecure())
@@ -69,59 +80,92 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := pb.NewNetworkControlClient(conn)
+	ncClient := pb.NewNetworkControlClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	log.Println(options.Pod.Name, options.Pod.NS, options.Pod.UUID)
 	// Find Network Namespace Path
 	log.Println("Try to find the network namespace path")
-	n, err := c.FindNetworkNamespacePath(ctx, &pb.FindNetworkNamespacePathRequest{
-		PodName:   options.Pod.Name,
-		Namespace: options.Pod.NS,
-		PodUUID:   options.Pod.UUID})
+	findNetworkNamespacePathResp, err := ncClient.FindNetworkNamespacePath(ctx,
+		&pb.FindNetworkNamespacePathRequest{
+			PodName:   options.Pod.Name,
+			Namespace: options.Pod.NS,
+			PodUUID:   options.Pod.UUID,
+		},
+	)
 	if err != nil {
 		log.Fatalf("There is something wrong with find network namespace pathpart.\n %v", err)
 	}
+	common.CheckFatal(
+		findNetworkNamespacePathResp.Success,
+		findNetworkNamespacePathResp.Reason,
+		"Find network namesace path",
+	)
 
-	if !n.Success {
-		log.Fatalf("Find network namespace path is fail. The reason is %s.", n.Reason)
-	}
-
-	log.Printf("The path is %s.", n.Path)
+	log.Printf(
+		"The path is %s.",
+		findNetworkNamespacePathResp.Path,
+	)
 	// Let's connect bridge
-	log.Println("Try to connect bridge", n.Path, options.Connect.Interface, options.Connect.Bridge)
-	b, err := c.ConnectBridge(ctx, &pb.ConnectBridgeRequest{
-		Path:              n.Path,
-		PodUUID:           options.Pod.UUID,
-		ContainerVethName: options.Connect.Interface,
-		BridgeName:        options.Connect.Bridge})
-
+	log.Println(
+		"Try to connect bridge",
+		findNetworkNamespacePathResp.Path,
+		options.Connect.Interface,
+		options.Connect.Bridge,
+	)
+	connectBridgeResp, err := ncClient.ConnectBridge(ctx,
+		&pb.ConnectBridgeRequest{
+			Path:              findNetworkNamespacePathResp.Path,
+			PodUUID:           options.Pod.UUID,
+			ContainerVethName: options.Connect.Interface,
+			BridgeName:        options.Connect.Bridge,
+		},
+	)
 	if err != nil {
 		log.Fatalf("There is something wrong with connect bridge: %v", err)
 	}
-	if b.Success {
-		log.Printf("Connecting bridge is sussessful.")
-	} else {
-		log.Fatalf("Connecting bridge is not sussessful. The reason is %s.", b.Reason)
-	}
+	common.CheckFatal(
+		connectBridgeResp.Success,
+		connectBridgeResp.Reason,
+		"Connect bridge",
+	)
 
 	if setIP {
-		i, err := c.ConfigureIface(ctx, &pb.ConfigureIfaceRequest{
-			Path:              n.Path,
-			IP:                options.Interface.IP,
-			ContainerVethName: options.Connect.Interface})
-
+		configureIfaceResp, err := ncClient.ConfigureIface(ctx,
+			&pb.ConfigureIfaceRequest{
+				Path:              findNetworkNamespacePathResp.Path,
+				IP:                options.Interface.IP,
+				ContainerVethName: options.Connect.Interface,
+			},
+		)
 		if err != nil {
 			log.Fatalf("There is something wrong with setting configure interface: %v", err)
 		}
-		if i.Success {
-			log.Printf("Set configure interface is sussessful.")
-		} else {
-			log.Fatalf("Set configure interface is not sussessful. The reason is %s.", i.Reason)
-		}
+		common.CheckFatal(
+			connectBridgeResp.Success,
+			configureIfaceResp.Reason,
+			"Configure interface",
+		)
 	}
 
+	if setVLANAccessLink {
+		setPortResp, err := ncClient.SetPort(ctx,
+			&pb.SetPortRequest{
+				IfaceName: utils.GenerateVethName(options.Pod.UUID, options.Connect.Interface),
+				Options: &pb.PortOptions{
+					Tag: *options.Interface.VLANTag,
+				},
+			},
+		)
+		if err != nil {
+			log.Fatalf("There is something wrong with setting configure interface: %v", err)
+		}
+		common.CheckFatal(
+			setPortResp.Success,
+			setPortResp.Reason,
+			"Set Port with VLAN",
+		)
+	}
 	log.Printf("network-controller client has completed all tasks")
-
 }
