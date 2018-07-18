@@ -21,49 +21,73 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 	cli, err := docker.New()
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
-			Success: false, Reason: err.Error(),
+			Path: "",
+			ServerResponse: &pb.Response{
+				Success: false,
+				Reason:  err.Error(),
+			},
 		}, err
 	}
 
 	containers, err := cli.ListContainer()
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
-			Success: false, Reason: err.Error(),
+			Path: "",
+			ServerResponse: &pb.Response{
+				Success: false,
+				Reason:  err.Error(),
+			},
 		}, err
 	}
 
 	containerID, err := docker.FindK8SPauseContainerID(containers, req.PodName, req.Namespace, req.PodUUID)
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
-			Success: false, Reason: err.Error(),
+			Path: "",
+			ServerResponse: &pb.Response{
+				Success: false,
+				Reason:  err.Error(),
+			},
 		}, err
 	}
 	if containerID == "" {
 		return &pb.FindNetworkNamespacePathResponse{
-			Success: false, Reason: "ContainerID is empty.",
+			Path: "",
+			ServerResponse: &pb.Response{
+				Success: false,
+				Reason:  err.Error(),
+			},
 		}, err
 	}
 
 	containerInfo, err := cli.InspectContainer(containerID)
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
-			Success: false, Reason: err.Error(),
+			Path: "",
+			ServerResponse: &pb.Response{
+				Success: false,
+				Reason:  err.Error(),
+			},
 		}, err
 	}
 
 	return &pb.FindNetworkNamespacePathResponse{
-		Success: true,
-		Path:    docker.GetSandboxKey(containerInfo),
+		Path: docker.GetSandboxKey(containerInfo),
+		ServerResponse: &pb.Response{
+			Success: true,
+			Reason:  "",
+		},
 	}, err
 }
 
-func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest) (*pb.ConnectBridgeResponse, error) {
+func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest) (*pb.Response, error) {
 	log.Println("Start to Connect Bridge")
 	runtime.LockOSThread()
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
-		return &pb.ConnectBridgeResponse{
-			Success: false, Reason: err.Error(),
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
 		}, err
 	}
 
@@ -79,30 +103,36 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 	})
 	log.Println("Success setup veth")
 	if err != nil {
-		return &pb.ConnectBridgeResponse{
-			Success: false, Reason: err.Error(),
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
 		}, err
 	}
 
 	log.Println("Try to add port", hostVethName, " To ", req.BridgeName)
 	if err := s.OVS.AddPort(req.BridgeName, hostVethName); err != nil {
 		log.Println("Add port fail:", err, req.BridgeName, hostVethName)
-		return &pb.ConnectBridgeResponse{
-			Success: false, Reason: err.Error(),
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
 		}, err
 	}
 
 	log.Println("Add Port Success")
-	return &pb.ConnectBridgeResponse{Success: true}, nil
+	return &pb.Response{
+		Success: true,
+		Reason:  "",
+	}, nil
 }
 
-func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceRequest) (*pb.ConfigureIfaceResponse, error) {
+func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
 	log.Println("Start to configure interface")
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
-		return &pb.ConfigureIfaceResponse{
-			Success: false, Reason: err.Error(),
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
 		}, err
 	}
 
@@ -125,10 +155,14 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 		return ipam.ConfigureIface(req.ContainerVethName, result)
 	})
 	if err != nil {
-		return &pb.ConfigureIfaceResponse{
-			Success: false, Reason: err.Error(),
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
 		}, err
 	}
 
-	return &pb.ConfigureIfaceResponse{Success: true}, nil
+	return &pb.Response{
+		Success: true,
+		Reason:  "",
+	}, nil
 }

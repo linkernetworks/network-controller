@@ -7,27 +7,30 @@ service NetworkControl {
   rpc Echo (EchoRequest) returns (EchoResponse) {}
   rpc Ping (PingRequest) returns (PingResponse) {}
 
-  rpc CreateBridge (CreateBridgeRequest) returns(OVSResponse) {}
-  rpc DeleteBridge (DeleteBridgeRequest) returns(OVSResponse) {}
+  // OpenvSwitch RPC series
+  rpc CreateBridge (CreateBridgeRequest) returns(Response) {}
+  rpc DeleteBridge (DeleteBridgeRequest) returns(Response) {}
 
-  rpc AddPort (AddPortRequest) returns(OVSResponse) {}
-  rpc AddDPDKPort (AddPortRequest) returns(OVSResponse) {}
+  rpc AddPort (AddPortRequest) returns(Response) {}
+  rpc AddDPDKPort (AddPortRequest) returns(Response) {}
   rpc GetPort (GetPortRequest) returns(GetPortResponse) {}
-  rpc SetPort (SetPortRequest) returns(OVSResponse) {}
-  rpc DeletePort (DeletePortRequest) returns(OVSResponse) {}
+  rpc SetPort (SetPortRequest) returns(Response) {}
+  rpc DeletePort (DeletePortRequest) returns(Response) {}
 
-  rpc AddFlow (AddFlowRequest) returns(OVSResponse) {}
-  rpc DeleteFlow (DeleteFlowRequest) returns(OVSResponse) {}
+  rpc AddFlow (AddFlowRequest) returns(Response) {}
+  rpc DeleteFlow (DeleteFlowRequest) returns(Response) {}
   rpc DumpFlows (DumpFlowsRequest) returns(DumpFlowsResponse) {}
 
   rpc DumpPorts (DumpPortsRequest) returns(DumpPortsResponse) {}
   rpc DumpPort (DumpPortRequest) returns(DumpPortResponse) {}
 
+  // Docker RPC series
   rpc FindNetworkNamespacePath (FindNetworkNamespacePathRequest) returns(FindNetworkNamespacePathResponse) {}
 
-  rpc ConnectBridge (ConnectBridgeRequest) returns (ConnectBridgeResponse) {}
+  // Netlink RPC series
+  rpc ConnectBridge (ConnectBridgeRequest) returns (Response) {}
 
-  rpc ConfigureIface (ConfigureIfaceRequest) returns (ConfigureIfaceResponse) {}
+  rpc ConfigureIface (ConfigureIfaceRequest) returns (Response) {}
 }
 
 message EchoRequest {
@@ -46,10 +49,9 @@ message PingResponse {
   string pong = 1;
 }
 
-message OVSResponse {
-  string type = 1;
-  bool success = 2;
-  string reason = 3;
+message Response {
+    bool success = 1;
+    string reason = 2;
 }
 
 message CreateBridgeRequest {
@@ -86,8 +88,7 @@ message GetPortRequest {
 
 message GetPortResponse {
   PortOptions portOptions = 1;
-  bool success = 2;
-  string reason = 3;
+  Response serverResponse = 2;
 }
 
 message DeletePortRequest {
@@ -111,8 +112,7 @@ message DumpFlowsRequest {
 
 message DumpFlowsResponse {
   repeated bytes flows = 1;
-  bool success = 2;
-  string reason = 3;
+  Response serverResponse = 2;
 }
 
 message DumpPortsRequest {
@@ -121,8 +121,7 @@ message DumpPortsRequest {
 
 message DumpPortsResponse {
   repeated bytes ports = 1;
-  bool success = 2;
-  string reason = 3;
+  Response serverResponse = 2;
 }
 
 message DumpPortRequest {
@@ -132,8 +131,7 @@ message DumpPortRequest {
 
 message DumpPortResponse {
   bytes port = 1;
-  bool success = 2;
-  string reason = 3;
+  Response serverResponse = 2;
 }
 
 message FindNetworkNamespacePathRequest {
@@ -144,8 +142,7 @@ message FindNetworkNamespacePathRequest {
 
 message FindNetworkNamespacePathResponse {
   string path = 1;
-  bool success = 2;
-  string reason = 3;
+  Response serverResponse = 2;
 }
 
 message ConnectBridgeRequest {
@@ -155,18 +152,8 @@ message ConnectBridgeRequest {
   string bridgeName = 4;
 }
 
-message ConnectBridgeResponse {
-  bool success = 1;
-  string reason = 2;
-}
-
 message ConfigureIfaceRequest {
   string path = 1;
   string IP = 2;
   string containerVethName = 3;
-}
-
-message ConfigureIfaceResponse {
-  bool success = 1;
-  string reason = 2;
 }
