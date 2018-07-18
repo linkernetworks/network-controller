@@ -20,7 +20,7 @@ type podOptions struct {
 }
 
 type interfaceOptions struct {
-	IP string `short:"i" long:"ip" description:"The ip address of the interface, should be CIDR form"`
+	CIDR string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
 	//FIXME we will support the static route in the furture
 	//Gateway string `short:"g" long:"gw" description:"The gateway of the inteface subnet"`
 	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
@@ -42,23 +42,23 @@ var options clientOptions
 var parser = flags.NewParser(&options, flags.Default)
 
 func main() {
-	var setIP bool
+	var setCIDR bool
 	var setVLANAccessLink bool
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
 		os.Exit(1)
 	}
 
-	// Verify IP address
-	if options.Interface.IP != "" {
-		setIP = true
+	// Verify CIDR address
+	if options.Interface.CIDR != "" {
+		setCIDR = true
 	} else {
-		log.Println("We don't have valid IP address from the arguments, we won't set the IP for", options.Connect.Interface)
+		log.Println("Doesn't have a valid CIDR address. Won't set the IP for", options.Connect.Interface)
 	}
 
-	if setIP {
-		if !utils.IsValidCIDR(options.Interface.IP) {
-			log.Fatalf("IP address is not correct: %s", options.Interface.IP)
+	if setCIDR {
+		if !utils.IsValidCIDR(options.Interface.CIDR) {
+			log.Fatalf("CIDR address is not correct: %s", options.Interface.CIDR)
 		}
 	}
 
@@ -131,11 +131,11 @@ func main() {
 		"Connect bridge",
 	)
 
-	if setIP {
+	if setCIDR {
 		configureIfaceResp, err := ncClient.ConfigureIface(ctx,
 			&pb.ConfigureIfaceRequest{
 				Path:              findNetworkNamespacePathResp.Path,
-				IP:                options.Interface.IP,
+				CIDR:              options.Interface.CIDR,
 				ContainerVethName: options.Connect.Interface,
 			},
 		)
