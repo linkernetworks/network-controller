@@ -1,5 +1,24 @@
 # Change Log
 
+## [v0.3.0](https://github.com/linkernetworks/network-controller/tree/v0.3.0) (2018-07-19)
+[Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.2.1...v0.3.0)
+
+**Merged pull requests:**
+
+- refactoring response message [\#61](https://github.com/linkernetworks/network-controller/pull/61) ([John-Lin](https://github.com/John-Lin))
+- use CIDR for variable name [\#60](https://github.com/linkernetworks/network-controller/pull/60) ([John-Lin](https://github.com/John-Lin))
+- VX-190 support setport vlan tag [\#58](https://github.com/linkernetworks/network-controller/pull/58) ([John-Lin](https://github.com/John-Lin))
+- add tests [\#57](https://github.com/linkernetworks/network-controller/pull/57) ([John-Lin](https://github.com/John-Lin))
+
+## [v0.2.1](https://github.com/linkernetworks/network-controller/tree/v0.2.1) (2018-07-06)
+[Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.2.0...v0.2.1)
+
+**Merged pull requests:**
+
+- downgrade to protoc3.5.1 [\#56](https://github.com/linkernetworks/network-controller/pull/56) ([John-Lin](https://github.com/John-Lin))
+- remove all vagrant stuff [\#55](https://github.com/linkernetworks/network-controller/pull/55) ([John-Lin](https://github.com/John-Lin))
+- Add change log [\#52](https://github.com/linkernetworks/network-controller/pull/52) ([chenyunchen](https://github.com/chenyunchen))
+
 ## [v0.2.0](https://github.com/linkernetworks/network-controller/tree/v0.2.0) (2018-07-05)
 [Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.1.1...v0.2.0)
 
