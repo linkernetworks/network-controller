@@ -98,8 +98,8 @@ func main() {
 		log.Fatalf("There is something wrong with find network namespace pathpart.\n %v", err)
 	}
 	common.CheckFatal(
-		findNetworkNamespacePathResp.Success,
-		findNetworkNamespacePathResp.Reason,
+		findNetworkNamespacePathResp.ServerResponse.Success,
+		findNetworkNamespacePathResp.ServerResponse.Reason,
 		"Find network namesace path",
 	)
 
@@ -143,7 +143,7 @@ func main() {
 			log.Fatalf("There is something wrong with setting configure interface: %v", err)
 		}
 		common.CheckFatal(
-			connectBridgeResp.Success,
+			configureIfaceResp.Success,
 			configureIfaceResp.Reason,
 			"Configure interface",
 		)
