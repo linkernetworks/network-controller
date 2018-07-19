@@ -140,7 +140,7 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 		result := &current.Result{}
 		result.Interfaces = []*current.Interface{{Name: req.ContainerVethName}}
 
-		ipv4, err := types.ParseCIDR(req.IP)
+		ipv4, err := types.ParseCIDR(req.CIDR)
 		if err != nil {
 			return err
 		}
