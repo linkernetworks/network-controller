@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/containernetworking/plugins/pkg/ip"
 	"github.com/containernetworking/plugins/pkg/ns"
 	"github.com/vishvananda/netlink"
 )
@@ -80,4 +81,17 @@ func SetupVeth(contVethName, hostVethName string, mtu int, hostNS ns.NetNS) (net
 		return net.Interface{}, net.Interface{}, err
 	}
 	return ifaceFromNetlinkLink(hostVeth), ifaceFromNetlinkLink(contVeth), nil
+}
+
+func AddRoute(ipn *net.IPNet, gwIP string, dev string) error {
+	link, err := netlink.LinkByName(dev)
+	if err != nil {
+		return err
+	}
+	if gwIP != "" {
+		gw := net.ParseIP(gwIP)
+		return ip.AddRoute(ipn, gw, link)
+	} else {
+		return ip.AddRoute(ipn, nil, link)
+	}
 }
