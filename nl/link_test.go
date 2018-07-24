@@ -1,9 +1,9 @@
 package nl
 
 import (
+	"net"
 	"os"
 	"testing"
-	"net"
 
 	"github.com/containernetworking/plugins/pkg/ns"
 	"github.com/containernetworking/plugins/pkg/testutils"
@@ -97,9 +97,9 @@ func TestAddRoute(t *testing.T) {
 					Mask: net.CIDRMask(4, 32),
 				},
 				gwIP: "",
-				dev: "lo",
+				dev:  "lo",
 			},
-			wantErr:     true,
+			wantErr: true,
 		}, {
 			name: "Test lo interface with 0.0.0.0",
 			args: args{
@@ -108,9 +108,9 @@ func TestAddRoute(t *testing.T) {
 					Mask: net.CIDRMask(4, 32),
 				},
 				gwIP: "0.0.0.0",
-				dev: "lo",
+				dev:  "lo",
 			},
-			wantErr:     true,
+			wantErr: true,
 		}, {
 			name: "Test unknow interface",
 			args: args{
@@ -119,9 +119,9 @@ func TestAddRoute(t *testing.T) {
 					Mask: net.CIDRMask(24, 32),
 				},
 				gwIP: "0.0.0.0",
-				dev: "unknow",
+				dev:  "unknow",
 			},
-			wantErr:     true,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {

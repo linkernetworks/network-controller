@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+// NlEventHandler is the structure for netlink event handler
 type NlEventHandler struct {
 	stop              chan struct{}
 	LinkDeleteHandler []linkReceiver
@@ -13,16 +14,19 @@ type NlEventHandler struct {
 
 type linkReceiver func(lu netlink.LinkUpdate) bool
 
+// New will return an new netlink event handler
 func New() *NlEventHandler {
 	return &NlEventHandler{
 		stop: make(chan struct{}),
 	}
 }
 
+// AddDeletedLinkHandler will add DeletedLinkHandler
 func (nl *NlEventHandler) AddDeletedLinkHandler(handler linkReceiver) {
 	nl.LinkDeleteHandler = append(nl.LinkDeleteHandler, handler)
 }
 
+// TrackNetlink will track netlink
 func (nl *NlEventHandler) TrackNetlink() error {
 
 	stop := make(chan struct{})
@@ -53,6 +57,7 @@ func (nl *NlEventHandler) TrackNetlink() error {
 	}
 }
 
+// Stop will stop netlink
 func (nl *NlEventHandler) Stop() {
 	if nl.stop == nil {
 		return
