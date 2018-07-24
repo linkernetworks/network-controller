@@ -1,5 +1,17 @@
 # Change Log
 
+## [v0.4.0](https://github.com/linkernetworks/network-controller/tree/v0.4.0) (2018-07-24)
+[Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.3.0...v0.4.0)
+
+**Merged pull requests:**
+
+- \[Release\] bump to v0.4.0 [\#66](https://github.com/linkernetworks/network-controller/pull/66) ([John-Lin](https://github.com/John-Lin))
+- Add add route feature into client [\#65](https://github.com/linkernetworks/network-controller/pull/65) ([sufuf3](https://github.com/sufuf3))
+- Fixe golint & gofmt [\#64](https://github.com/linkernetworks/network-controller/pull/64) ([sufuf3](https://github.com/sufuf3))
+- add git tag target [\#63](https://github.com/linkernetworks/network-controller/pull/63) ([John-Lin](https://github.com/John-Lin))
+- Update changelog [\#62](https://github.com/linkernetworks/network-controller/pull/62) ([chenyunchen](https://github.com/chenyunchen))
+- Add add route func in container [\#59](https://github.com/linkernetworks/network-controller/pull/59) ([sufuf3](https://github.com/sufuf3))
+
 ## [v0.3.0](https://github.com/linkernetworks/network-controller/tree/v0.3.0) (2018-07-19)
 [Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.2.1...v0.3.0)
 
