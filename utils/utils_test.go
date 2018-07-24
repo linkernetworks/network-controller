@@ -16,16 +16,6 @@ func TestGenerateVethName(t *testing.T) {
 	assert.Equal(t, "veth33cdbc38", o)
 }
 
-func TestIsValidCIDR(t *testing.T) {
-	o := IsValidCIDR("10.0.0.1/24")
-	assert.Equal(t, true, o)
-}
-
-func TestIsInvalidCIDR(t *testing.T) {
-	o := IsValidCIDR("0.0.0.0")
-	assert.Equal(t, false, o)
-}
-
 func TestIsValidVLAN(t *testing.T) {
 	o := IsValidVLANTag(42)
 	assert.Equal(t, true, o)

@@ -239,6 +239,24 @@
 			"revisionTime": "2018-02-12T13:46:57Z"
 		},
 		{
+			"checksumSHA1": "b4DmyMT9bicTRVJw1hJXHLhIH+0=",
+			"path": "github.com/go-playground/locales",
+			"revision": "f63010822830b6fe52288ee52d5a1151088ce039",
+			"revisionTime": "2018-03-23T16:04:04Z"
+		},
+		{
+			"checksumSHA1": "JgF260rC9YpWyY5WEljjimWLUXs=",
+			"path": "github.com/go-playground/locales/currency",
+			"revision": "f63010822830b6fe52288ee52d5a1151088ce039",
+			"revisionTime": "2018-03-23T16:04:04Z"
+		},
+		{
+			"checksumSHA1": "7QcjNTtW0Rc/5BPw1MPaQ6YNjso=",
+			"path": "github.com/go-playground/universal-translator",
+			"revision": "71201497bace774495daed26a3874fd339e0b538",
+			"revisionTime": "2017-03-27T19:17:03Z"
+		},
+		{
 			"checksumSHA1": "nTHr8B2CPLP8kcJRtBEXluFvzUY=",
 			"path": "github.com/gogo/protobuf/proto",
 			"revision": "30cf7ac33676b5786e78c746683f0d4cd64fa75b",
@@ -621,6 +639,12 @@
 			"path": "google.golang.org/grpc/transport",
 			"revision": "130c87fa0d80a54981a03665782970fd73bc5de8",
 			"revisionTime": "2018-06-01T22:33:31Z"
+		},
+		{
+			"checksumSHA1": "AbuKUV0gxECkRpjb2fmgo3DZYac=",
+			"path": "gopkg.in/go-playground/validator.v9",
+			"revision": "ab2a8a99087e827c9af87ed6777ba897348fb178",
+			"revisionTime": "2018-07-09T15:35:10Z"
 		}
 	],
 	"rootPath": "github.com/linkernetworks/network-controller"

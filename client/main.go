@@ -11,6 +11,7 @@ import (
 	"github.com/linkernetworks/network-controller/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type podOptions struct {
@@ -20,7 +21,7 @@ type podOptions struct {
 }
 
 type interfaceOptions struct {
-	CIDR string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
+	CIDR    string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
 	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
 }
 
@@ -49,6 +50,7 @@ func main() {
 	var setCIDR bool
 	var setVLANAccessLink bool
 	var setRoute bool
+	var validate *validator.Validate
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
 		os.Exit(1)
@@ -62,7 +64,8 @@ func main() {
 	}
 
 	if setCIDR {
-		if !utils.IsValidCIDR(options.Interface.CIDR) {
+		err := validate.Var(options.Interface.CIDR, "required,cidr")
+		if err != nil {
 			log.Fatalf("CIDR address is not correct: %s", options.Interface.CIDR)
 		}
 	}
@@ -84,7 +87,8 @@ func main() {
 	}
 
 	if setRoute {
-		if !utils.IsValidCIDR(options.Route.DstCIDR) {
+		err := validate.Var(options.Route.DstCIDR, "required,cidr")
+		if err != nil {
 			log.Fatalf("Route destination netIP is not correct: %s", options.Route.DstCIDR)
 		}
 	}
