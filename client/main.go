@@ -21,9 +21,12 @@ type podOptions struct {
 
 type interfaceOptions struct {
 	CIDR string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
-	//FIXME we will support the static route in the furture
-	//Gateway string `short:"g" long:"gw" description:"The gateway of the inteface subnet"`
 	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
+}
+
+type routeOptions struct {
+	DstCIDR string `long:"net" description:"The destination network for add IP routing table, like '-net target'"`
+	Gateway string `short:"g" long:"gateway" description:"The gateway of the interface subnet"`
 }
 
 type connectOptions struct {
@@ -35,6 +38,7 @@ type clientOptions struct {
 	Server    string           `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
 	Connect   connectOptions   `group:"connectOptions"`
 	Interface interfaceOptions `group:"interfaceOptions" `
+	Route     routeOptions     `group:"routeOptions" `
 	Pod       podOptions       `group:"podOptions" `
 }
 
@@ -44,12 +48,13 @@ var parser = flags.NewParser(&options, flags.Default)
 func main() {
 	var setCIDR bool
 	var setVLANAccessLink bool
+	var setRoute bool
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
 		os.Exit(1)
 	}
 
-	// Verify CIDR address
+	// Verify CIDR address and setCIDR bool
 	if options.Interface.CIDR != "" {
 		setCIDR = true
 	} else {
@@ -62,6 +67,7 @@ func main() {
 		}
 	}
 
+	// setVLANAccessLink bool
 	if options.Interface.VLANTag != nil {
 		setVLANAccessLink = true
 	}
@@ -69,6 +75,17 @@ func main() {
 	if setVLANAccessLink {
 		if !utils.IsValidVLANTag(*options.Interface.VLANTag) {
 			log.Fatalf("VLAN Tag is not correct: %d", *options.Interface.VLANTag)
+		}
+	}
+
+	// setRoute bool
+	if options.Route.DstCIDR != "" {
+		setRoute = true
+	}
+
+	if setRoute {
+		if !utils.IsValidCIDR(options.Route.DstCIDR) {
+			log.Fatalf("Route destination netIP is not correct: %s", options.Route.DstCIDR)
 		}
 	}
 
@@ -167,5 +184,25 @@ func main() {
 			"Set Port with VLAN",
 		)
 	}
+
+	if setRoute {
+		addRouteResp, err := ncClient.AddRoute(ctx,
+			&pb.AddRouteRequest{
+				Path:              findNetworkNamespacePathResp.Path,
+				DstCIDR:           options.Route.DstCIDR,
+				GwIP:              options.Route.Gateway,
+				ContainerVethName: options.Connect.Interface,
+			},
+		)
+		if err != nil {
+			log.Fatalf("There is something wrong with adding route: %v", err)
+		}
+		common.CheckFatal(
+			addRouteResp.Success,
+			addRouteResp.Reason,
+			"Add Route",
+		)
+	}
+
 	log.Printf("network-controller client has completed all tasks")
 }
