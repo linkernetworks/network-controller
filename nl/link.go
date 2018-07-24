@@ -83,6 +83,7 @@ func SetupVeth(contVethName, hostVethName string, mtu int, hostNS ns.NetNS) (net
 	return ifaceFromNetlinkLink(hostVeth), ifaceFromNetlinkLink(contVeth), nil
 }
 
+// AddRoute is a function for add route
 func AddRoute(ipn *net.IPNet, gwIP string, dev string) error {
 	link, err := netlink.LinkByName(dev)
 	if err != nil {
@@ -91,7 +92,6 @@ func AddRoute(ipn *net.IPNet, gwIP string, dev string) error {
 	if gwIP != "" {
 		gw := net.ParseIP(gwIP)
 		return ip.AddRoute(ipn, gw, link)
-	} else {
-		return ip.AddRoute(ipn, nil, link)
 	}
+    return ip.AddRoute(ipn, nil, link)
 }
