@@ -1,5 +1,9 @@
 # Makefile templete reference
 # https://gist.github.com/turtlemonvh/38bd3d73e61769767c35931d8c70ccb4
+
+## network controller version
+NETWORKCONTROLLER_VERSION = v0.3.0
+
 BINARY = network-controller
 VET_REPORT = vet.report
 
@@ -57,4 +61,9 @@ test: pb client server
 	go clean -testcache
 	sudo -E env PATH=$$PATH TEST_VETH=1 $(TEST_OVS) $(TEST_DOCKER) go test -parallel=1 -v ./...
 
-.PHONY: server client vet test clean
+push.tag:
+	@echo "Current git tag version:"$(NETWORKCONTROLLER_VERSION)
+	git tag $(NETWORKCONTROLLER_VERSION)
+	git push --tags
+
+.PHONY: server client vet test clean push.tag
