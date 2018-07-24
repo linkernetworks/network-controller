@@ -64,6 +64,6 @@ test: pb client server
 push.tag:
 	@echo "Current git tag version:"$(NETWORKCONTROLLER_VERSION)
 	git tag $(NETWORKCONTROLLER_VERSION)
-    git push --tags
+	git push --tags
 
 .PHONY: server client vet test clean push.tag
