@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"net"
 )
 
 func sha256String(str string) string {
@@ -18,23 +17,4 @@ func sha256String(str string) string {
 func GenerateVethName(podUUID, containerVethName string) string {
 	str := sha256String(podUUID + containerVethName)
 	return fmt.Sprintf("veth%s", str[0:8])
-}
-
-// IsValidIP : Check IP address is valided
-func IsValidIP(str string) bool {
-	return net.ParseIP(str) != nil
-}
-
-// IsValidCIDR : Check CIDR is valided
-func IsValidCIDR(str string) bool {
-	_, _, err := net.ParseCIDR(str)
-	return err == nil
-}
-
-// IsValidVLANTag : Check VLAN tag is valided
-func IsValidVLANTag(tag int32) bool {
-	if tag < 0 || tag > 4095 {
-		return false
-	}
-	return true
 }
