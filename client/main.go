@@ -22,7 +22,7 @@ type podOptions struct {
 
 type interfaceOptions struct {
 	CIDR    string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
-	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
+	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface" validate:"max=4095,min=0"`
 }
 
 type routeOptions struct {
@@ -45,12 +45,13 @@ type clientOptions struct {
 
 var options clientOptions
 var parser = flags.NewParser(&options, flags.Default)
+var validate *validator.Validate
 
 func main() {
 	var setCIDR bool
 	var setVLANAccessLink bool
 	var setRoute bool
-	var validate *validator.Validate
+	validate = validator.New()
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
 		os.Exit(1)
@@ -76,7 +77,8 @@ func main() {
 	}
 
 	if setVLANAccessLink {
-		if !utils.IsValidVLANTag(*options.Interface.VLANTag) {
+		err := validate.Struct(options.Interface)
+		if err != nil {
 			log.Fatalf("VLAN Tag is not correct: %d", *options.Interface.VLANTag)
 		}
 	}

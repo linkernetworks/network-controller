@@ -15,13 +15,3 @@ func TestGenerateVethName(t *testing.T) {
 	o := GenerateVethName("12345678", "12345678")
 	assert.Equal(t, "veth33cdbc38", o)
 }
-
-func TestIsValidVLAN(t *testing.T) {
-	o := IsValidVLANTag(42)
-	assert.Equal(t, true, o)
-}
-
-func TestIsInValidVLAN(t *testing.T) {
-	o := IsValidVLANTag(4096)
-	assert.Equal(t, false, o)
-}

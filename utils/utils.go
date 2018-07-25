@@ -18,11 +18,3 @@ func GenerateVethName(podUUID, containerVethName string) string {
 	str := sha256String(podUUID + containerVethName)
 	return fmt.Sprintf("veth%s", str[0:8])
 }
-
-// IsValidVLANTag : Check VLAN tag is valided
-func IsValidVLANTag(tag int32) bool {
-	if tag < 0 || tag > 4095 {
-		return false
-	}
-	return true
-}
