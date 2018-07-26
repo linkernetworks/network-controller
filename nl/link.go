@@ -1,5 +1,3 @@
-// Package link : fork from https://github.com/containernetworking/plugins/blob/master/pkg/ip/link_linux.go
-
 package nl
 
 import (
@@ -93,5 +91,5 @@ func AddRoute(ipn *net.IPNet, gwIP string, dev string) error {
 		gw := net.ParseIP(gwIP)
 		return ip.AddRoute(ipn, gw, link)
 	}
-    return ip.AddRoute(ipn, nil, link)
+	return ip.AddRoute(ipn, nil, link)
 }

@@ -79,6 +79,7 @@ func TestAddSetDelPort(t *testing.T) {
 	bridgeName := "br0"
 	const dpTypeSystem = "system"
 	err := o.CreateBridge(bridgeName, dpTypeSystem)
+	assert.NoError(t, err)
 	defer o.DeleteBridge(bridgeName)
 
 	hName := "test0"
@@ -180,6 +181,7 @@ func TestDumpPorts(t *testing.T) {
 	bridgeName := "br0"
 	const dpTypeSystem = "system"
 	err := o.CreateBridge(bridgeName, dpTypeSystem)
+	assert.NoError(t, err)
 	defer o.DeleteBridge(bridgeName)
 
 	hName := "test0"
