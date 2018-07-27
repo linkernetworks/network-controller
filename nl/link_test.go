@@ -53,6 +53,8 @@ func TestSetupVeth(t *testing.T) {
 		assert.Equal(t, "test-ovs-0", hostVeth.Name)
 		return nil
 	})
+	assert.NoError(t, err)
+
 	hostVeth, err := netlink.LinkByName(hostVethName)
 	assert.NoError(t, err)
 	defer netlink.LinkDel(hostVeth)
