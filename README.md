@@ -1,4 +1,8 @@
-# network-controller [![Build Status](https://travis-ci.org/linkernetworks/network-controller.svg?branch=master)](https://travis-ci.org/linkernetworks/network-controller) [![codecov](https://codecov.io/gh/linkernetworks/network-controller/branch/master/graph/badge.svg)](https://codecov.io/gh/linkernetworks/network-controller) [![Go Report Card](https://goreportcard.com/badge/github.com/linkernetworks/network-controller)](https://goreportcard.com/report/github.com/linkernetworks/network-controller)  [![Docker Build Status](https://img.shields.io/docker/build/sdnvortex/network-controller.svg)](https://hub.docker.com/r/sdnvortex/network-controller/)
+# CNI Network Controller [![Build Status](https://travis-ci.org/linkernetworks/network-controller.svg?branch=master)](https://travis-ci.org/linkernetworks/network-controller) [![codecov](https://codecov.io/gh/linkernetworks/network-controller/branch/master/graph/badge.svg)](https://codecov.io/gh/linkernetworks/network-controller) [![Go Report Card](https://goreportcard.com/badge/github.com/linkernetworks/network-controller)](https://goreportcard.com/report/github.com/linkernetworks/network-controller)  [![Docker Build Status](https://img.shields.io/docker/build/sdnvortex/network-controller.svg)](https://hub.docker.com/r/sdnvortex/network-controller/)
+
+![overview](./images/overview.png)
+
+Open vSwitch, Multiple network interfaces that associate with kubernetes pods, etc.
 
 ## Table of Contents
 * [Development](#development)
@@ -31,7 +35,7 @@ make test
 
 ## Usage
 
-### Run a Server
+### Run as a server
 The network-controller server provide two ways to listen, TCP and Unix domain socket  
 If you want to run as a UNIX domain socket server, you should specify a path to store the sock file  
 and server will remove that file when server is been terminated  
@@ -43,7 +47,7 @@ For the TCP server, just use the `IP:PORT` format, for example, `0.0.0.0:50051`
 ./server/network-controller-server -tcp=0.0.0.0:50051
 ```
 
-### Run a Client
+### Run as a client
 The clinet is used for the kubernetes pod to create the veth and you can see the example yaml in `example/kubernetes/*.yaml` to see how to use this client.  
 
 For creating a veth for Pod, the client needs the following information
@@ -75,7 +79,7 @@ The first three variable can passed by the environemtn `POD_NAME`, `POD_NAMESPAC
 `--net` The destination network for add IP routing table, like '-net target'  
 `-g` or `--gateway` The gateway of the interface subnet
 
-#### Server
+#### Servers
 The clinet support two way to connect to the server, TCP socket and UNIX domain socket.  
 In the TCP mode, use the `IP:PORT` format to connect to TCP server  
 ```shell
