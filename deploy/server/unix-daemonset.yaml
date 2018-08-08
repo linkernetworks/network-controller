@@ -39,7 +39,7 @@ spec:
       - name: docker-sock
         hostPath:
           path: /run/docker.sock
-      - name: ovs-sock
+      - name: ovs-sock #since the UNIX version only add-port, the db.sock is enough
         hostPath:
           path: /run/openvswitch/db.sock
       - name: grpc-sock
