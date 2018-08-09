@@ -1,0 +1,6 @@
+.git
+.dockerignore
+images/*
+LICENSE
+README.md
+CHANGELOG.md
