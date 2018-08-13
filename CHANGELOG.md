@@ -1,5 +1,21 @@
 # Change Log
 
+## [v0.4.1](https://github.com/linkernetworks/network-controller/tree/v0.4.1) (2018-08-13)
+[Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.4.0...v0.4.1)
+
+**Closed issues:**
+
+- \[BUG\] Mount the ovs directory for tcp-network-controller [\#71](https://github.com/linkernetworks/network-controller/issues/71)
+
+**Merged pull requests:**
+
+- \[Bug\] Update the go-openvswich to fix the dump-port functions. [\#74](https://github.com/linkernetworks/network-controller/pull/74) ([hwchiu](https://github.com/hwchiu))
+- Add dockerignore file [\#73](https://github.com/linkernetworks/network-controller/pull/73) ([John-Lin](https://github.com/John-Lin))
+- \[BUG\] Mount the ovs directory for tcp-network-controller [\#72](https://github.com/linkernetworks/network-controller/pull/72) ([hwchiu](https://github.com/hwchiu))
+- Create LICENSE [\#70](https://github.com/linkernetworks/network-controller/pull/70) ([John-Lin](https://github.com/John-Lin))
+- fix goreport [\#69](https://github.com/linkernetworks/network-controller/pull/69) ([John-Lin](https://github.com/John-Lin))
+- add changelog [\#68](https://github.com/linkernetworks/network-controller/pull/68) ([John-Lin](https://github.com/John-Lin))
+
 ## [v0.4.0](https://github.com/linkernetworks/network-controller/tree/v0.4.0) (2018-07-24)
 [Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.3.0...v0.4.0)
 
