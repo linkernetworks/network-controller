@@ -287,10 +287,10 @@
 			"revisionTime": "2018-03-31T12:42:32Z"
 		},
 		{
-			"checksumSHA1": "QV1GkNjY6f6quzBVonyYp8jP3No=",
+			"checksumSHA1": "sSvvPwRRPM+7CSGLDhtPzFHcC2g=",
 			"path": "github.com/linkernetworks/go-openvswitch/ovs",
-			"revision": "614ef75bf4e8c6de85a736c9086f628a049011ec",
-			"revisionTime": "2018-06-28T09:23:35Z"
+			"revision": "2dd85c7be4f7ad7bae63a8ee2f78e4dfe0aec5d9",
+			"revisionTime": "2018-08-09T09:47:03Z"
 		},
 		{
 			"checksumSHA1": "VnkNO/q6ZVTYCd/F7nmHosHC5a4=",
