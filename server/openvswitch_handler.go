@@ -221,7 +221,7 @@ func (s *server) DumpPorts(ctx context.Context, req *pb.DumpPortsRequest) (*pb.D
 		}, err
 	}
 
-	portsBytes := make([][]byte, len(ports))
+	portsBytes := [][]byte{}
 	for _, port := range ports {
 
 		buf := &bytes.Buffer{}
