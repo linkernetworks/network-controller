@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	flags "github.com/jessevdk/go-flags"
@@ -20,13 +21,12 @@ type podOptions struct {
 }
 
 type interfaceOptions struct {
-	CIDR string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
+	CIDR    string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
 	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
 }
 
 type routeOptions struct {
-	DstCIDR string `long:"net" description:"The destination network for add IP routing table, like '-net target'"`
-	Gateway string `short:"g" long:"gateway" description:"The gateway of the interface subnet"`
+	DstCIDRGateway []string `short:"r" long:"route" description:"The destination network and the gateway of the interface subnet. (for example: 239.0.0.0/4,0.0.0.0)"`
 }
 
 type connectOptions struct {
@@ -63,7 +63,7 @@ func main() {
 
 	if setCIDR {
 		if !utils.IsValidCIDR(options.Interface.CIDR) {
-			log.Fatalf("CIDR address is not correct: %s", options.Interface.CIDR)
+			log.Fatalf("CIDR address is invalid: %s", options.Interface.CIDR)
 		}
 	}
 
@@ -74,18 +74,24 @@ func main() {
 
 	if setVLANAccessLink {
 		if !utils.IsValidVLANTag(*options.Interface.VLANTag) {
-			log.Fatalf("VLAN Tag is not correct: %d", *options.Interface.VLANTag)
+			log.Fatalf("VLAN Tag is invalid: %d", *options.Interface.VLANTag)
 		}
 	}
 
 	// setRoute bool
-	if options.Route.DstCIDR != "" {
+	if len(options.Route.DstCIDRGateway) != 0 {
 		setRoute = true
 	}
 
 	if setRoute {
-		if !utils.IsValidCIDR(options.Route.DstCIDR) {
-			log.Fatalf("Route destination netIP is not correct: %s", options.Route.DstCIDR)
+		for _, opt := range options.Route.DstCIDRGateway {
+			s := strings.Split(opt, ",")
+			if !utils.IsValidCIDR(s[0]) {
+				log.Fatalf("Route destination netIP is invalid: %s", s[0])
+			}
+			if !utils.IsValidIP(s[1]) {
+				log.Fatalf("Gateway IP is invalid: %s", s[1])
+			}
 		}
 	}
 
@@ -186,22 +192,27 @@ func main() {
 	}
 
 	if setRoute {
-		addRouteResp, err := ncClient.AddRoute(ctx,
-			&pb.AddRouteRequest{
-				Path:              findNetworkNamespacePathResp.Path,
-				DstCIDR:           options.Route.DstCIDR,
-				GwIP:              options.Route.Gateway,
-				ContainerVethName: options.Connect.Interface,
-			},
-		)
-		if err != nil {
-			log.Fatalf("There is something wrong with adding route: %v", err)
+		for _, opt := range options.Route.DstCIDRGateway {
+			s := strings.Split(opt, ",")
+			dstCIDR, gateway := s[0], s[1]
+
+			addRouteResp, err := ncClient.AddRoute(ctx,
+				&pb.AddRouteRequest{
+					Path:              findNetworkNamespacePathResp.Path,
+					DstCIDR:           dstCIDR,
+					GwIP:              gateway,
+					ContainerVethName: options.Connect.Interface,
+				},
+			)
+			if err != nil {
+				log.Fatalf("There is something wrong with adding route: %v", err)
+			}
+			common.CheckFatal(
+				addRouteResp.Success,
+				addRouteResp.Reason,
+				"Add Route",
+			)
 		}
-		common.CheckFatal(
-			addRouteResp.Success,
-			addRouteResp.Reason,
-			"Add Route",
-		)
 	}
 
 	log.Printf("network-controller client has completed all tasks")
