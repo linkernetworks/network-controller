@@ -32,7 +32,10 @@ service NetworkControl {
 
   rpc ConfigureIface (ConfigureIfaceRequest) returns (Response) {}
 
+  // Will be deprecated in the future
   rpc AddRoute (AddRouteRequest) returns (Response) {}
+  rpc AddRouteViaInterface (AddRouteRequest) returns (Response) {}
+  rpc AddRouteViaGateway (AddRouteRequest) returns (Response) {}
 }
 
 message EchoRequest {
