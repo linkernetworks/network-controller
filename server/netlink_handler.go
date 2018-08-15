@@ -246,7 +246,7 @@ func (s *server) AddRouteViaGateway(ctx context.Context, req *pb.AddRouteRequest
 		if err != nil {
 			return err
 		}
-		return nl.AddRouteViaGateway(dst, req.ContainerVethName)
+		return nl.AddRouteViaGateway(dst, req.GwIP, req.ContainerVethName)
 	})
 	if err != nil {
 		return &pb.Response{
