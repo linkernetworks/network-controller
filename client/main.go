@@ -27,6 +27,12 @@ type interfaceOptions struct {
 	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
 }
 
+// -net, -g. deprecated in the future
+type routeOptions struct {
+	DstCIDR string `long:"net" description:"The destination network for add IP routing table, like '-net target'"`
+	Gateway string `short:"g" long:"gateway" description:"The gateway of the interface subnet"`
+}
+
 // -route-gw
 type routeViaGatewayOptions struct {
 	DstCIDRGateway []string `long:"route-gw" description:"The destination network and the gateway of the interface subnet. (for example: 239.0.0.0/4,0.0.0.0)"`
@@ -49,6 +55,7 @@ type clientOptions struct {
 	Interface     interfaceOptions         `group:"interfaceOptions" `
 	RouteWithGW   routeViaGatewayOptions   `group:"routeViaGatewayOptions" `
 	RouteWithIntf routeViaInterfaceOptions `group:"routeViaInterfaceOptions" `
+	Route         routeOptions             `group:"routeOptions" `
 	Pod           podOptions               `group:"podOptions" `
 }
 
@@ -59,6 +66,7 @@ func main() {
 	var setCIDR bool
 	var setVLANAccessLink bool
 
+	var setRoute bool
 	var setRouteViaInterface bool
 	var setRouteViaGateway bool
 
@@ -88,6 +96,17 @@ func main() {
 	if setVLANAccessLink {
 		if !utils.IsValidVLANTag(*options.Interface.VLANTag) {
 			log.Fatalf("VLAN Tag is not correct: %d", *options.Interface.VLANTag)
+		}
+	}
+
+	// setRoute bool
+	if options.Route.DstCIDR != "" {
+		setRoute = true
+	}
+
+	if setRoute {
+		if !utils.IsValidCIDR(options.Route.DstCIDR) {
+			log.Fatalf("Route destination netIP is not correct: %s", options.Route.DstCIDR)
 		}
 	}
 
@@ -214,6 +233,26 @@ func main() {
 			setPortResp.Success,
 			setPortResp.Reason,
 			"Set Port with VLAN",
+		)
+	}
+
+	// deprecated in the future
+	if setRoute {
+		addRouteResp, err := ncClient.AddRoute(ctx,
+			&pb.AddRouteRequest{
+				Path:              findNetworkNamespacePathResp.Path,
+				DstCIDR:           options.Route.DstCIDR,
+				GwIP:              options.Route.Gateway,
+				ContainerVethName: options.Connect.Interface,
+			},
+		)
+		if err != nil {
+			log.Fatalf("There is something wrong with adding route: %v", err)
+		}
+		common.CheckFatal(
+			addRouteResp.Success,
+			addRouteResp.Reason,
+			"Add Route",
 		)
 	}
 
