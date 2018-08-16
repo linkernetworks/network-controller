@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	flags "github.com/jessevdk/go-flags"
@@ -13,33 +14,42 @@ import (
 	"google.golang.org/grpc"
 )
 
+// -podName, -podNs, -podUUID
 type podOptions struct {
 	Name string `long:"podName" description:"The Pod Name, can set by environement variable" env:"POD_NAME" required:"true"`
 	NS   string `long:"podNS" description:"The namespace of the Pod, can set by environement variable" env:"POD_NAMESPACE" required:"true"`
 	UUID string `long:"podUUID" description:"The UUID of the Pod, can set by environement variable" env:"POD_UUID" required:"true"`
 }
 
+// -ip, -vlan
 type interfaceOptions struct {
-	CIDR string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
+	CIDR    string `short:"i" long:"ip" description:"The ip address of the interface, should be a valid v4 CIDR Address"`
 	VLANTag *int32 `short:"v" long:"vlan" description:"The Vlan Tag of the interface"`
 }
 
-type routeOptions struct {
-	DstCIDR string `long:"net" description:"The destination network for add IP routing table, like '-net target'"`
-	Gateway string `short:"g" long:"gateway" description:"The gateway of the interface subnet"`
+// -route-gw
+type routeViaGatewayOptions struct {
+	DstCIDRGateway []string `long:"route-gw" description:"The destination network and the gateway of the interface subnet. (for example: 239.0.0.0/4,0.0.0.0)"`
 }
 
+// -route-intf
+type routeViaInterfaceOptions struct {
+	DstCIDR []string `long:"route-intf" description:"The destination network for add IP routing table, like '-net target'"`
+}
+
+// -bridge, -nic
 type connectOptions struct {
 	Bridge    string `short:"b" long:"bridge" description:"Target bridge name" required:"true"`
 	Interface string `short:"n" long:"nic" description:"The interface name in the container" required:"true"`
 }
 
 type clientOptions struct {
-	Server    string           `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
-	Connect   connectOptions   `group:"connectOptions"`
-	Interface interfaceOptions `group:"interfaceOptions" `
-	Route     routeOptions     `group:"routeOptions" `
-	Pod       podOptions       `group:"podOptions" `
+	Server        string                   `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
+	Connect       connectOptions           `group:"connectOptions"`
+	Interface     interfaceOptions         `group:"interfaceOptions" `
+	RouteWithGW   routeViaGatewayOptions   `group:"routeViaGatewayOptions" `
+	RouteWithIntf routeViaInterfaceOptions `group:"routeViaInterfaceOptions" `
+	Pod           podOptions               `group:"podOptions" `
 }
 
 var options clientOptions
@@ -48,7 +58,10 @@ var parser = flags.NewParser(&options, flags.Default)
 func main() {
 	var setCIDR bool
 	var setVLANAccessLink bool
-	var setRoute bool
+
+	var setRouteViaInterface bool
+	var setRouteViaGateway bool
+
 	if _, err := parser.Parse(); err != nil {
 		parser.WriteHelp(os.Stderr)
 		os.Exit(1)
@@ -78,14 +91,33 @@ func main() {
 		}
 	}
 
-	// setRoute bool
-	if options.Route.DstCIDR != "" {
-		setRoute = true
+	// setRouteViaInterfac bool
+	if len(options.RouteWithIntf.DstCIDR) != 0 {
+		setRouteViaInterface = true
 	}
 
-	if setRoute {
-		if !utils.IsValidCIDR(options.Route.DstCIDR) {
-			log.Fatalf("Route destination netIP is not correct: %s", options.Route.DstCIDR)
+	if setRouteViaInterface {
+		for _, cidr := range options.RouteWithIntf.DstCIDR {
+			if !utils.IsValidCIDR(cidr) {
+				log.Fatalf("Route destination CIDR is invlaid: %s", cidr)
+			}
+		}
+	}
+
+	// setRouteViaGateway bool
+	if len(options.RouteWithGW.DstCIDRGateway) != 0 {
+		setRouteViaGateway = true
+	}
+
+	if setRouteViaGateway {
+		for _, opt := range options.RouteWithGW.DstCIDRGateway {
+			s := strings.Split(opt, ",")
+			if !utils.IsValidCIDR(s[0]) {
+				log.Fatalf("Route destination netIP is invalid: %s", s[0])
+			}
+			if !utils.IsValidIP(s[1]) {
+				log.Fatalf("Gateway IP is invalid: %s", s[1])
+			}
 		}
 	}
 
@@ -185,24 +217,47 @@ func main() {
 		)
 	}
 
-	if setRoute {
-		addRouteResp, err := ncClient.AddRoute(ctx,
-			&pb.AddRouteRequest{
-				Path:              findNetworkNamespacePathResp.Path,
-				DstCIDR:           options.Route.DstCIDR,
-				GwIP:              options.Route.Gateway,
-				ContainerVethName: options.Connect.Interface,
-			},
-		)
-		if err != nil {
-			log.Fatalf("There is something wrong with adding route: %v", err)
+	if setRouteViaInterface {
+		for _, cidr := range options.RouteWithIntf.DstCIDR {
+			addRouteResp, err := ncClient.AddRouteViaInterface(ctx,
+				&pb.AddRouteRequest{
+					Path:              findNetworkNamespacePathResp.Path,
+					DstCIDR:           cidr,
+					ContainerVethName: options.Connect.Interface,
+				},
+			)
+			if err != nil {
+				log.Fatalf("There is something wrong with adding route: %v", err)
+			}
+			common.CheckFatal(
+				addRouteResp.Success,
+				addRouteResp.Reason,
+				"Add Route with interface",
+			)
 		}
-		common.CheckFatal(
-			addRouteResp.Success,
-			addRouteResp.Reason,
-			"Add Route",
-		)
 	}
 
+	if setRouteViaGateway {
+		for _, opt := range options.RouteWithGW.DstCIDRGateway {
+			s := strings.Split(opt, ",")
+			dstCIDR, gateway := s[0], s[1]
+			addRouteResp, err := ncClient.AddRouteViaGateway(ctx,
+				&pb.AddRouteRequest{
+					Path:              findNetworkNamespacePathResp.Path,
+					DstCIDR:           dstCIDR,
+					GwIP:              gateway,
+					ContainerVethName: options.Connect.Interface,
+				},
+			)
+			if err != nil {
+				log.Fatalf("There is something wrong with adding route: %v", err)
+			}
+			common.CheckFatal(
+				addRouteResp.Success,
+				addRouteResp.Reason,
+				"Add Route with interface",
+			)
+		}
+	}
 	log.Printf("network-controller client has completed all tasks")
 }
