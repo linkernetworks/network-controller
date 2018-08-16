@@ -84,7 +84,7 @@ func main() {
 
 	if setCIDR {
 		if !utils.IsValidCIDR(options.Interface.CIDR) {
-			log.Fatalf("CIDR address is not correct: %s", options.Interface.CIDR)
+			log.Fatalf("CIDR address is invalid: %s", options.Interface.CIDR)
 		}
 	}
 
@@ -95,7 +95,7 @@ func main() {
 
 	if setVLANAccessLink {
 		if !utils.IsValidVLANTag(*options.Interface.VLANTag) {
-			log.Fatalf("VLAN Tag is not correct: %d", *options.Interface.VLANTag)
+			log.Fatalf("VLAN Tag is invalid: %d", *options.Interface.VLANTag)
 		}
 	}
 
@@ -106,7 +106,7 @@ func main() {
 
 	if setRoute {
 		if !utils.IsValidCIDR(options.Route.DstCIDR) {
-			log.Fatalf("Route destination netIP is not correct: %s", options.Route.DstCIDR)
+			log.Fatalf("Route destination netIP is invalid: %s", options.Route.DstCIDR)
 		}
 	}
 
