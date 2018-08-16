@@ -105,7 +105,7 @@ func AddRouteViaInterface(ipn *net.IPNet, dev string) error {
 }
 
 // AddRouteViaGateway is a function for Adding a route via gateway
-// ex: ip route add 192.0.2.128/25 via 192.0.2.1
+// ex: ip route add 192.0.2.128/25 via 192.0.2.1 dev eth0
 func AddRouteViaGateway(ipn *net.IPNet, gwIP string, dev string) error {
 	link, err := netlink.LinkByName(dev)
 	if err != nil {
