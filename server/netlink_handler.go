@@ -167,6 +167,7 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 	}, nil
 }
 
+// Will be deprecated in the future
 func (s *server) AddRoute(ctx context.Context, req *pb.AddRouteRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
 	log.Println("Start to add route")
@@ -184,6 +185,68 @@ func (s *server) AddRoute(ctx context.Context, req *pb.AddRouteRequest) (*pb.Res
 			return err
 		}
 		return nl.AddRoute(dst, req.GwIP, req.ContainerVethName)
+	})
+	if err != nil {
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
+		}, err
+	}
+
+	return &pb.Response{
+		Success: true,
+		Reason:  "",
+	}, nil
+}
+
+func (s *server) AddRouteViaInterface(ctx context.Context, req *pb.AddRouteRequest) (*pb.Response, error) {
+	runtime.LockOSThread()
+	log.Println("Start to add route via interface")
+	netns, err := ns.GetNS(req.Path)
+	if err != nil {
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
+		}, err
+	}
+
+	err = netns.Do(func(_ ns.NetNS) error {
+		dst, err := types.ParseCIDR(req.DstCIDR)
+		if err != nil {
+			return err
+		}
+		return nl.AddRouteViaInterface(dst, req.ContainerVethName)
+	})
+	if err != nil {
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
+		}, err
+	}
+
+	return &pb.Response{
+		Success: true,
+		Reason:  "",
+	}, nil
+}
+
+func (s *server) AddRouteViaGateway(ctx context.Context, req *pb.AddRouteRequest) (*pb.Response, error) {
+	runtime.LockOSThread()
+	log.Println("Start to add route via gateway")
+	netns, err := ns.GetNS(req.Path)
+	if err != nil {
+		return &pb.Response{
+			Success: false,
+			Reason:  err.Error(),
+		}, err
+	}
+
+	err = netns.Do(func(_ ns.NetNS) error {
+		dst, err := types.ParseCIDR(req.DstCIDR)
+		if err != nil {
+			return err
+		}
+		return nl.AddRouteViaGateway(dst, req.GwIP, req.ContainerVethName)
 	})
 	if err != nil {
 		return &pb.Response{
