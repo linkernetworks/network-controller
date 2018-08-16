@@ -36,9 +36,7 @@ make test
 ## Usage
 
 ### Run as a server
-The network-controller server provide two ways to listen, TCP and Unix domain socket
-If you want to run as a UNIX domain socket server, you should specify a path to store the sock file
-and server will remove that file when server is been terminated
+The network-controller server provide two ways to listen, TCP and Unix domain socket. If you want to run as a UNIX domain socket server, you should specify a path to store the sock file and server will remove that file when server is been terminated.
 ```shell
 ./server/network-controller-server -unix=/tmp/a.sock
 ```
@@ -64,35 +62,34 @@ For creating a veth for Pod, the client needs the following information
 The first three variable can passed by the environemtn `POD_NAME`, `POD_NAMESPACE` and `POD_UUID`.
 
 #### Bridge Name
-`-b` or `--bridge` Target bridge name
+`-b` or `--bridge` Target bridge name.
 
 #### Interface Name
-`-n` or `--nic` The interface name in the container
+`-n` or `--nic` The interface name in the container.
 
 #### IP Address of the interface
-`-i` or `--ip` The ip address of the interface, should be a valid v4 CIDR Address
+`-i` or `--ip` The ip address of the interface, should be a valid v4 CIDR address.
 
 #### Add VLAN tag into the interface
-`-v` or `--vlan` The Vlan Tag of the interface
+`-v` or `--vlan` The Vlan Tag of the interface.
 
 #### Add route via gateway. Can add multiple times
-`--route-gw` Add route for the destination network cidr on interface
+`--route-gw` Add route for the destination network cidr on interface.
 
 #### Add route via interface. Can add multiple times
-`--route-intf` Add route for the destination network cidr and gateway ip on interface
+`--route-intf` Add route for the destination network cidr and gateway ip on interface.
 
 #### Add a IP routing table (Add route). Deprecated in the future
-`--net` The destination network for add IP routing table, like '-net target'
-`-g` or `--gateway` The gateway of the interface subnet
+`--net` The destination network for add IP routing table, like "-net target".
+
+`-g` or `--gateway` The gateway of the interface subnet.
 
 #### Servers
-The clinet support two way to connect to the server, TCP socket and UNIX domain socket.
-In the TCP mode, use the `IP:PORT` format to connect to TCP server
+The clinet support two way to connect to the server, TCP socket and UNIX domain socket. In the TCP mode, use the `IP:PORT` format to connect to TCP server.
 ```shell
 ./client/network-controller-client -server=0.0.0.0:50051
 ```
-Fot the UNIX domain socket mode, you should use the `unix://PATH` format to connect to server.
-Assume the path is `/tmp/a.sock` and you can use the following command to connect
+Fot the UNIX domain socket mode, you should use the `unix://PATH` format to connect to server. Assume the path is `/tmp/a.sock` and you can use the following command to connect
 ```shell
 ./client/network-controller-client -server=unix:///tmp/a.sock
 ```
@@ -120,5 +117,13 @@ Following is an example of the client and you can see more use the `--help`.
     --bridge br98 \
     --nic eth98 \ 
     --route-gw 192.168.2.0/24,192.168.2.254 \
+    --route-gw 192.168.1.0/24,192.168.1.1
+
+
+./clinet/network-controller-client \ 
+    --server unix:///tmp/vortex/vortex.sock \ 
+    --bridge br98 \
+    --nic eth98 \ 
+    --route-intf 239.0.0.0/4 \
     --route-gw 192.168.1.0/24,192.168.1.1
 ```
