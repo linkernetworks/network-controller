@@ -199,7 +199,7 @@ func (s *server) AddRoute(ctx context.Context, req *pb.AddRouteRequest) (*pb.Res
 	}, nil
 }
 
-func (s *server) AddRouteViaInterface(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
+func (s *server) AddRoutesViaInterface(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
 	log.Println("Start to add route via interface")
 	netns, err := ns.GetNS(req.Path)
@@ -235,7 +235,7 @@ func (s *server) AddRouteViaInterface(ctx context.Context, req *pb.AddRoutesRequ
 	}, nil
 }
 
-func (s *server) AddRouteViaGateway(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
+func (s *server) AddRoutesViaGateway(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
 	log.Println("Start to add route via gateway")
 	netns, err := ns.GetNS(req.Path)
