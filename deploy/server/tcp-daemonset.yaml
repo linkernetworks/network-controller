@@ -37,7 +37,7 @@ spec:
       - name: docker-sock
         hostPath:
           path: /run/docker.sock
-        name: ovs-data #for some operations(dump ports) it needs extra unix socker to handle, so we mount whole ovs directory
+      - name: ovs-data #for some operations(dump ports) it needs extra unix socker to handle, so we mount whole ovs directory
         hostPath:
           path: /run/openvswitch/
       hostNetwork: true
