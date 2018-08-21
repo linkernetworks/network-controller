@@ -34,8 +34,8 @@ service NetworkControl {
 
   // Will be deprecated in the future
   rpc AddRoute (AddRouteRequest) returns (Response) {}
-  rpc AddRouteViaInterface (AddRouteRequest) returns (Response) {}
-  rpc AddRouteViaGateway (AddRouteRequest) returns (Response) {}
+  rpc AddRoutesViaInterface (AddRoutesRequest) returns (Response) {}
+  rpc AddRoutesViaGateway (AddRoutesRequest) returns (Response) {}
 }
 
 message EchoRequest {
@@ -168,4 +168,11 @@ message AddRouteRequest {
   string dstCIDR = 2;
   string gwIP = 3;
   string containerVethName = 4;
+}
+
+message AddRoutesRequest {
+  string path = 1;
+  string containerVethName = 2;
+  repeated string dstCIDRs = 3;
+  repeated string gwIPs = 4;
 }

@@ -257,46 +257,47 @@ func main() {
 	}
 
 	if setRouteViaInterface {
-		for _, cidr := range options.RouteWithIntf.DstCIDR {
-			addRouteResp, err := ncClient.AddRouteViaInterface(ctx,
-				&pb.AddRouteRequest{
-					Path:              findNetworkNamespacePathResp.Path,
-					DstCIDR:           cidr,
-					ContainerVethName: options.Connect.Interface,
-				},
-			)
-			if err != nil {
-				log.Fatalf("There is something wrong with adding route: %v", err)
-			}
-			common.CheckFatal(
-				addRouteResp.Success,
-				addRouteResp.Reason,
-				"Add Route with interface",
-			)
+		addRouteResp, err := ncClient.AddRoutesViaInterface(ctx,
+			&pb.AddRoutesRequest{
+				Path:              findNetworkNamespacePathResp.Path,
+				DstCIDRs:          options.RouteWithIntf.DstCIDR,
+				ContainerVethName: options.Connect.Interface,
+			},
+		)
+		if err != nil {
+			log.Fatalf("There is something wrong with adding route: %v", err)
 		}
+		common.CheckFatal(
+			addRouteResp.Success,
+			addRouteResp.Reason,
+			"Add Route with interface",
+		)
 	}
 
 	if setRouteViaGateway {
+		var dstCIDRs []string
+		var gateways []string
 		for _, opt := range options.RouteWithGW.DstCIDRGateway {
 			s := strings.Split(opt, ",")
-			dstCIDR, gateway := s[0], s[1]
-			addRouteResp, err := ncClient.AddRouteViaGateway(ctx,
-				&pb.AddRouteRequest{
-					Path:              findNetworkNamespacePathResp.Path,
-					DstCIDR:           dstCIDR,
-					GwIP:              gateway,
-					ContainerVethName: options.Connect.Interface,
-				},
-			)
-			if err != nil {
-				log.Fatalf("There is something wrong with adding route: %v", err)
-			}
-			common.CheckFatal(
-				addRouteResp.Success,
-				addRouteResp.Reason,
-				"Add Route with interface",
-			)
+			dstCIDRs = append(dstCIDRs, s[0])
+			gateways = append(gateways, s[1])
 		}
+		addRouteResp, err := ncClient.AddRoutesViaGateway(ctx,
+			&pb.AddRoutesRequest{
+				Path:              findNetworkNamespacePathResp.Path,
+				DstCIDRs:          dstCIDRs,
+				GwIPs:             gateways,
+				ContainerVethName: options.Connect.Interface,
+			},
+		)
+		if err != nil {
+			log.Fatalf("There is something wrong with adding route: %v", err)
+		}
+		common.CheckFatal(
+			addRouteResp.Success,
+			addRouteResp.Reason,
+			"Add Route with interface",
+		)
 	}
 	log.Printf("network-controller client has completed all tasks")
 }
