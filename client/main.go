@@ -267,7 +267,7 @@ func main() {
 		if err != nil {
 			log.Printf("resp: %v\n", addRouteResp)
 			log.Printf("path: %s\n", findNetworkNamespacePathResp.Path)
-			log.Printf("dstCIR: %s\n", options.RouteWithIntf.DstCIDR)
+			log.Printf("dstCIR: %v\n", options.RouteWithIntf.DstCIDR)
 			log.Printf("interface: %s\n", options.Connect.Interface)
 			log.Fatalf("There is something wrong with adding route via interface: %v", err)
 		}

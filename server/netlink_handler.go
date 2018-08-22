@@ -211,15 +211,19 @@ func (s *server) AddRoutesViaInterface(ctx context.Context, req *pb.AddRoutesReq
 	}
 
 	err = netns.Do(func(_ ns.NetNS) error {
+		log.Println("--- Exec in a network namespace")
 		for _, dstCIDR := range req.DstCIDRs {
 			dst, err := types.ParseCIDR(dstCIDR)
+			log.Println("--- Parse CIDR")
 			if err != nil {
 				return err
 			}
 			if err := nl.AddRouteViaInterface(dst, req.ContainerVethName); err != nil {
 				return err
 			}
+			log.Println("--- Done add route")
 		}
+		log.Println("--- exit from network namespace")
 		return nil
 	})
 	if err != nil {
