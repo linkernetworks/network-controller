@@ -2,7 +2,7 @@
 # https://gist.github.com/turtlemonvh/38bd3d73e61769767c35931d8c70ccb4
 
 ## network controller version
-NETWORKCONTROLLER_VERSION = v0.4.3
+NETWORKCONTROLLER_VERSION = v0.4.5
 
 BINARY = network-controller
 VET_REPORT = vet.report
