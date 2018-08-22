@@ -265,7 +265,8 @@ func main() {
 			},
 		)
 		if err != nil {
-			log.Fatalf("There is something wrong with adding route: %v", err)
+			log.Printf("%v\n", addRouteResp)
+			log.Fatalf("There is something wrong with adding route via interface: %v", err)
 		}
 		common.CheckFatal(
 			addRouteResp.Success,
@@ -291,7 +292,7 @@ func main() {
 			},
 		)
 		if err != nil {
-			log.Fatalf("There is something wrong with adding route: %v", err)
+			log.Fatalf("There is something wrong with adding route via gateway: %v", err)
 		}
 		common.CheckFatal(
 			addRouteResp.Success,
