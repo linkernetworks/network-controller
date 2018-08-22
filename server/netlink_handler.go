@@ -216,10 +216,12 @@ func (s *server) AddRoutesViaInterface(ctx context.Context, req *pb.AddRoutesReq
 			dst, err := types.ParseCIDR(dstCIDR)
 			log.Println("--- Parse CIDR")
 			if err != nil {
-				log.Println("xxx %v", err)
 				return err
 			}
+			log.Printf("dst %s", dst)
+			log.Printf("container vethName %s", req.ContainerVethName)
 			if err := nl.AddRouteViaInterface(dst, req.ContainerVethName); err != nil {
+				log.Printf("xxx %v", err)
 				return err
 			}
 			log.Println("--- Done add route")
