@@ -199,7 +199,7 @@ func (s *server) AddRoute(ctx context.Context, req *pb.AddRouteRequest) (*pb.Res
 	}, nil
 }
 
-func (s *server) AddRouteViaInterface(ctx context.Context, req *pb.AddRouteRequest) (*pb.Response, error) {
+func (s *server) AddRoutesViaInterface(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
 	log.Println("Start to add route via interface")
 	netns, err := ns.GetNS(req.Path)
@@ -211,11 +211,17 @@ func (s *server) AddRouteViaInterface(ctx context.Context, req *pb.AddRouteReque
 	}
 
 	err = netns.Do(func(_ ns.NetNS) error {
-		dst, err := types.ParseCIDR(req.DstCIDR)
-		if err != nil {
-			return err
+		for _, dstCIDR := range req.DstCIDRs {
+			dst, err := types.ParseCIDR(dstCIDR)
+			if err != nil {
+				return err
+			}
+			if err := nl.AddRouteViaInterface(dst, req.ContainerVethName); err != nil {
+				log.Printf("xxx %v", err)
+				return err
+			}
 		}
-		return nl.AddRouteViaInterface(dst, req.ContainerVethName)
+		return nil
 	})
 	if err != nil {
 		return &pb.Response{
@@ -230,7 +236,7 @@ func (s *server) AddRouteViaInterface(ctx context.Context, req *pb.AddRouteReque
 	}, nil
 }
 
-func (s *server) AddRouteViaGateway(ctx context.Context, req *pb.AddRouteRequest) (*pb.Response, error) {
+func (s *server) AddRoutesViaGateway(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
 	log.Println("Start to add route via gateway")
 	netns, err := ns.GetNS(req.Path)
@@ -242,11 +248,17 @@ func (s *server) AddRouteViaGateway(ctx context.Context, req *pb.AddRouteRequest
 	}
 
 	err = netns.Do(func(_ ns.NetNS) error {
-		dst, err := types.ParseCIDR(req.DstCIDR)
-		if err != nil {
-			return err
+		// assume client will send same size of slice
+		for i := 0; i < len(req.DstCIDRs); i++ {
+			dst, err := types.ParseCIDR(req.DstCIDRs[i])
+			if err != nil {
+				return err
+			}
+			if err := nl.AddRouteViaGateway(dst, req.GwIPs[i], req.ContainerVethName); err != nil {
+				return err
+			}
 		}
-		return nl.AddRouteViaGateway(dst, req.GwIP, req.ContainerVethName)
+		return nil
 	})
 	if err != nil {
 		return &pb.Response{
