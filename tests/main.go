@@ -90,10 +90,10 @@ func main() {
 				BridgeName: bridgeName,
 			},
 		)
-		if ports.Ports[0].PortID != -1 {
+		if ports.Ports[0].ID != -1 {
 			return fmt.Errorf("The port ID should be -1 for LOCAL port")
 		}
-		if ports.Ports[0].PortName != bridgeName {
+		if ports.Ports[0].Name != bridgeName {
 			return fmt.Errorf("The port name should same as bridge Name")
 		}
 

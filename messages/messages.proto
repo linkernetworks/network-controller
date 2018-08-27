@@ -137,12 +137,12 @@ message PortStatsTransmit {
 }
 
 message PortStat {
-  int32 portID = 1;
-  string portName = 2;
+  int32 ID = 1;
+  string name = 2;
   string macAddr = 3;
 
-  PortStatsReceive Received =4;
-  PortStatsTransmit Transmiited =5;
+  PortStatsReceive received =4;
+  PortStatsTransmit transmitted =5;
 }
 
 message DumpPortsResponse {

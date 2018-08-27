@@ -247,16 +247,16 @@ func (s *server) DumpPorts(ctx context.Context, req *pb.DumpPortsRequest) (*pb.D
 			}, err
 		} else {
 			portInfo = pb.PortStat{
-				PortID:   v.ID,
-				PortName: v.Name,
-				MacAddr:  v.MACAddress,
+				ID:      v.ID,
+				Name:    v.Name,
+				MacAddr: v.MACAddress,
 				Received: &pb.PortStatsReceive{
 					Byte:    stats.Received.Bytes,
 					Packets: stats.Received.Packets,
 					Dropped: stats.Received.Dropped,
 					Errors:  stats.Received.Errors,
 				},
-				Transmiited: &pb.PortStatsTransmit{
+				Transmitted: &pb.PortStatsTransmit{
 					Byte:    stats.Transmitted.Bytes,
 					Packets: stats.Transmitted.Packets,
 					Dropped: stats.Transmitted.Dropped,
