@@ -126,18 +126,9 @@ func (o *OVSManager) DumpFlows(bridgeName string) ([]*ovs.Flow, error) {
 	return flows, nil
 }
 
-// DumpPorts : ovs-ofctl dump-ports br0
-func (o *OVSManager) DumpPorts(bridgeName string) ([]*ovs.PortStats, error) {
-	ports, err := o.Client.OpenFlow.DumpPorts(bridgeName)
-	if err != nil {
-		return ports, fmt.Errorf("Failed to dump ports: %v", err)
-	}
-	return ports, nil
-}
-
 // DumpPort : ovs-ofctl dump-ports br0 eth0
-func (o *OVSManager) DumpPort(bridgeName, portName string) (*ovs.PortStats, error) {
-	port, err := o.Client.OpenFlow.DumpPort(bridgeName, portName)
+func (o *OVSManager) DumpPorts(bridgeName string) ([]*ovs.PortStats, error) {
+	port, err := o.Client.OpenFlow.DumpPorts(bridgeName)
 	if err != nil {
 		return port, fmt.Errorf("Failed to dump port: %v", err)
 	}

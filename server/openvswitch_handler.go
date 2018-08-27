@@ -244,33 +244,3 @@ func (s *server) DumpPorts(ctx context.Context, req *pb.DumpPortsRequest) (*pb.D
 		},
 	}, nil
 }
-
-func (s *server) DumpPort(ctx context.Context, req *pb.DumpPortRequest) (*pb.DumpPortResponse, error) {
-	port, err := s.OVS.DumpPort(req.BridgeName, req.PortName)
-	if err != nil {
-		return &pb.DumpPortResponse{
-			ServerResponse: &pb.Response{
-				Success: false,
-				Reason:  err.Error(),
-			},
-		}, err
-	}
-
-	buf := &bytes.Buffer{}
-	if err := binary.Write(buf, binary.BigEndian, port); err != nil {
-		return &pb.DumpPortResponse{
-			ServerResponse: &pb.Response{
-				Success: false,
-				Reason:  err.Error(),
-			},
-		}, err
-	}
-
-	return &pb.DumpPortResponse{
-		Port: buf.Bytes(),
-		ServerResponse: &pb.Response{
-			Success: false,
-			Reason:  "",
-		},
-	}, nil
-}

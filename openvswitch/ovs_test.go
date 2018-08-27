@@ -196,10 +196,6 @@ func TestDumpPorts(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, uint64(0x0), ports[0].Received.Packets)
 
-	port, err := o.DumpPort(bridgeName, hName)
-	assert.NoError(t, err)
-	assert.Equal(t, uint64(0x0), port.Received.Packets)
-
 	err = o.DeletePort(bridgeName, hName)
 	assert.NoError(t, err)
 }
@@ -207,8 +203,5 @@ func TestDumpPorts(t *testing.T) {
 func TestDumpPortsFail(t *testing.T) {
 	bridgeName := "br0"
 	_, err := o.DumpPorts(bridgeName)
-	assert.Error(t, err)
-
-	_, err = o.DumpPort(bridgeName, "")
 	assert.Error(t, err)
 }
