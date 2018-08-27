@@ -124,9 +124,29 @@ message DumpPortsRequest {
   string bridgeName = 1;
 }
 
+message PortStatsReceive {
+  uint64 byte = 1; 
+  uint64 packets = 2; 
+  uint64 dropped =3;
+  uint64 errors = 4;
+}
+
+message PortStatsTransmit {
+  uint64 byte = 1; 
+  uint64 packets = 2; 
+  uint64 dropped =3;
+  uint64 errors = 4;
+}
+
+
 message DumpPortsResponse {
-  repeated bytes ports = 1;
-  Response serverResponse = 2;
+  int32 portID = 1;
+  string portName = 2;
+  string macAddr = 3;
+
+  PortStatsReceive Received =4;
+  PortStatsTransmit Transmiited =5;
+  Response serverResponse = 6;
 }
 
 message DumpPortRequest {
