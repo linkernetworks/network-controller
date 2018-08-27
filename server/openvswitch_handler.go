@@ -235,28 +235,28 @@ func (s *server) DumpPorts(ctx context.Context, req *pb.DumpPortsRequest) (*pb.D
 	}
 
 	//Generate the output
-	portInfos := []*pb.PortStat{}
+	portInfos := []*pb.PortInfo{}
 	for _, v := range descs {
-		portInfo := pb.PortStat{}
+		portInfo := pb.PortInfo{}
 		if stats, ok := tmp[v.ID]; !ok {
 			return &pb.DumpPortsResponse{
 				ServerResponse: &pb.Response{
 					Success: false,
-					Reason:  "There're difference ID between PortStats and PortDesc, need to check ovs ",
+					Reason:  "There're difference ID between PortInfos and PortDesc, need to check ovs ",
 				},
 			}, err
 		} else {
-			portInfo = pb.PortStat{
+			portInfo = pb.PortInfo{
 				ID:      v.ID,
 				Name:    v.Name,
 				MacAddr: v.MACAddress,
-				Received: &pb.PortStatsReceive{
+				Received: &pb.PortStatistic{
 					Byte:    stats.Received.Bytes,
 					Packets: stats.Received.Packets,
 					Dropped: stats.Received.Dropped,
 					Errors:  stats.Received.Errors,
 				},
-				Transmitted: &pb.PortStatsTransmit{
+				Transmitted: &pb.PortStatistic{
 					Byte:    stats.Transmitted.Bytes,
 					Packets: stats.Transmitted.Packets,
 					Dropped: stats.Transmitted.Dropped,
