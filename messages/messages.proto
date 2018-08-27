@@ -136,15 +136,18 @@ message PortStatsTransmit {
   uint64 errors = 4;
 }
 
-
-message DumpPortsResponse {
+message PortStat {
   int32 portID = 1;
   string portName = 2;
   string macAddr = 3;
 
   PortStatsReceive Received =4;
   PortStatsTransmit Transmiited =5;
-  Response serverResponse = 6;
+}
+
+message DumpPortsResponse {
+  repeated PortStat ports =1;
+  Response serverResponse = 2;
 }
 
 message FindNetworkNamespacePathRequest {
