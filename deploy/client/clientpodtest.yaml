@@ -11,7 +11,7 @@ spec:
     command: ['sh', '-c', 'echo The app is running! && sleep 3600']
   initContainers:
   - name: init-network-client
-    image: sdnvortex/network-controller:v0.4.5
+    image: sdnvortex/network-controller:v0.4.6
     command: ["/go/bin/client"]
     args: ["-s=unix:///tmp/vortex.sock", "-b=br100", "-n=eth100", "-i=192.168.24.50/24"]
     env:
