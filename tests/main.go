@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/binary"
+	"fmt"
 	"log"
 	"os"
 	"time"
 
-	"github.com/linkernetworks/go-openvswitch/ovs"
+	_ "github.com/linkernetworks/go-openvswitch/ovs"
 
 	flags "github.com/jessevdk/go-flags"
 	pb "github.com/linkernetworks/network-controller/messages"
@@ -91,15 +90,13 @@ func main() {
 				BridgeName: bridgeName,
 			},
 		)
-
-		ovsPortStats := []ovs.PortStats{}
-		for _, v := range ports.Ports {
-			port := ovs.PortStats{}
-			buf := &bytes.Buffer{}
-			buf.Write(v)
-			err = binary.Read(buf, binary.BigEndian, &port)
-			ovsPortStats = append(ovsPortStats, port)
+		if ports.Ports[0].ID != -1 {
+			return fmt.Errorf("The port ID should be -1 for LOCAL port")
 		}
+		if ports.Ports[0].Name != bridgeName {
+			return fmt.Errorf("The port name should same as bridge Name")
+		}
+
 		return err
 	})
 	Test("Delete Bridge", &ctx, &ncClient, func(ctx *context.Context, nc *pb.NetworkControlClient) error {

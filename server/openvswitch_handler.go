@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/binary"
 	"log"
 
 	pb "github.com/linkernetworks/network-controller/messages"
@@ -221,55 +219,58 @@ func (s *server) DumpPorts(ctx context.Context, req *pb.DumpPortsRequest) (*pb.D
 		}, err
 	}
 
-	portsBytes := [][]byte{}
-	for _, port := range ports {
+	descs, err := s.OVS.DescPorts(req.BridgeName)
+	if err != nil {
+		return &pb.DumpPortsResponse{
+			ServerResponse: &pb.Response{
+				Success: false,
+				Reason:  err.Error(),
+			},
+		}, err
+	}
 
-		buf := &bytes.Buffer{}
-		if err := binary.Write(buf, binary.BigEndian, port); err != nil {
+	tmp := map[int32]*ovs.PortStats{}
+	for _, v := range ports {
+		tmp[v.PortID] = v
+	}
+
+	//Generate the output
+	portInfos := []*pb.PortInfo{}
+	for _, v := range descs {
+		portInfo := pb.PortInfo{}
+		if stats, ok := tmp[v.ID]; !ok {
 			return &pb.DumpPortsResponse{
 				ServerResponse: &pb.Response{
 					Success: false,
-					Reason:  err.Error(),
+					Reason:  "There're difference ID between PortInfos and PortDesc, need to check ovs ",
 				},
 			}, err
+		} else {
+			portInfo = pb.PortInfo{
+				ID:      v.ID,
+				Name:    v.Name,
+				MacAddr: v.MACAddress,
+				Received: &pb.PortStatistic{
+					Byte:    stats.Received.Bytes,
+					Packets: stats.Received.Packets,
+					Dropped: stats.Received.Dropped,
+					Errors:  stats.Received.Errors,
+				},
+				Transmitted: &pb.PortStatistic{
+					Byte:    stats.Transmitted.Bytes,
+					Packets: stats.Transmitted.Packets,
+					Dropped: stats.Transmitted.Dropped,
+					Errors:  stats.Transmitted.Errors,
+				},
+			}
 		}
-		portsBytes = append(portsBytes, buf.Bytes())
+		portInfos = append(portInfos, &portInfo)
 	}
 
 	return &pb.DumpPortsResponse{
-		Ports: portsBytes,
+		Ports: portInfos,
 		ServerResponse: &pb.Response{
 			Success: true,
-			Reason:  "",
-		},
-	}, nil
-}
-
-func (s *server) DumpPort(ctx context.Context, req *pb.DumpPortRequest) (*pb.DumpPortResponse, error) {
-	port, err := s.OVS.DumpPort(req.BridgeName, req.PortName)
-	if err != nil {
-		return &pb.DumpPortResponse{
-			ServerResponse: &pb.Response{
-				Success: false,
-				Reason:  err.Error(),
-			},
-		}, err
-	}
-
-	buf := &bytes.Buffer{}
-	if err := binary.Write(buf, binary.BigEndian, port); err != nil {
-		return &pb.DumpPortResponse{
-			ServerResponse: &pb.Response{
-				Success: false,
-				Reason:  err.Error(),
-			},
-		}, err
-	}
-
-	return &pb.DumpPortResponse{
-		Port: buf.Bytes(),
-		ServerResponse: &pb.Response{
-			Success: false,
 			Reason:  "",
 		},
 	}, nil
