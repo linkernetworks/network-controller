@@ -14,10 +14,10 @@ func sha256String(str string) string {
 	return fmt.Sprintf("%s", hex.EncodeToString(md))
 }
 
-// GenerateVethName : Use pod-uuid and container-vethName to generate vethXXXXXXXX for bridge's interface name
+// GenerateVethName : Use pod-uuid and container-vethName to generate vtxXXXXXXXXX for bridge's interface name
 func GenerateVethName(podUUID, containerVethName string) string {
 	str := sha256String(podUUID + containerVethName)
-	return fmt.Sprintf("veth%s", str[0:8])
+	return fmt.Sprintf("vtx%s", str[0:9])
 }
 
 // IsValidIP : Check IP address is valided
