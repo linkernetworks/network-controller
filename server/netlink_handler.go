@@ -17,7 +17,7 @@ import (
 )
 
 func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetworkNamespacePathRequest) (*pb.FindNetworkNamespacePathResponse, error) {
-	log.Println("Start to Find Network")
+	log.Println("--- Start to Find Network Namespace Path---")
 	cli, err := docker.New()
 	if err != nil {
 		return &pb.FindNetworkNamespacePathResponse{
@@ -81,7 +81,7 @@ func (s *server) FindNetworkNamespacePath(ctx context.Context, req *pb.FindNetwo
 }
 
 func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest) (*pb.Response, error) {
-	log.Println("Start to Connect Bridge")
+	log.Println("--- Start to Connect Bridge ---")
 	runtime.LockOSThread()
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
@@ -91,7 +91,7 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 		}, err
 	}
 
-	log.Printf("Get the netns object success: %s\n", req.Path)
+	log.Printf("Get the netns object success: %s", req.Path)
 
 	hostVethName := utils.GenerateVethName(req.PodUUID, req.ContainerVethName)
 	log.Printf("Host veth name to container interface name %s=%s", hostVethName, req.ContainerVethName)
@@ -109,7 +109,7 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 		}, err
 	}
 
-	log.Printf("Try to add port %s to %s", hostVethName, req.BridgeName)
+	log.Printf("Adding port %s to bridge: %s", hostVethName, req.BridgeName)
 	if err := s.OVS.AddPort(req.BridgeName, hostVethName); err != nil {
 		log.Println("Add port fail:", err, req.BridgeName, hostVethName)
 		return &pb.Response{
@@ -127,7 +127,7 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 
 func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
-	log.Println("Start to configure interface")
+	log.Println("--- Start to configure interface ---")
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
 		return &pb.Response{
@@ -170,7 +170,7 @@ func (s *server) ConfigureIface(ctx context.Context, req *pb.ConfigureIfaceReque
 // Will be deprecated in the future
 func (s *server) AddRoute(ctx context.Context, req *pb.AddRouteRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
-	log.Println("Start to add route")
+	log.Println("--- Start to add route ---")
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
 		return &pb.Response{
@@ -201,7 +201,7 @@ func (s *server) AddRoute(ctx context.Context, req *pb.AddRouteRequest) (*pb.Res
 
 func (s *server) AddRoutesViaInterface(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
-	log.Println("Start to add route via interface")
+	log.Println("--- Start to add route via interface ---")
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
 		return &pb.Response{
@@ -237,7 +237,7 @@ func (s *server) AddRoutesViaInterface(ctx context.Context, req *pb.AddRoutesReq
 
 func (s *server) AddRoutesViaGateway(ctx context.Context, req *pb.AddRoutesRequest) (*pb.Response, error) {
 	runtime.LockOSThread()
-	log.Println("Start to add route via gateway")
+	log.Println("--- Start to add route via gateway ---")
 	netns, err := ns.GetNS(req.Path)
 	if err != nil {
 		return &pb.Response{
