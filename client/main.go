@@ -50,7 +50,7 @@ type connectOptions struct {
 }
 
 type clientOptions struct {
-	Server        string                   `short:"s" long:"server " description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
+	Server        string                   `short:"s" long:"server" description:"target server address, [ip:port] for TCP or unix://[path] for UNIX" required:"true"`
 	Connect       connectOptions           `group:"connectOptions"`
 	Interface     interfaceOptions         `group:"interfaceOptions" `
 	RouteWithGW   routeViaGatewayOptions   `group:"routeViaGatewayOptions" `
