@@ -91,10 +91,10 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 		}, err
 	}
 
-	log.Println("Get the netns object success")
+	log.Printf("Get the netns object success: %s\n", req.Path)
 
 	hostVethName := utils.GenerateVethName(req.PodUUID, req.ContainerVethName)
-	log.Println("The host veth name", hostVethName)
+	log.Printf("Host veth name to container interface name %s=%s", hostVethName, req.ContainerVethName)
 	err = netns.Do(func(hostNS ns.NetNS) error {
 		if _, _, err := nl.SetupVeth(req.ContainerVethName, hostVethName, 1500, hostNS); err != nil {
 			return err
@@ -109,7 +109,7 @@ func (s *server) ConnectBridge(ctx context.Context, req *pb.ConnectBridgeRequest
 		}, err
 	}
 
-	log.Println("Try to add port", hostVethName, " To ", req.BridgeName)
+	log.Printf("Try to add port %s to %s", hostVethName, req.BridgeName)
 	if err := s.OVS.AddPort(req.BridgeName, hostVethName); err != nil {
 		log.Println("Add port fail:", err, req.BridgeName, hostVethName)
 		return &pb.Response{
@@ -217,7 +217,6 @@ func (s *server) AddRoutesViaInterface(ctx context.Context, req *pb.AddRoutesReq
 				return err
 			}
 			if err := nl.AddRouteViaInterface(dst, req.ContainerVethName); err != nil {
-				log.Printf("xxx %v", err)
 				return err
 			}
 		}
