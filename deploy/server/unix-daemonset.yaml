@@ -17,7 +17,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: network-controller-server-unix
-        image: sdnvortex/network-controller:v0.4.7
+        image: sdnvortex/network-controller:v0.4.8
         securityContext:
           privileged: true
         command: ["/go/bin/server"]
