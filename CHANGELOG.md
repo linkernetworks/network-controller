@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/linkernetworks/network-controller/tree/HEAD)
-
-[Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.4.8...HEAD)
+## [v0.4.9](https://github.com/linkernetworks/network-controller/tree/v0.4.9) (2018-10-05)
+[Full Changelog](https://github.com/linkernetworks/network-controller/compare/v0.4.8...v0.4.9)
 
 **Merged pull requests:**
 
