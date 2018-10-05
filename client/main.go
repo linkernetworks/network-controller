@@ -14,6 +14,9 @@ import (
 	"google.golang.org/grpc"
 )
 
+// GRPC_TIMEOUT for 30 seconds
+const GRPC_TIMEOUT = 30
+
 // -podName, -podNs, -podUUID
 type podOptions struct {
 	Name string `long:"podName" description:"The Pod Name, can set by environement variable" env:"POD_NAME" required:"true"`
@@ -149,7 +152,7 @@ func main() {
 	defer conn.Close()
 
 	ncClient := pb.NewNetworkControlClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), GRPC_TIMEOUT*time.Second)
 	defer cancel()
 
 	log.Println(options.Pod.Name, options.Pod.NS, options.Pod.UUID)
