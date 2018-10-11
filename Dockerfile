@@ -1,4 +1,4 @@
-FROM golang:1.1-alpine3.7
+FROM golang:1.11-alpine3.7
 
 WORKDIR /go/src/github.com/linkernetworks/network-controller
 
